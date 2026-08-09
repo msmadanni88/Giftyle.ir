@@ -2,483 +2,646 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title>ساخت کادو</title>
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <style>
-:root{--ink:#3A3835;--paper:#F5F3EE;--card:#FFFFFF;--accent:#D2F32C;--muted:#7C7872;--shadow:#C6C3BB}
+:root{--ink:#3A3835;--paper:#F5F3EE;--card:#fff;--accent:#D2F32C;--muted:#7C7872;--sh:#C6C3BB}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{font-family:Vazirmatn,system-ui,sans-serif;background:var(--paper);color:var(--ink);
-  font-size:15px;line-height:1.7;padding-bottom:104px}
-header{padding:18px 20px 10px}
-header h1{font-size:21px;font-weight:800;letter-spacing:-.6px;margin:0}
-header p{margin:2px 0 0;font-size:12.5px;color:var(--muted);font-weight:500}
+font-size:14px;line-height:1.7;padding-bottom:98px}
+header{padding:16px 18px 8px}
+header h1{font-size:19px;font-weight:800;letter-spacing:-.5px;margin:0}
+header p{margin:1px 0 0;font-size:12px;color:var(--muted);font-weight:500}
 
-.stage{position:sticky;top:0;z-index:20;background:var(--paper);padding:4px 20px 14px}
-.stage-inner{background:var(--card);border:2px solid var(--ink);border-radius:22px;
-  box-shadow:5px 5px 0 var(--shadow);height:266px;overflow:hidden;position:relative;touch-action:none}
+.stage{position:sticky;top:0;z-index:20;background:var(--paper);padding:4px 18px 12px}
+.stage-in{background:var(--card);border:2px solid var(--ink);border-radius:20px;box-shadow:4px 4px 0 var(--sh);
+height:280px;overflow:hidden;position:relative;touch-action:none}
 #gl{display:block;width:100%;height:100%}
-.stage-tag{position:absolute;top:11px;inset-inline-start:13px;font-size:11px;font-weight:700;
-  border:2px solid var(--ink);border-radius:999px;padding:2px 10px;background:var(--card);pointer-events:none}
-.spin{position:absolute;bottom:10px;inset-inline-end:13px;font-size:10.5px;font-weight:600;
-  color:var(--muted);pointer-events:none}
+.hud{position:absolute;top:10px;inset-inline-start:12px;inset-inline-end:12px;display:flex;
+align-items:flex-start;justify-content:space-between;pointer-events:none;gap:8px}
+.headline{font-size:12.5px;font-weight:800;background:var(--card);border:2px solid var(--ink);
+border-radius:999px;padding:3px 11px;max-width:72%}
+.home{pointer-events:auto;width:32px;height:32px;border:2px solid var(--ink);border-radius:11px;
+background:var(--card);font-size:15px;cursor:pointer;line-height:1;padding:0}
+.hint3d{position:absolute;bottom:8px;inset-inline-end:12px;font-size:10px;font-weight:600;
+color:var(--muted);pointer-events:none}
 
-section{padding:0 20px 22px}
-h2{font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 11px;display:flex;align-items:center;gap:10px}
-h2::after{content:"";flex:1;height:2px;background:var(--ink);opacity:.13}
-.row{display:flex;gap:9px;flex-wrap:wrap}
-.pick{border:2px solid var(--ink);background:var(--card);border-radius:14px;padding:10px 16px;
-  font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;
-  box-shadow:3px 3px 0 var(--shadow);transition:transform .14s,box-shadow .14s,background .2s,color .2s}
-.pick:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--shadow)}
-.pick[aria-pressed="true"]{background:var(--accent);color:var(--ink);animation:pop .3s ease}
-.pick:disabled{opacity:.32;box-shadow:none}
-.swatch{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);padding:0;cursor:pointer;
-  filter:grayscale(1);opacity:.55;box-shadow:2px 2px 0 var(--shadow);
-  transition:filter .25s,opacity .25s,transform .18s}
-.swatch[aria-pressed="true"]{filter:none;opacity:1;transform:scale(1.1);animation:pop .3s ease}
-ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
-ul.items li{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:10px 13px;
-  display:flex;align-items:center;gap:11px;box-shadow:3px 3px 0 var(--shadow)}
-.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink);flex:none}
-.nm{flex:1;font-size:14px;font-weight:700}
-.pr{font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
-.qty{display:flex;align-items:center;gap:4px}
-.mini{border:2px solid var(--ink);background:var(--card);font-family:inherit;font-size:16px;font-weight:800;
-  line-height:1;width:30px;height:30px;border-radius:9px;cursor:pointer}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:16px;margin:0 18px 12px;
+box-shadow:3px 3px 0 var(--sh);overflow:hidden}
+.card>button.head{width:100%;display:flex;align-items:center;gap:8px;background:none;border:0;
+font-family:inherit;font-size:13.5px;font-weight:800;color:var(--ink);padding:12px 14px;cursor:pointer}
+.head .cap{margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)}
+.head .arw{transition:transform .2s}
+.card.open .arw{transform:rotate(180deg)}
+.body{display:none;padding:0 14px 14px}
+.card.open .body{display:block}
+
+.row{display:flex;gap:7px;flex-wrap:wrap}
+.pick{border:2px solid var(--ink);background:var(--card);border-radius:11px;padding:7px 12px;
+font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;
+box-shadow:2px 2px 0 var(--sh);transition:transform .12s,box-shadow .12s,background .2s}
+.pick:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--sh)}
+.pick[aria-pressed="true"]{background:var(--accent);animation:pop .28s ease}
+.pick:disabled{opacity:.3;box-shadow:none}
+
+.sw{display:flex;flex-direction:column;align-items:center;gap:3px;width:46px;background:none;
+border:0;padding:2px;font-family:inherit;cursor:pointer}
+.sw i{width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);display:block;
+filter:grayscale(1);opacity:.5;transition:filter .2s,opacity .2s,transform .16s}
+.sw span{font-size:9.5px;font-weight:600;color:var(--muted);line-height:1.2}
+.sw[aria-pressed="true"] i{filter:none;opacity:1;transform:scale(1.16);animation:pop .28s}
+.sw[aria-pressed="true"] span{color:var(--ink);font-weight:800}
+
+.stepper{display:flex;align-items:center;gap:9px;border:2px solid var(--ink);border-radius:11px;
+padding:5px 8px;box-shadow:2px 2px 0 var(--sh);background:var(--card)}
+.stepper b{font-size:13px;font-weight:700;flex:1}
+.mini{border:2px solid var(--ink);background:var(--card);font-family:inherit;font-size:15px;
+font-weight:800;line-height:1;width:26px;height:26px;border-radius:8px;cursor:pointer}
 .mini:active{background:var(--ink);color:var(--card)}
-.mini:disabled{opacity:.3}
-.cnt{min-width:20px;text-align:center;font-weight:800}
-.empty{border:2px dashed var(--ink);border-radius:14px;padding:14px;text-align:center;font-size:13px;
-  font-weight:600;opacity:.55}
-.write{width:100%;margin-top:11px;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);
-  background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:12px 14px;
-  box-shadow:3px 3px 0 var(--shadow)}
+.mini:disabled{opacity:.28}
+.cnt{min-width:18px;text-align:center;font-weight:800;font-size:14px}
+.grid{display:flex;flex-direction:column;gap:7px}
+.note{margin:8px 2px 0;font-size:11px;color:var(--muted);font-weight:600}
+.warn{color:#C4442F}
+.write{width:100%;margin-top:9px;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);
+background:var(--card);border:2px solid var(--ink);border-radius:11px;padding:10px 12px;box-shadow:2px 2px 0 var(--sh)}
 .write:focus{outline:none;background:#FCFFF2}
-.hint{margin:7px 3px 0;font-size:11.5px;color:var(--muted);font-weight:500}
-.bar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--card);border-top:2px solid var(--ink);
-  padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px}
-.total{flex:1}
-.total b{display:block;font-size:21px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
-.total small{font-size:11.5px;color:var(--muted);font-weight:500}
-.buy{background:var(--ink);color:var(--card);border:2px solid var(--ink);border-radius:14px;
-  padding:13px 22px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
-  box-shadow:3px 3px 0 var(--accent)}
-.buy:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--accent)}
-@keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.product-card{position:relative;border:2px solid var(--ink);background:var(--card);border-radius:14px;padding:7px;min-height:82px;box-shadow:3px 3px 0 var(--shadow);font-family:inherit;cursor:pointer;text-align:center}.product-card[aria-pressed="true"]{background:var(--accent)}.product-card:disabled{opacity:.32;box-shadow:none}.product-thumb{height:38px;display:flex;align-items:center;justify-content:center;font-size:27px;line-height:1}.product-name{display:block;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-price{display:block;font-size:9px;color:var(--muted);font-weight:600}.product-qty{position:absolute;top:4px;inset-inline-end:4px;min-width:19px;height:19px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}@media(min-width:700px){.product-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.bar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--card);border-top:2px solid var(--ink);
+padding:11px 18px calc(11px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px}
+.tot{flex:1}
+.tot b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+.tot small{font-size:10.5px;color:var(--muted);font-weight:600}
+.buy{background:var(--ink);color:var(--card);border:2px solid var(--ink);border-radius:11px;
+padding:11px 20px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:3px 3px 0 var(--accent)}
+.buy:disabled{opacity:.4;box-shadow:none}
+@keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<header><h1>کادوی خودت را بچین</h1><p>جعبه را با انگشت بچرخان</p></header>
+<header><h1>کادوی خودت را بچین</h1><p id="sub">با انگشت بچرخان، دو انگشتی زوم کن</p></header>
 
-<div class="stage">
-  <div class="stage-inner" id="stageBox">
-    <canvas id="gl"></canvas>
-    <span class="stage-tag" id="tag">سایز کوچک</span>
-    <span class="spin">بکش تا بچرخد</span>
-  </div>
-</div>
+<div class="stage"><div class="stage-in" id="stage">
+  <canvas id="gl"></canvas>
+  <div class="hud"><span class="headline" id="headline">شروع کنیم</span>
+    <button class="home" id="home" title="نمای اولیه">⌂</button></div>
+  <span class="hint3d" id="pnote"></span>
+</div></div>
 
-<section><h2>بسته‌بندی</h2><div class="row" id="packs"></div></section>
-<section><h2>رنگ بسته‌بندی</h2><div class="row" id="packColors"></div></section>
-<section id="msgSection">
-  <h2>نوشته روی کارت</h2>
-  <div class="row" style="margin-bottom:11px" id="msgLang"></div>
-  <div class="row" id="msgs"></div>
-  <input id="custom" class="write" maxlength="42" placeholder="یا خودت بنویس — مثلاً صدف جان دلمون تنگه برات">
-  <p class="hint">حداکثر 42 نویسه تا روی کارت جا شود</p>
-</section>
-<section><h2>گل</h2><div class="row" id="flowers"></div>
-<div class="row" id="flowerColors" style="margin-top:11px"></div></section>
-<section><h2>کاغذ دور گل</h2><div class="row" id="wrapOuter"></div></section>
-<section><h2>روبان</h2><div class="row" id="ribbons"></div></section>
-<section><h2>خوراکی و افزودنی</h2><div class="product-grid" id="addons"></div></section>
-<section><h2>داخل کادو</h2><ul class="items" id="list"></ul></section>
+<div id="cards"></div>
 
 <div class="bar">
-  <div class="total"><b id="price">0</b><small>تومان — با هر تغییر به‌روز می‌شود</small></div>
-  <button class="buy">ثبت سفارش</button>
+  <div class="tot"><b id="price">0</b><small id="psrc">تومان</small></div>
+  <button class="buy" id="buy">ثبت سفارش</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-/* ===================== داده ===================== */
-const PACKS=[{id:"card",name:"کارت‌پستال",price:120000},
-             {id:"cone",name:"ساک مخروطی",price:180000},
-             {id:"box", name:"جعبه",       price:250000}];
+"use strict";
+/* ============ قیمت‌ها: از فایل بیرونی، با مقدار پیش‌فرض ============ */
+const PRICE_URL="prices.csv";
+const PRICES={box:250000,cone:180000,card:120000,
+  gyp:45000,daisy:55000,lav:60000,sun:70000,
+  wrap_sheet:12000,wrap_clear:0,wrap_matte:2000,wrap_pattern:5000,
+  snk:75000,kit:55000,oreo:60000,mm:65000,tob:95000,kin:70000,fer:85000,
+  soda:40000,ram:90000,charm:60000,note:15000};
+const P=id=>PRICES[id]||0;
+
+const PACKS=[{id:"card",name:"کارت‌پستال"},{id:"cone",name:"ساک مخروطی"},{id:"box",name:"جعبه"}];
 const PACK_COLORS=[{id:"rose",name:"صورتی",hex:"#F09FB2"},{id:"cream",name:"کرم",hex:"#F0D9AF"},
-  {id:"sky",name:"آبی",hex:"#8FBBE8"},{id:"sage",name:"سبز",hex:"#7FAE72"},
-  {id:"lilac",name:"یاسی",hex:"#B592DC"},{id:"coral",name:"مرجانی",hex:"#F0885F"},
-  {id:"teal",name:"سبزآبی",hex:"#4FA7A0"},{id:"coal",name:"ذغالی",hex:"#54505A"}];
-const WRAP_COLORS=[{id:"mint",name:"مینتی",hex:"#B9D8CE"},{id:"sky",name:"آبی",hex:"#B7CFE4"},
-  {id:"peach",name:"هلویی",hex:"#F0C3A4"},{id:"blush",name:"صورتی",hex:"#EFC3CB"},
-  {id:"lav",name:"یاسی",hex:"#C3BCDD"},{id:"kraft",name:"کرافت",hex:"#C8A276"},
-  {id:"cream",name:"کرم",hex:"#F2E7D5"},{id:"sage",name:"سبز",hex:"#A9BB9C"},
-  {id:"mustard",name:"خردلی",hex:"#D9B65A"},{id:"coal",name:"ذغالی",hex:"#54505A"}];
-const FLOWERS=[{id:"gyp",name:"ژیپسوفیلا",price:45000},{id:"daisy",name:"بابونه",price:55000},
-  {id:"lav",name:"لاوندر",price:60000},{id:"sun",name:"آفتابگردان",price:70000}];
+{id:"sky",name:"آبی",hex:"#8FBBE8"},{id:"sage",name:"سبز",hex:"#7FAE72"},
+{id:"lilac",name:"یاسی",hex:"#B592DC"},{id:"coral",name:"مرجانی",hex:"#F0885F"},
+{id:"teal",name:"سبزآبی",hex:"#4FA7A0"},{id:"coal",name:"ذغالی",hex:"#54505A"}];
+const FLOWERS=[{id:"gyp",name:"ژیپسوفیلا"},{id:"daisy",name:"بابونه"},
+{id:"lav",name:"لاوندر"},{id:"sun",name:"آفتابگردان"}];
 const FLOWER_COLORS=[{id:"white",name:"سفید",hex:"#FAF6EE"},{id:"blush",name:"صورتی",hex:"#E9AEB8"},
-  {id:"butter",name:"زرد",hex:"#EBC96B"},{id:"violet",name:"بنفش",hex:"#9A86C4"}];
+{id:"butter",name:"زرد",hex:"#EBC96B"},{id:"violet",name:"بنفش",hex:"#9A86C4"}];
+const WRAP_FINISH=[{id:"clear",name:"شفاف"},{id:"matte",name:"مات"},{id:"pattern",name:"طرح‌دار"}];
+const WRAP_COLORS=[{id:"mint",name:"مینتی",hex:"#B9D8CE"},{id:"sky",name:"آبی",hex:"#B7CFE4"},
+{id:"peach",name:"هلویی",hex:"#F0C3A4"},{id:"blush",name:"صورتی",hex:"#EFC3CB"},
+{id:"lav",name:"یاسی",hex:"#C3BCDD"},{id:"kraft",name:"کرافت",hex:"#C8A276"},
+{id:"cream",name:"کرم",hex:"#F2E7D5"},{id:"sage",name:"سبز",hex:"#A9BB9C"},
+{id:"mustard",name:"خردلی",hex:"#D9B65A"},{id:"white",name:"سفید",hex:"#F7F3EC"},
+{id:"coal",name:"ذغالی",hex:"#54505A"}];
 const RIBBONS=[{id:"gold",name:"طلایی",hex:"#C9A55C"},{id:"white",name:"سفید",hex:"#F7F3EC"},
-  {id:"rose",name:"صورتی",hex:"#D98FA0"},{id:"sap",name:"سبز",hex:"#5C7F49"},
-  {id:"coal",name:"ذغالی",hex:"#4A4650"}];
-const ADDONS=[
-  {id:"snk", name:"اسنیکرز", price:75000, hex:"#9A5F30", art:"bar"},
-  {id:"kit", name:"کیت‌کت",   price:55000, hex:"#D6342C", art:"bar"},
-  {id:"oreo",name:"اورئو",    price:60000, hex:"#2F6BB8", art:"bar"},
-  {id:"mm",  name:"ام‌اند‌ام", price:65000, hex:"#7A4A2A", art:"pouch"},
-  {id:"tob", name:"توبلرون",  price:95000, hex:"#E0B03F", art:"prism"},
-  {id:"kin", name:"کیندر",    price:70000, hex:"#EFE7D8", art:"carton"},
-  {id:"fer", name:"فررو",     price:85000, hex:"#C9A24A", art:"truffle"},
-  {id:"soda",name:"نوشابه",   price:40000, hex:"#E23A3A", art:"can"},
-  {id:"ram", name:"رامونه",   price:90000, hex:"#7DC242", art:"bottle"},
-  {id:"charm",name:"چارم",    price:60000, hex:"#D9AE4E", art:"charm"},
-  {id:"note",name:"کارت دست‌نویس",price:15000,hex:"#FFFFFF",art:"note"}];
-const MESSAGES=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Anniversary",fa:"سالگردمون مبارک"},
-  {en:"Miss You",fa:"دلم برات تنگ شده"},{en:"Happy Mother's Day",fa:"روز مادر مبارک"},
-  {en:"Happy Father's Day",fa:"روز پدر مبارک"},{en:"Thank You",fa:"ممنونم ازت"},
-  {en:"Get Well Soon",fa:"زود خوب شو"},{en:"Congratulations",fa:"تبریک می‌گم"},
-  {en:"I Love You",fa:"دوستت دارم"},{en:"Happy Nowruz",fa:"نوروز مبارک"},
-  {en:"Happy Yalda",fa:"شب یلدا مبارک"},{en:"I'm Sorry",fa:"معذرت می‌خوام"},
-  {en:"Good Luck",fa:"موفق باشی"},{en:"Happy Graduation",fa:"فارغ‌التحصیلیت مبارک"},
-  {en:"Just Because",fa:"همین‌طوری، برای تو"}];
-const CAP={card:3,cone:4,box:6};
+{id:"rose",name:"صورتی",hex:"#D98FA0"},{id:"sap",name:"سبز",hex:"#5C7F49"},
+{id:"coal",name:"ذغالی",hex:"#4A4650"}];
+const ADDONS=[{id:"snk",name:"اسنیکرز",hex:"#9A5F30",art:"bar"},{id:"kit",name:"کیت‌کت",hex:"#D6342C",art:"bar"},
+{id:"oreo",name:"اورئو",hex:"#2F6BB8",art:"bar"},{id:"mm",name:"ام‌اند‌ام",hex:"#7A4A2A",art:"pouch"},
+{id:"tob",name:"توبلرون",hex:"#E0B03F",art:"prism"},{id:"kin",name:"کیندر",hex:"#EFE7D8",art:"carton"},
+{id:"fer",name:"فررو",hex:"#C9A24A",art:"truffle"},{id:"soda",name:"نوشابه",hex:"#E23A3A",art:"can"},
+{id:"ram",name:"رامونه",hex:"#7DC242",art:"bottle"},{id:"charm",name:"چارم",hex:"#D9AE4E",art:"charm"},
+{id:"note",name:"کارت دست‌نویس",hex:"#FFFFFF",art:"note"}];
+const MSGS=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Anniversary",fa:"سالگردمون مبارک"},
+{en:"Miss You",fa:"دلم برات تنگ شده"},{en:"Happy Mother's Day",fa:"روز مادر مبارک"},
+{en:"Happy Father's Day",fa:"روز پدر مبارک"},{en:"Thank You",fa:"ممنونم ازت"},
+{en:"Get Well Soon",fa:"زود خوب شو"},{en:"Congratulations",fa:"تبریک می‌گم"},
+{en:"I Love You",fa:"دوستت دارم"},{en:"Happy Nowruz",fa:"نوروز مبارک"},
+{en:"Happy Yalda",fa:"شب یلدا مبارک"},{en:"I'm Sorry",fa:"معذرت می‌خوام"},
+{en:"Good Luck",fa:"موفق باشی"},{en:"Happy Graduation",fa:"فارغ‌التحصیلیت مبارک"},
+{en:"Just Because",fa:"همین‌طوری، برای تو"}];
 
-const state={pack:"box",packColor:"rose",wrapOuter:"mint",flower:"gyp",flowerColor:"white",
-  ribbon:"gold",msgLang:"fa",msgIndex:0,custom:"",addons:[]};
-const get=(a,id)=>a.find(x=>x.id===id)||a[0];
-const hex=(a,id)=>get(a,id).hex;
-const flatItems=()=>{const o=[];state.addons.forEach(a=>{for(let i=0;i<a.qty;i++)o.push(a);});return o;};
-const slotsUsed=()=>state.addons.reduce((t,a)=>t+a.qty,0);
+const FLOWER_MIN=2,FLOWER_MAX=10,WRAP_MIN=4,WRAP_MAX=12;
+const CAP={card:4,cone:6,box:10};
 
-/* ===================== صحنه سه‌بعدی ===================== */
-const OUTLINE=0x3A3835;
-let renderer,scene,camera,root,boxGrp,itemsGrp,bouquetGrp,cardMesh,cardTex,ready=false;
-let spin=0.35, drag=null, idle=0;
+const S={pack:"box",packColor:"rose",flowers:[{id:"daisy",qty:2}],flowerColor:"white",
+wrapFinish:"matte",wrapColor:"mint",wrapSheets:4,ribbon:"gold",
+msgLang:"fa",msgIndex:0,custom:"",addons:[],open:{pack:true,flower:true}};
 
-/* رنگ‌آمیزی کارتونی: سه پله نور، بدون بافت خارجی */
-function toonRamp(){
-  const c=new Uint8Array([70,160,235]);
-  const t=new THREE.DataTexture(c,c.length,1,THREE.RedFormat);
-  t.minFilter=t.magFilter=THREE.NearestFilter; t.generateMipmaps=false; t.needsUpdate=true;
+const find=(a,id)=>a.find(x=>x.id===id)||a[0];
+const hx=(a,id)=>find(a,id).hex;
+const fQty=()=>S.flowers.reduce((t,f)=>t+f.qty,0);
+const aQty=()=>S.addons.reduce((t,a)=>t+a.qty,0);
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+
+function total(){
+  let t=P(S.pack);
+  S.flowers.forEach(f=>t+=P(f.id)*f.qty);
+  t+=S.wrapSheets*(P("wrap_sheet")+P("wrap_"+S.wrapFinish));
+  S.addons.forEach(a=>t+=P(a.id)*a.qty);
   return t;
 }
-let RAMP, OUTMAT;
-const MATS=[];
-function mat(color){
-  const m=new THREE.MeshToonMaterial({color:new THREE.Color(color),gradientMap:RAMP});
-  MATS.push(m); return m;
-}
-/* هر قطعه یک بدنه دارد و یک پوسته وارونه که خط دور کارتونی می‌سازد */
-function piece(geo,color,thick){
-  const g=new THREE.Group();
-  const m=new THREE.Mesh(geo,mat(color));
-  const o=new THREE.Mesh(geo,OUTMAT);
-  o.scale.multiplyScalar(1+(thick||0.05));
-  g.add(o,m); g.userData.body=m;
-  return g;
-}
-function disposeTree(obj){
-  obj.traverse(n=>{if(n.isMesh){n.geometry.dispose();}});
-  while(obj.children.length)obj.remove(obj.children[0]);
-}
 
-/* ---------- آیتم‌ها: همه از احجام پایه ساخته می‌شوند ---------- */
-function buildItem(kind,color){
-  const g=new THREE.Group(); const C=new THREE.Color(color);
-  const light="#"+C.clone().lerp(new THREE.Color(0xffffff),.42).getHexString();
-  const dark="#"+C.clone().multiplyScalar(.72).getHexString();
-  if(kind==="bar"){
-    const b=piece(new THREE.BoxGeometry(.46,.86,.14),color,.045);b.position.y=.43;g.add(b);
-    const wrap=piece(new THREE.BoxGeometry(.47,.10,.145),light,.025);wrap.position.y=.08;g.add(wrap);
-    const logo=piece(new THREE.BoxGeometry(.30,.22,.018),dark,.02);logo.position.set(0,.48,.082);g.add(logo);
-    for(let i=-1;i<=1;i++){const s=piece(new THREE.BoxGeometry(.07,.13,.018),light,.02);s.position.set(i*.09,.73,.082);g.add(s)}
-  }else if(kind==="prism"){
-    const p=piece(new THREE.CylinderGeometry(.26,.26,.9,3),color,.045);p.position.y=.45;p.rotation.y=Math.PI/6;g.add(p);
-    const t=piece(new THREE.CylinderGeometry(.12,.12,.06,3),light,.06);t.position.y=.92;t.rotation.y=Math.PI/6;g.add(t);
-  }else if(kind==="pouch"){
-    const b=piece(new THREE.BoxGeometry(.5,.62,.24),color,.045);b.position.y=.34;g.add(b);
-    const top=piece(new THREE.BoxGeometry(.52,.09,.25),dark,.04);top.position.y=.68;g.add(top);
-    [["#E0453C",-.13],["#3E88CF",0],["#E8C33F",.13]].forEach(([c,x])=>{const d=piece(new THREE.SphereGeometry(.065,10,8),c,.04);d.position.set(x,.38,.13);g.add(d)})
-  }else if(kind==="carton"){
-    const b=piece(new THREE.BoxGeometry(.42,.84,.3),color,.045);b.position.y=.42;g.add(b);
-    const top=piece(new THREE.BoxGeometry(.44,.15,.32),"#E8853F",.04);top.position.y=.80;g.add(top);
-    const stripe=piece(new THREE.BoxGeometry(.43,.06,.015),"#C33A32",.02);stripe.position.set(0,.57,.16);g.add(stripe)
-  }else if(kind==="truffle"){
-    const cup=piece(new THREE.CylinderGeometry(.26,.20,.14,14),light,.05);cup.position.y=.07;g.add(cup);
-    const s=piece(new THREE.SphereGeometry(.22,14,10),color,.05);s.position.y=.30;g.add(s);
-    const ring=piece(new THREE.TorusGeometry(.16,.025,8,16),light,.04);ring.position.y=.45;g.add(ring)
-  }else if(kind==="can"){
-    const b=piece(new THREE.CylinderGeometry(.22,.22,.72,16),color,.04);b.position.y=.36;g.add(b);
-    const t=piece(new THREE.CylinderGeometry(.225,.225,.06,16),"#C9C4BC",.05);t.position.y=.73;g.add(t);
-    const tab=piece(new THREE.TorusGeometry(.055,.012,6,12),dark,.03);tab.position.y=.765;g.add(tab)
-  }else if(kind==="bottle"){
-    const b=piece(new THREE.CylinderGeometry(.2,.2,.62,14),color,.04);b.position.y=.31;g.add(b);
-    const n=piece(new THREE.CylinderGeometry(.09,.16,.24,14),color,.05);n.position.y=.74;g.add(n);
-    const c=piece(new THREE.CylinderGeometry(.1,.1,.1,14),"#8FA6C4",.06);c.position.y=.90;g.add(c);
-    const l=piece(new THREE.CylinderGeometry(.205,.205,.24,14),"#FFFDF8",.04);l.position.y=.31;g.add(l)
-  }else if(kind==="charm"){
-    const r=piece(new THREE.TorusGeometry(.1,.03,8,16),color,.07);r.position.y=.74;g.add(r);
-    const h=piece(new THREE.SphereGeometry(.17,12,10),light,.06);h.position.y=.42;h.scale.set(1,.9,.55);g.add(h);
-    const t=piece(new THREE.CylinderGeometry(.015,.015,.34,6),dark,.08);t.position.y=.60;g.add(t)
-  }else{
-    const b=piece(new THREE.BoxGeometry(.56,.4,.03),color,.05);b.position.y=.2;b.rotation.x=-.12;g.add(b);
-    const f=piece(new THREE.BoxGeometry(.3,.02,.04),"#B9AFC2",.1);f.position.set(0,.22,.03);g.add(f)
+/* ============ قیمت زنده از فایل ============ */
+async function pullPrices(){
+  try{
+    const r=await fetch(PRICE_URL+"?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw 0;
+    const rows=(await r.text()).trim().split(/\r?\n/);
+    let n=0;
+    rows.forEach((ln,i)=>{
+      const c=ln.split(",");
+      if(c.length<2)return;
+      const id=c[0].trim(), v=parseInt(String(c[1]).replace(/[^\d]/g,""),10);
+      if(!id||!isFinite(v))return;
+      if(i===0&&!/^\d/.test(String(c[1]).trim()))return;
+      PRICES[id]=v;n++;
+    });
+    if(n){document.getElementById("psrc").textContent="تومان — قیمت‌ها از فایل به‌روز شد";draw();paint();}
+  }catch(e){
+    document.getElementById("psrc").textContent="تومان";
   }
-  return g;
 }
 
-/* ---------- دسته گل ---------- */
+/* ===================== سه‌بعدی ===================== */
+let ren,scene,cam,root,packG,itemG,bqG,fxG,bikeG,cardTex,RAMP,EDGE;
+let az=.55,pol=1.0,rad=6.4,drag=null,pinch=0,idle=0,t0=0;
+const TARGET=new THREE.Vector3(0,.55,0);
+const fx=[];let delivery=null;
+
+const col=c=>new THREE.Color(c);
+const tint=(c,f)=>"#"+(f>0?col(c).lerp(col(0xffffff),f):col(c).multiplyScalar(1+f)).getHexString();
+function toon(c,o){o=o||{};
+  return new THREE.MeshToonMaterial({color:col(c),gradientMap:RAMP,
+    side:o.dbl?THREE.DoubleSide:THREE.FrontSide,
+    transparent:!!o.op,opacity:o.op||1});}
+function mk(geo,c,o){o=o||{};
+  const m=new THREE.Mesh(geo,toon(c,o));
+  if(o.edges!==false)m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo,o.ang||32),EDGE));
+  return m;}
+function at(m,x,y,z){m.position.set(x,y,z);return m;}
+function kill(g){g.traverse(n=>{if(n.geometry)n.geometry.dispose();});
+  while(g.children.length)g.remove(g.children[0]);}
+
+/* ---- گل ---- */
+function head(type,c){
+  const g=new THREE.Group();
+  if(type==="gyp"){for(let i=0;i<9;i++){const a=i*2.4,r=.07+(i%3)*.035;
+    g.add(at(mk(new THREE.SphereGeometry(.042,7,5),c,{edges:false}),Math.cos(a)*r,(i%3)*.03,Math.sin(a)*r));}
+    return g;}
+  if(type==="lav"){for(let i=0;i<7;i++)
+    g.add(at(mk(new THREE.SphereGeometry(.05-i*.004,7,5),c,{edges:false}),(i%2?1:-1)*.012,i*.055,0));
+    return g;}
+  const n=type==="sun"?12:9,pr=type==="sun"?.17:.125,pw=type==="sun"?.055:.045;
+  for(let i=0;i<n;i++){const a=i/n*Math.PI*2;
+    const p=mk(new THREE.SphereGeometry(1,8,6),c,{edges:false});
+    p.scale.set(pw,.024,pr);p.position.set(Math.cos(a)*pr*.85,0,Math.sin(a)*pr*.85);
+    p.rotation.y=-a;p.rotation.z=.12;g.add(p);}
+  const ctr=mk(new THREE.SphereGeometry(type==="sun"?.085:.055,10,8),
+    type==="sun"?"#6B4522":tint(c,-.34),{edges:false});
+  ctr.position.y=.024;ctr.scale.y=.6;g.add(ctr);
+  return g;
+}
 function buildBouquet(){
   const g=new THREE.Group();
-  const wrap=hex(WRAP_COLORS,state.wrapOuter),fc=hex(FLOWER_COLORS,state.flowerColor),rc=hex(RIBBONS,state.ribbon),kind=state.flower;
-  const cone=piece(new THREE.CylinderGeometry(.5,.12,.92,10,1,true),wrap,.03);cone.position.y=.48;g.add(cone);
-  const bow=piece(new THREE.TorusGeometry(.12,.045,8,14),rc,.07);bow.position.y=.14;bow.rotation.x=Math.PI/2;g.add(bow);
-  const n=kind==="sun"?7:kind==="lav"?8:10;
-  for(let i=0;i<n;i++){const a=i/n*Math.PI*2,r=.10+(i%3)*.11;
-    const stem=piece(new THREE.CylinderGeometry(.012,.012,.78,6),"#5D7F4D",.03);stem.position.set(Math.cos(a)*r,.70,Math.sin(a)*r*.72);g.add(stem);
-    const head=new THREE.Group();const petals=kind==="sun"?10:kind==="daisy"?8:6;
-    for(let j=0;j<petals;j++){const pa=j/petals*Math.PI*2;const p=piece(new THREE.SphereGeometry(kind==="sun"?.065:.055,8,7),fc,.03);p.scale.set(1.25,.7,.55);p.position.set(Math.cos(pa)*.09,.04,Math.sin(pa)*.09);head.add(p)}
-    const center=piece(new THREE.SphereGeometry(kind==="sun"?.085:.06,10,8),kind==="sun"?"#6B4A28":"#E9C95F",.03);center.position.y=.04;head.add(center);
-    head.position.set(Math.cos(a)*r,1.05+((i*37)%9)/80,Math.sin(a)*r*.72);if(kind==="lav")head.scale.set(.7,1.2,.7);g.add(head);
+  const wc=hx(WRAP_COLORS,S.wrapColor),fc=hx(FLOWER_COLORS,S.flowerColor),rc=hx(RIBBONS,S.ribbon);
+  const layers=Math.min(S.wrapSheets,8);
+  const opts=S.wrapFinish==="clear"?{dbl:true,ang:85,op:.5}:{dbl:true,ang:85};
+  for(let i=0;i<layers;i++){
+    const k=1+i*.045;
+    const c=mk(new THREE.CylinderGeometry(.38*k,.12,.76,12,1,true),
+      S.wrapFinish==="pattern"&&i%2?tint(wc,-.2):wc,opts);
+    c.position.y=.38;c.rotation.y=i*.4;g.add(c);
   }
+  const b=mk(new THREE.TorusGeometry(.15,.04,8,16),rc,{edges:false});
+  b.position.y=.17;b.rotation.x=Math.PI/2;g.add(b);
+  const list=[];S.flowers.forEach(f=>{for(let i=0;i<f.qty;i++)list.push(f.id);});
+  const n=Math.max(list.length,1);
+  list.forEach((type,i)=>{
+    const a=i/n*Math.PI*2+ (i%2)*.3, lean=.12+(i%3)*.05, h=.48+(i%4)*.08;
+    const st=mk(new THREE.CylinderGeometry(.015,.015,h,5),"#4F7A3A",{edges:false});
+    st.position.set(Math.cos(a)*lean*.5,.58+h*.5,Math.sin(a)*lean*.5);
+    st.rotation.z=-Math.cos(a)*.26;st.rotation.x=Math.sin(a)*.26;g.add(st);
+    const hd=head(type,fc);
+    hd.position.set(Math.cos(a)*lean*1.7,.58+h*.96,Math.sin(a)*lean*1.7);
+    hd.rotation.z=-Math.cos(a)*.3;hd.rotation.x=Math.sin(a)*.3;g.add(hd);
+  });
   return g;
 }
 
-/* ---------- بسته‌بندی ---------- */
+/* ---- آیتم ---- */
+function buildItem(kind,c){
+  const g=new THREE.Group(),lt=tint(c,.4),dk=tint(c,-.26);
+  if(kind==="bar"){g.add(at(mk(new THREE.BoxGeometry(.44,.82,.15),c),0,.41,0));
+    g.add(at(mk(new THREE.BoxGeometry(.45,.26,.16),lt),0,.46,0));}
+  else if(kind==="prism"){const p=at(mk(new THREE.CylinderGeometry(.24,.24,.88,3),c),0,.44,0);
+    p.rotation.y=Math.PI/6;g.add(p);
+    const t=at(mk(new THREE.CylinderGeometry(.24,.24,.1,3),lt),0,.83,0);t.rotation.y=Math.PI/6;g.add(t);}
+  else if(kind==="pouch"){g.add(at(mk(new THREE.BoxGeometry(.46,.56,.22),c),0,.3,0));
+    g.add(at(mk(new THREE.BoxGeometry(.48,.09,.06),dk),0,.62,0));
+    [["#E0453C",-.15,.72],["#3E88CF",.02,.78],["#E8C33F",.17,.7]].forEach(v=>{
+      const d=at(mk(new THREE.SphereGeometry(.062,10,8),v[0],{edges:false}),v[1],v[2],.04);
+      d.scale.y=.7;g.add(d);});}
+  else if(kind==="carton"){g.add(at(mk(new THREE.BoxGeometry(.4,.8,.28),c),0,.4,0));
+    g.add(at(mk(new THREE.BoxGeometry(.41,.18,.29),"#E8853F"),0,.46,0));}
+  else if(kind==="truffle"){g.add(at(mk(new THREE.CylinderGeometry(.24,.18,.13,14),lt),0,.065,0));
+    g.add(at(mk(new THREE.SphereGeometry(.2,14,10),c,{edges:false}),0,.27,0));}
+  else if(kind==="can"){g.add(at(mk(new THREE.CylinderGeometry(.21,.21,.66,18),c,{ang:80}),0,.33,0));
+    g.add(at(mk(new THREE.CylinderGeometry(.215,.215,.05,18),"#CFCAC2"),0,.68,0));}
+  else if(kind==="bottle"){g.add(at(mk(new THREE.CylinderGeometry(.19,.19,.56,16),c,{ang:80}),0,.28,0));
+    g.add(at(mk(new THREE.CylinderGeometry(.085,.19,.2,16),c,{ang:80}),0,.66,0));
+    g.add(at(mk(new THREE.CylinderGeometry(.095,.095,.09,12),"#8FA6C4"),0,.8,0));
+    g.add(at(mk(new THREE.CylinderGeometry(.196,.196,.22,16),"#FBF7EF",{ang:80}),0,.27,0));}
+  else if(kind==="charm"){const r=at(mk(new THREE.TorusGeometry(.075,.022,7,14),c,{edges:false}),0,.66,0);
+    r.rotation.x=Math.PI/2;g.add(r);
+    g.add(at(mk(new THREE.CylinderGeometry(.011,.011,.28,5),dk,{edges:false}),0,.5,0));
+    [-.062,.062].forEach(x=>{const l=at(mk(new THREE.SphereGeometry(.075,10,8),c,{edges:false}),x,.37,0);
+      l.scale.z=.55;g.add(l);});
+    const tp=at(mk(new THREE.ConeGeometry(.105,.16,10),c,{edges:false}),0,.26,0);
+    tp.rotation.x=Math.PI;tp.scale.z=.55;g.add(tp);}
+  else{const b=at(mk(new THREE.BoxGeometry(.5,.36,.02),c),0,.2,0);b.rotation.x=-.16;g.add(b);
+    g.add(at(mk(new THREE.BoxGeometry(.3,.05,.16),tint(c,-.18)),0,.025,0));}
+  return g;
+}
+
+/* ---- بسته‌بندی ---- */
+let lidRef=null;
 function buildPack(){
-  const g=new THREE.Group(), pc=hex(PACK_COLORS,state.packColor);
-  const C=new THREE.Color(pc);
-  const light="#"+C.clone().lerp(new THREE.Color(0xffffff),.3).getHexString();
-  const dark ="#"+C.clone().multiplyScalar(.78).getHexString();
-
-  if(state.pack==="box"){
-    const W=2.5,D=1.5,H=1.0,T=.07;
-    const floor=piece(new THREE.BoxGeometry(W,T,D),dark,.02); floor.position.y=T/2; g.add(floor);
-    [[0,-D/2+T/2,W,T],[0,D/2-T/2,W,T]].forEach(([x,z,w])=>{
-      const p=piece(new THREE.BoxGeometry(w,H,T),pc,.02); p.position.set(x,H/2,z); g.add(p);});
-    [[-W/2+T/2],[W/2-T/2]].forEach(([x])=>{
-      const p=piece(new THREE.BoxGeometry(T,H,D),pc,.02); p.position.set(x,H/2,0); g.add(p);});
-    const r1=piece(new THREE.BoxGeometry(.28,H+.02,D+.02),light,.02); r1.position.y=H/2; g.add(r1);
-    const lid=piece(new THREE.BoxGeometry(W+.14,.12,D+.14),light,.03);
-    lid.position.set(-W*.72,H*.55,-.3); lid.rotation.z=.42; lid.rotation.y=-.25; g.add(lid);
-    g.userData.slotY=T;
-  }
-  if(state.pack==="cone"){
-    const bag=piece(new THREE.CylinderGeometry(.92,.5,1.5,14,1,true),pc,.02);
-    bag.position.y=.75; g.add(bag);
-    const base=piece(new THREE.CylinderGeometry(.5,.5,.06,14),dark,.04); base.position.y=.03; g.add(base);
-    const h=piece(new THREE.TorusGeometry(.5,.05,8,20,Math.PI),dark,.05);
-    h.position.y=1.5; h.rotation.y=Math.PI/2; g.add(h);
-    g.userData.slotY=.06;
-  }
-  if(state.pack==="card"){
-    const c=piece(new THREE.BoxGeometry(1.7,2.3,.05),pc,.02); c.position.y=1.15; g.add(c);
-    const face=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.1),
+  const g=new THREE.Group(),pc=hx(PACK_COLORS,S.packColor),lt=tint(pc,.26),dk=tint(pc,-.2);
+  lidRef=null;
+  if(S.pack==="box"){
+    const W=2.5,D=1.5,H=.85,T=.06;
+    g.add(at(mk(new THREE.BoxGeometry(W,T,D),dk),0,T/2,0));
+    g.add(at(mk(new THREE.BoxGeometry(W,H,T),pc),0,H/2,-D/2+T/2));
+    g.add(at(mk(new THREE.BoxGeometry(W,H,T),pc),0,H/2,D/2-T/2));
+    g.add(at(mk(new THREE.BoxGeometry(T,H,D-T*2),pc),-W/2+T/2,H/2,0));
+    g.add(at(mk(new THREE.BoxGeometry(T,H,D-T*2),pc),W/2-T/2,H/2,0));
+    g.add(at(mk(new THREE.BoxGeometry(.26,H+.012,D+.012),lt),0,H/2,0));
+    const lid=mk(new THREE.BoxGeometry(W+.1,.1,D+.1),lt);
+    lid.position.set(-W*.66,.44,-D*.62);lid.rotation.set(.1,.3,.5);
+    lidRef=lid;g.add(lid);g.userData.floor=T;
+  }else if(S.pack==="cone"){
+    g.add(at(mk(new THREE.CylinderGeometry(.85,.46,1.35,16,1,true),pc,{dbl:true,ang:85}),0,.675,0));
+    g.add(at(mk(new THREE.CylinderGeometry(.46,.46,.05,16),dk),0,.025,0));
+    const h=at(mk(new THREE.TorusGeometry(.46,.04,7,22,Math.PI),dk,{edges:false}),0,1.35,0);
+    h.rotation.y=Math.PI/2;g.add(h);g.userData.floor=.05;
+  }else{
+    g.add(at(mk(new THREE.BoxGeometry(1.6,2.15,.05),pc),0,1.12,0));
+    const f=new THREE.Mesh(new THREE.PlaneGeometry(1.42,1.97),
       new THREE.MeshBasicMaterial({map:cardTex,transparent:true}));
-    face.position.set(0,1.15,.032); g.add(face);
-    const stand=piece(new THREE.BoxGeometry(1.2,.06,.5),dark,.03); stand.position.y=.03; g.add(stand);
-    g.userData.slotY=.06;
+    g.add(at(f,0,1.12,.033));
+    g.add(at(mk(new THREE.BoxGeometry(1.1,.06,.44),dk),0,.03,.18));
+    g.userData.floor=.06;
   }
   return g;
 }
-
-/* ---------- جای‌گذاری آیتم‌ها: شبکه واقعی، بدون همپوشانی ---------- */
 function slots(n){
-  const cfg={box:{w:2.0,rows:[-0.3,0.32],y:0.07},
-             cone:{w:1.0,rows:[-0.18,0.2],y:0.06},
-             card:{w:2.0,rows:[0.42],y:0.06}}[state.pack];
-  const rows=cfg.rows.length===1?[cfg.rows[0]]:(n<=3?[cfg.rows[1]]:cfg.rows);
-  const per=Math.ceil(n/rows.length), out=[];
-  let i=0;
-  rows.forEach((z,ri)=>{
-    const cnt=Math.min(per,n-i);
-    for(let k=0;k<cnt;k++,i++){
-      const t=cnt===1?.5:k/(cnt-1);
-      out.push({x:(t-.5)*cfg.w*(cnt===1?0:1),z,y:cfg.y,
-                rot:((k*53)%17-8)*Math.PI/180});
-    }
-  });
-  return out;
+  const c={box:{w:2.0,d:.9,z:-.24},cone:{w:.85,d:.5,z:-.1},card:{w:1.7,d:.5,z:.5}}[S.pack];
+  const rows=n<=4?1:2,per=Math.ceil(n/rows),o=[];let i=0;
+  for(let r=0;r<rows;r++){const k=Math.min(per,n-i),z=c.z+(rows===1?c.d*.55:r*c.d);
+    for(let j=0;j<k;j++,i++){const t=k===1?.5:j/(k-1);
+      o.push({x:(t-.5)*c.w,z:z,rot:((j*47)%15-7)*Math.PI/180});}}
+  return o;
 }
 
-function rebuildScene(){
-  if(!ready)return;
-  disposeTree(boxGrp); disposeTree(itemsGrp); disposeTree(bouquetGrp);
-  MATS.length=0;
-  boxGrp.add(buildPack());
+function draw(){
+  if(!ren)return;
+  kill(packG);kill(itemG);kill(bqG);
+  const p=buildPack();packG.add(p);
+  const fl=p.userData.floor||0;
   const bq=buildBouquet();
-  bq.position.set(state.pack==="card"?0:0, boxGrp.children[0].userData.slotY,
-                  state.pack==="box"?-0.42:(state.pack==="card"?0.1:0));
-  if(state.pack==="card"){bq.position.y=.06;bq.position.z=.12;bq.scale.setScalar(.8);}
-  if(state.pack==="cone"){bq.position.y=.9;bq.scale.setScalar(.95);}
-  bouquetGrp.add(bq);
-
-  const F=flatItems(), P=slots(F.length);
-  F.forEach((it,i)=>{
-    const m=buildItem(it.art,it.hex);
-    m.position.set(P[i].x,P[i].y,P[i].z);
-    m.rotation.y=P[i].rot;
-    m.userData.t=0;
-    itemsGrp.add(m);
+  if(S.pack==="box"){bq.position.set(0,fl,-.5);bq.scale.setScalar(1.05);}
+  if(S.pack==="cone"){bq.position.set(0,.75,0);bq.scale.setScalar(.9);}
+  if(S.pack==="card"){bq.position.set(0,fl,.16);bq.scale.setScalar(.8);}
+  bqG.add(bq);
+  const flat=[];S.addons.forEach(a=>{for(let i=0;i<a.qty;i++)flat.push(a);});
+  const G=slots(flat.length);
+  flat.forEach((it,i)=>{
+    const h=new THREE.Group();
+    h.position.set(G[i].x,fl,G[i].z);h.rotation.y=G[i].rot;
+    h.userData.t=0;h.add(buildItem(it.art,it.hex));itemG.add(h);
   });
 }
 
-function init3D(){
-  const canvas=document.getElementById("gl"), holder=document.getElementById("stageBox");
-  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  scene=new THREE.Scene();
-  camera=new THREE.PerspectiveCamera(34,1,.1,50);
-  RAMP=toonRamp();
-  OUTMAT=new THREE.MeshBasicMaterial({color:OUTLINE,side:THREE.BackSide});
-
-  scene.add(new THREE.AmbientLight(0xffffff,.72));
-  const key=new THREE.DirectionalLight(0xffffff,.85); key.position.set(3,5,4); scene.add(key);
-  const fill=new THREE.DirectionalLight(0xffffff,.3); fill.position.set(-4,2,-3); scene.add(fill);
-
-  root=new THREE.Group(); scene.add(root);
-  boxGrp=new THREE.Group(); itemsGrp=new THREE.Group(); bouquetGrp=new THREE.Group();
-  root.add(boxGrp,itemsGrp,bouquetGrp);
-
-  const sh=new THREE.Mesh(new THREE.CircleGeometry(1.7,28),
-    new THREE.MeshBasicMaterial({color:0x3A3835,transparent:true,opacity:.1}));
-  sh.rotation.x=-Math.PI/2; sh.position.y=-.01; root.add(sh);
-
-  function resize(){
-    const w=holder.clientWidth,h=holder.clientHeight;
-    renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
-    camera.position.set(0,2.5,4.6); camera.lookAt(0,.85,0);
+/* ---- افکت‌ها ---- */
+function burst(x,y,z,c,n){
+  for(let i=0;i<(n||14);i++){
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(.07,.07),
+      new THREE.MeshBasicMaterial({color:col(c),side:THREE.DoubleSide,transparent:true}));
+    m.position.set(x,y,z);
+    fxG.add(m);
+    fx.push({m:m,v:new THREE.Vector3((Math.random()-.5)*2.4,Math.random()*2.6+.9,(Math.random()-.5)*2.4),
+      s:(Math.random()-.5)*8,life:1});
   }
-  addEventListener("resize",resize); resize();
+}
+function confetti(){
+  const cs=["#D2F32C","#F09FB2","#8FBBE8","#EBC96B","#7FAE72","#F0885F"];
+  for(let i=0;i<70;i++){
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(.09,.14),
+      new THREE.MeshBasicMaterial({color:col(cs[i%cs.length]),side:THREE.DoubleSide,transparent:true}));
+    m.position.set((Math.random()-.5)*3,2.6+Math.random()*1.4,(Math.random()-.5)*2);
+    fxG.add(m);
+    fx.push({m:m,v:new THREE.Vector3((Math.random()-.5)*1.2,-.4-Math.random(),(Math.random()-.5)*1.2),
+      s:(Math.random()-.5)*10,life:1.6,g:-1.4});
+  }
+}
+function stepFx(dt){
+  for(let i=fx.length-1;i>=0;i--){
+    const f=fx[i];
+    f.v.y+=(f.g!==undefined?f.g:-5.2)*dt;
+    f.m.position.addScaledVector(f.v,dt);
+    f.m.rotation.z+=f.s*dt;f.m.rotation.x+=f.s*.6*dt;
+    f.life-=dt*(f.g!==undefined?.55:1.1);
+    f.m.material.opacity=Math.max(0,f.life);
+    if(f.life<=0){fxG.remove(f.m);f.m.geometry.dispose();f.m.material.dispose();fx.splice(i,1);}
+  }
+}
 
-  const pos=e=>(e.touches?e.touches[0]:e).clientX;
-  holder.addEventListener("pointerdown",e=>{drag=pos(e);idle=0;});
-  addEventListener("pointermove",e=>{if(drag!==null){spin+=(pos(e)-drag)*.008;drag=pos(e);}});
+/* ---- موتور تحویل ---- */
+function buildBike(){
+  const g=new THREE.Group();
+  const bodyC="#3A3835",accC="#D2F32C";
+  [-.42,.42].forEach(x=>{
+    const w=mk(new THREE.TorusGeometry(.24,.075,8,18),bodyC,{edges:false});
+    w.position.set(x,.24,0);g.add(w);
+    const r=mk(new THREE.CylinderGeometry(.07,.07,.09,10),accC,{edges:false});
+    r.position.set(x,.24,0);r.rotation.x=Math.PI/2;g.add(r);
+    w.userData.spin=true;
+  });
+  g.add(at(mk(new THREE.BoxGeometry(.9,.18,.3),accC),0,.42,0));
+  g.add(at(mk(new THREE.BoxGeometry(.32,.3,.28),bodyC),-.12,.62,0));
+  g.add(at(mk(new THREE.CylinderGeometry(.03,.03,.42,6),bodyC,{edges:false}),.4,.62,0));
+  const rider=new THREE.Group();
+  rider.add(at(mk(new THREE.BoxGeometry(.3,.42,.26),"#F09FB2"),0,.95,0));
+  rider.add(at(mk(new THREE.SphereGeometry(.17,12,10),"#F0D9AF",{edges:false}),.02,1.3,0));
+  rider.add(at(mk(new THREE.SphereGeometry(.2,12,10),bodyC,{edges:false}),.02,1.34,0));
+  g.add(rider);
+  g.add(at(mk(new THREE.BoxGeometry(.42,.34,.42),tint(hx(PACK_COLORS,S.packColor),0)),-.5,.62,0));
+  return g;
+}
+function startDelivery(){
+  if(delivery)return;
+  confetti();
+  delivery={t:0};
+  kill(bikeG);
+  const b=buildBike();b.position.set(-6,0,0);bikeG.add(b);
+  say("داره میره سمت مقصد");
+}
+
+/* ---- HUD ---- */
+function say(t){document.getElementById("headline").textContent=t;}
+function headline(){
+  if(delivery)return;
+  const n=aQty(),cap=CAP[S.pack];
+  if(fQty()<FLOWER_MIN)say("حداقل 2 شاخه گل لازم است");
+  else if(n===0)say("جعبه‌ات خالی است، یک چیزی بگذار تویش");
+  else if(n>=cap)say("دیگر جا ندارد");
+  else if(n>=cap-1)say("تقریباً پر شد");
+  else say("دارد خوشگل می‌شود");
+}
+
+function init(){
+  const cv=document.getElementById("gl"),st=document.getElementById("stage");
+  ren=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+  ren.setPixelRatio(Math.min(devicePixelRatio,2));
+  scene=new THREE.Scene();
+  cam=new THREE.PerspectiveCamera(32,1,.1,80);
+  const rp=new Uint8Array([88,168,240]);
+  RAMP=new THREE.DataTexture(rp,rp.length,1,THREE.RedFormat);
+  RAMP.minFilter=RAMP.magFilter=THREE.NearestFilter;RAMP.generateMipmaps=false;RAMP.needsUpdate=true;
+  EDGE=new THREE.LineBasicMaterial({color:0x33302D});
+  scene.add(new THREE.AmbientLight(0xffffff,.8));
+  const k=new THREE.DirectionalLight(0xffffff,.78);k.position.set(3.5,6,4);scene.add(k);
+  const f2=new THREE.DirectionalLight(0xffffff,.24);f2.position.set(-4,2,-3);scene.add(f2);
+  root=new THREE.Group();scene.add(root);
+  packG=new THREE.Group();itemG=new THREE.Group();bqG=new THREE.Group();
+  fxG=new THREE.Group();bikeG=new THREE.Group();
+  root.add(packG,itemG,bqG);scene.add(fxG,bikeG);
+  const sh=new THREE.Mesh(new THREE.CircleGeometry(1.8,30),
+    new THREE.MeshBasicMaterial({color:0x3A3835,transparent:true,opacity:.09}));
+  sh.rotation.x=-Math.PI/2;sh.position.y=-.012;root.add(sh);
+
+  function size(){const w=st.clientWidth,h=st.clientHeight;
+    ren.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();}
+  addEventListener("resize",size);size();
+
+  const pt=e=>({x:e.clientX,y:e.clientY});
+  st.addEventListener("pointerdown",e=>{drag=pt(e);idle=0;st.setPointerCapture&&st.setPointerCapture(e.pointerId);});
+  addEventListener("pointermove",e=>{if(!drag)return;const p=pt(e);
+    az+=(p.x-drag.x)*.008;pol=Math.max(.2,Math.min(1.45,pol+(p.y-drag.y)*.006));drag=p;});
   addEventListener("pointerup",()=>{drag=null;});
+  st.addEventListener("wheel",e=>{e.preventDefault();rad=Math.max(3.4,Math.min(12,rad+e.deltaY*.006));},{passive:false});
+  st.addEventListener("touchstart",e=>{if(e.touches.length===2){
+    pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);drag=null;}},{passive:true});
+  st.addEventListener("touchmove",e=>{if(e.touches.length===2&&pinch){
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    rad=Math.max(3.4,Math.min(12,rad*(pinch/d)));pinch=d;}},{passive:true});
+  st.addEventListener("touchend",()=>{pinch=0;});
+  document.getElementById("home").onclick=()=>{az=.55;pol=1.0;rad=6.4;idle=0;};
 
   const clock=new THREE.Clock();
   (function loop(){
     requestAnimationFrame(loop);
-    const dt=clock.getDelta();
-    if(drag===null){idle+=dt; if(idle>2.5)spin+=dt*.28;}
-    root.rotation.y=spin;
-    itemsGrp.children.forEach(m=>{
-      if(m.userData.t<1){m.userData.t=Math.min(1,m.userData.t+dt*3.2);
-        const t=m.userData.t, e=1-Math.pow(1-t,3);
-        m.scale.setScalar(.4+.6*e+Math.sin(e*Math.PI)*.12);}
-    });
-    renderer.render(scene,camera);
+    const dt=Math.min(clock.getDelta(),.05);t0+=dt;
+    if(!drag){idle+=dt;if(idle>3&&!delivery)az+=dt*.2;}
+    cam.position.set(TARGET.x+rad*Math.sin(pol)*Math.sin(az),
+                     TARGET.y+rad*Math.cos(pol),
+                     TARGET.z+rad*Math.sin(pol)*Math.cos(az));
+    cam.lookAt(TARGET);
+
+    /* بسته خالی نفس می‌کشد */
+    const empty=aQty()===0&&!delivery;
+    root.position.y=empty?Math.sin(t0*2)*.045:0;
+    root.rotation.z=empty?Math.sin(t0*1.4)*.012:0;
+
+    itemG.children.forEach(m=>{if(m.userData.t<1){
+      m.userData.t=Math.min(1,m.userData.t+dt*3.2);
+      const e=1-Math.pow(1-m.userData.t,3);
+      m.scale.set(1+Math.sin(e*Math.PI)*.16,.5+.5*e+Math.sin(e*Math.PI)*.2,1+Math.sin(e*Math.PI)*.16);}});
+
+    if(delivery){
+      delivery.t+=dt;
+      const b=bikeG.children[0];
+      if(b){b.position.x=-6+delivery.t*3.4;
+        b.position.y=Math.abs(Math.sin(delivery.t*9))*.04;
+        b.traverse(n=>{if(n.userData&&n.userData.spin)n.rotation.z-=dt*11;});}
+      root.visible=delivery.t<.55;
+      if(delivery.t>4){delivery=null;kill(bikeG);root.visible=true;headline();}
+    }
+    stepFx(dt);
+    ren.render(scene,cam);
   })();
-  ready=true;
 }
 
-/* ---------- بافت متن کارت ---------- */
-function makeCardTexture(){
-  const c=document.createElement("canvas"); c.width=440; c.height=616;
-  cardTex=new THREE.CanvasTexture(c); cardTex.anisotropy=2;
-  cardTex.userData={canvas:c}; return cardTex;
-}
+/* ---- بافت کارت ---- */
+function makeCardTex(){const c=document.createElement("canvas");c.width=428;c.height=592;
+  cardTex=new THREE.CanvasTexture(c);cardTex.userData={c:c};}
 function paintCard(){
-  if(!cardTex)return;
-  const c=cardTex.userData.canvas, x=c.getContext("2d");
+  if(!cardTex)return;const c=cardTex.userData.c,x=c.getContext("2d");
   x.clearRect(0,0,c.width,c.height);
-  x.fillStyle="#FFFDF8"; x.strokeStyle="#3A3835"; x.lineWidth=6;
-  roundRect(x,18,18,c.width-36,c.height-36,22); x.fill(); x.stroke();
-  const txt=cardText(), size=txt.length<=16?46:txt.length<=30?38:32;
-  x.fillStyle="#3A3835"; x.direction="rtl"; x.textAlign="center";
-  x.font="800 "+size+"px Vazirmatn, sans-serif";
-  const lines=wrapLines(txt,txt.length<=16?18:22);
-  lines.forEach((ln,i)=>x.fillText(ln,c.width/2,110+i*size*1.3));
+  x.fillStyle="#FFFDF8";x.strokeStyle="#33302D";x.lineWidth=6;
+  x.beginPath();x.moveTo(36,16);x.arcTo(c.width-16,16,c.width-16,c.height-16,20);
+  x.arcTo(c.width-16,c.height-16,16,c.height-16,20);x.arcTo(16,c.height-16,16,16,20);
+  x.arcTo(16,16,c.width-16,16,20);x.closePath();x.fill();x.stroke();
+  const t=cardTxt(),sz=t.length<=16?46:t.length<=30?38:32;
+  x.fillStyle="#33302D";x.direction="rtl";x.textAlign="center";
+  x.font="800 "+sz+"px Vazirmatn, sans-serif";
+  wrapL(t,t.length<=16?18:22).forEach((l,i)=>x.fillText(l,c.width/2,105+i*sz*1.3));
   cardTex.needsUpdate=true;
 }
-function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);
-  x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);
-  x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
-function cardText(){const t=state.custom.trim();if(t)return t;
-  const m=MESSAGES[state.msgIndex];return state.msgLang==="fa"?m.fa:m.en;}
-function wrapLines(t,max){const w=t.split(/\s+/),o=[];let c="";
-  w.forEach(y=>{if((c+" "+y).trim().length<=max)c=(c+" "+y).trim();else{if(c)o.push(c);c=y;}});
+function cardTxt(){const t=S.custom.trim();if(t)return t;
+  const m=MSGS[S.msgIndex];return S.msgLang==="fa"?m.fa:m.en;}
+function wrapL(t,mx){const w=t.split(/\s+/),o=[];let c="";
+  w.forEach(y=>{if((c+" "+y).trim().length<=mx)c=(c+" "+y).trim();else{if(c)o.push(c);c=y;}});
   if(c)o.push(c);return o.slice(0,3);}
 
 /* ===================== رابط ===================== */
-const fmt=n=>n.toLocaleString("en-US");
-function total(){let t=get(PACKS,state.pack).price+get(FLOWERS,state.flower).price;
-  state.addons.forEach(a=>t+=a.price*a.qty);return t;}
-function chips(el,arr,sel,on){el.innerHTML="";
-  arr.forEach(o=>{const b=document.createElement("button");b.className="pick";b.textContent=o.name;
-    b.setAttribute("aria-pressed",String(sel()===o.id));b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
-function swatches(el,arr,sel,on){el.innerHTML="";
-  arr.forEach(o=>{const b=document.createElement("button");b.className="swatch";b.style.background=o.hex;
-    b.title=o.name;b.setAttribute("aria-label",o.name);b.setAttribute("aria-pressed",String(sel()===o.id));
-    b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
-function renderAddons(){const el=document.getElementById("addons");el.innerHTML="";
-  const full=slotsUsed()>=CAP[state.pack];
-  const emoji={snk:"🍫",kit:"🍫",oreo:"🍪",mm:"🍬",tob:"🍫",kin:"🍫",fer:"🍫",soda:"🥤",ram:"🧃",charm:"💛",note:"💌"};
-  ADDONS.forEach(o=>{const cur=state.addons.find(a=>a.id===o.id);
-    const b=document.createElement("button");b.className="product-card";b.setAttribute("aria-pressed",String(!!cur));b.disabled=full&&!cur;
-    b.innerHTML='<span class="product-thumb">'+(emoji[o.id]||"🎁")+'</span><span class="product-name">'+o.name+'</span><span class="product-price">'+fmt(o.price)+' تومان</span>'+(cur?'<span class="product-qty">'+cur.qty+'</span>':"");
-    b.onclick=()=>{if(slotsUsed()>=CAP[state.pack])return;if(cur)cur.qty++;else state.addons.push({...o,qty:1});render()};el.appendChild(b);});}
-function renderList(){const el=document.getElementById("list");el.innerHTML="";
-  const f=get(FLOWERS,state.flower);
-  const li0=document.createElement("li");
-  const d0=document.createElement("span");d0.className="dot";d0.style.background=hex(FLOWER_COLORS,state.flowerColor);
-  const n0=document.createElement("span");n0.className="nm";n0.textContent=f.name;
-  const p0=document.createElement("span");p0.className="pr";p0.textContent=fmt(f.price)+" تومان";
-  li0.append(d0,n0,p0);el.appendChild(li0);
-  state.addons.forEach(r=>{const li=document.createElement("li");
-    const d=document.createElement("span");d.className="dot";d.style.background=r.hex;
-    const n=document.createElement("span");n.className="nm";n.textContent=r.name;
-    const p=document.createElement("span");p.className="pr";p.textContent=fmt(r.price*r.qty)+" تومان";
-    const q=document.createElement("span");q.className="qty";
-    const m=document.createElement("button");m.className="mini";m.textContent="−";
-    m.onclick=()=>{r.qty--;if(r.qty<1)state.addons=state.addons.filter(a=>a!==r);render();};
-    const c=document.createElement("span");c.className="cnt";c.textContent=r.qty;
-    const pl=document.createElement("button");pl.className="mini";pl.textContent="+";
-    pl.disabled=slotsUsed()>=CAP[state.pack];
-    pl.onclick=()=>{if(slotsUsed()<CAP[state.pack]){r.qty++;render();}};
-    q.append(m,c,pl);li.append(d,n,p,q);el.appendChild(li);});
-  const free=CAP[state.pack]-slotsUsed();
-  if(free>0){const li=document.createElement("li");li.className="empty";
-    li.textContent="جا برای "+free+" آیتم دیگر هست";el.appendChild(li);}}
+function el(t,cls,txt){const e=document.createElement(t);if(cls)e.className=cls;
+  if(txt!==undefined)e.textContent=txt;return e;}
+function chipRow(arr,sel,on){const r=el("div","row");
+  arr.forEach(o=>{const b=el("button","pick",o.name);
+    b.setAttribute("aria-pressed",String(sel()===o.id));
+    b.onclick=()=>{on(o.id);paint();};r.appendChild(b);});return r;}
+function swRow(arr,sel,on){const r=el("div","row");
+  arr.forEach(o=>{const b=el("button","sw");b.setAttribute("aria-pressed",String(sel()===o.id));
+    const i=el("i");i.style.background=o.hex;b.appendChild(i);b.appendChild(el("span",null,o.name));
+    b.onclick=()=>{on(o.id);paint();};r.appendChild(b);});return r;}
+function stepper(label,qty,dec,inc,canDec,canInc){
+  const w=el("div","stepper");w.appendChild(el("b",null,label));
+  const m=el("button","mini","−");m.disabled=!canDec;m.onclick=()=>{dec();paint();};
+  const c=el("span","cnt",String(qty));
+  const p=el("button","mini","+");p.disabled=!canInc;p.onclick=()=>{inc();paint();};
+  w.appendChild(m);w.appendChild(c);w.appendChild(p);return w;}
 
-function render(){
-  const cap=CAP[state.pack];
-  while(slotsUsed()>cap){const last=state.addons[state.addons.length-1];
-    last.qty--;if(last.qty<1)state.addons.pop();}
-  chips(document.getElementById("packs"),PACKS,()=>state.pack,v=>state.pack=v);
-  swatches(document.getElementById("packColors"),PACK_COLORS,()=>state.packColor,v=>state.packColor=v);
-  document.getElementById("msgSection").style.display=state.pack==="card"?"":"none";
-  chips(document.getElementById("msgLang"),[{id:"fa",name:"فارسی"},{id:"en",name:"English"}],
-        ()=>state.msgLang,v=>state.msgLang=v);
-  const mel=document.getElementById("msgs");mel.innerHTML="";
-  MESSAGES.forEach((m,i)=>{const b=document.createElement("button");b.className="pick";
-    b.textContent=state.msgLang==="fa"?m.fa:m.en;
-    b.setAttribute("aria-pressed",String(!state.custom.trim()&&state.msgIndex===i));
-    b.onclick=()=>{state.msgIndex=i;state.custom="";document.getElementById("custom").value="";render();};
-    mel.appendChild(b);});
-  chips(document.getElementById("flowers"),FLOWERS,()=>state.flower,v=>state.flower=v);
-  swatches(document.getElementById("flowerColors"),FLOWER_COLORS,()=>state.flowerColor,v=>state.flowerColor=v);
-  swatches(document.getElementById("wrapOuter"),WRAP_COLORS,()=>state.wrapOuter,v=>state.wrapOuter=v);
-  swatches(document.getElementById("ribbons"),RIBBONS,()=>state.ribbon,v=>state.ribbon=v);
-  renderAddons();renderList();
+function card(key,title,cap,build){
+  const c=el("div","card"+(S.open[key]?" open":""));
+  const h=el("button","head");
+  h.appendChild(el("span",null,title));
+  if(cap)h.appendChild(el("span","cap",cap));
+  h.appendChild(el("span","arw","⌄"));
+  h.onclick=()=>{S.open[key]=!S.open[key];paint();};
+  const b=el("div","body");build(b);
+  c.appendChild(h);c.appendChild(b);return c;}
+
+function paint(){
+  /* محدودیت‌ها */
+  while(aQty()>CAP[S.pack]){const l=S.addons[S.addons.length-1];l.qty--;if(l.qty<1)S.addons.pop();}
+  if(fQty()<FLOWER_MIN&&S.flowers.length===0)S.flowers=[{id:"daisy",qty:FLOWER_MIN}];
+  S.wrapSheets=Math.max(WRAP_MIN,Math.min(WRAP_MAX,S.wrapSheets));
+
+  const w=document.getElementById("cards");w.innerHTML="";
+
+  w.appendChild(card("pack","بسته‌بندی",find(PACKS,S.pack).name,b=>{
+    b.appendChild(chipRow(PACKS,()=>S.pack,v=>S.pack=v));
+    b.appendChild(el("div","note","رنگ بسته‌بندی"));
+    b.appendChild(swRow(PACK_COLORS,()=>S.packColor,v=>S.packColor=v));
+  }));
+
+  w.appendChild(card("flower","گل‌ها",fQty()+" شاخه",b=>{
+    const g=el("div","grid");
+    FLOWERS.forEach(f=>{
+      const cur=S.flowers.find(x=>x.id===f.id),q=cur?cur.qty:0;
+      g.appendChild(stepper(f.name+" — "+fmt(P(f.id))+" تومان",q,
+        ()=>{if(!cur)return;cur.qty--;if(cur.qty<1)S.flowers=S.flowers.filter(x=>x!==cur);},
+        ()=>{if(cur)cur.qty++;else S.flowers.push({id:f.id,qty:1});},
+        q>0&&fQty()>FLOWER_MIN, fQty()<FLOWER_MAX));
+    });
+    b.appendChild(g);
+    const n=el("div","note"+(fQty()<FLOWER_MIN?" warn":""),
+      "مجموع شاخه‌ها بین 2 و 10 — الان "+fQty());
+    b.appendChild(n);
+    b.appendChild(el("div","note","رنگ گل"));
+    b.appendChild(swRow(FLOWER_COLORS,()=>S.flowerColor,v=>S.flowerColor=v));
+  }));
+
+  w.appendChild(card("wrap","کاغذ کادو",S.wrapSheets+" برگ",b=>{
+    b.appendChild(chipRow(WRAP_FINISH,()=>S.wrapFinish,v=>S.wrapFinish=v));
+    b.appendChild(el("div","note","رنگ کاغذ"));
+    b.appendChild(swRow(WRAP_COLORS,()=>S.wrapColor,v=>S.wrapColor=v));
+    b.appendChild(el("div","note"," "));
+    b.appendChild(stepper("تعداد برگ — هر برگ "+fmt(P("wrap_sheet")+P("wrap_"+S.wrapFinish))+" تومان",
+      S.wrapSheets,()=>S.wrapSheets--,()=>S.wrapSheets++,
+      S.wrapSheets>WRAP_MIN,S.wrapSheets<WRAP_MAX));
+    b.appendChild(el("div","note","حداقل 4 برگ برای هر دسته گل"));
+  }));
+
+  w.appendChild(card("ribbon","روبان",find(RIBBONS,S.ribbon).name,b=>{
+    b.appendChild(swRow(RIBBONS,()=>S.ribbon,v=>S.ribbon=v));
+  }));
+
+  if(S.pack==="card")w.appendChild(card("msg","نوشته روی کارت","",b=>{
+    b.appendChild(chipRow([{id:"fa",name:"فارسی"},{id:"en",name:"English"}],
+      ()=>S.msgLang,v=>S.msgLang=v));
+    b.appendChild(el("div","note"," "));
+    const r=el("div","row");
+    MSGS.forEach((m,i)=>{const x=el("button","pick",S.msgLang==="fa"?m.fa:m.en);
+      x.setAttribute("aria-pressed",String(!S.custom.trim()&&S.msgIndex===i));
+      x.onclick=()=>{S.msgIndex=i;S.custom="";paint();};r.appendChild(x);});
+    b.appendChild(r);
+    const inp=el("input","write");inp.maxLength=42;inp.value=S.custom;
+    inp.placeholder="یا خودت بنویس";
+    inp.addEventListener("input",e=>{S.custom=e.target.value;paintCard();
+      document.querySelectorAll('#cards .pick').forEach(()=>{});});
+    b.appendChild(inp);
+  }));
+
+  w.appendChild(card("addon","خوراکی و افزودنی",aQty()+" از "+CAP[S.pack],b=>{
+    const full=aQty()>=CAP[S.pack],r=el("div","row");
+    ADDONS.forEach(o=>{const cur=S.addons.find(a=>a.id===o.id);
+      const x=el("button","pick",cur?o.name+" ×"+cur.qty:o.name);
+      x.setAttribute("aria-pressed",String(!!cur));x.disabled=full&&!cur;
+      x.onclick=()=>{if(aQty()>=CAP[S.pack])return;
+        if(cur)cur.qty++;else S.addons.push({...o,qty:1});
+        popItem();paint();};
+      r.appendChild(x);});
+    b.appendChild(r);
+    if(S.addons.length){
+      const g=el("div","grid");g.style.marginTop="10px";
+      S.addons.forEach(a=>g.appendChild(stepper(a.name+" — "+fmt(P(a.id)*a.qty)+" تومان",a.qty,
+        ()=>{a.qty--;if(a.qty<1)S.addons=S.addons.filter(y=>y!==a);},
+        ()=>{a.qty++;popItem();},true,aQty()<CAP[S.pack])));
+      b.appendChild(g);}
+  }));
+
   document.getElementById("price").textContent=fmt(total());
-  document.getElementById("tag").textContent="سایز کوچک — ظرفیت "+cap;
-  paintCard(); rebuildScene();
+  document.getElementById("buy").disabled=fQty()<FLOWER_MIN;
+  headline();
+  paintCard();draw();
+}
+function popItem(){
+  const y=S.pack==="box"?.9:1.1;
+  burst((Math.random()-.5)*1.2,y,(Math.random()-.5)*.6,"#D2F32C",16);
 }
 
-document.getElementById("custom").addEventListener("input",e=>{
-  state.custom=e.target.value;render();e.target.focus();});
+document.getElementById("buy").onclick=()=>{if(fQty()>=FLOWER_MIN)startDelivery();};
 
-makeCardTexture();
-init3D();
-render();
+makeCardTex();init();paint();pullPrices();
+setInterval(pullPrices,60000);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(paintCard);
 </script>
 </body>
