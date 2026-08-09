@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ساخت کادو</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+:root{
+  --ink:#33283C;
+  --ground:#E9E4EE;
+  --paper:#FBFAFC;
+  --sap:#4E7A3A;
+  --rose:#C57D8E;
+  --line:#D8D0DE;
+  --muted:#7A6E84;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:Vazirmatn,system-ui,sans-serif;
+  background:var(--ground);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.7;
+  padding-bottom:96px;
+}
+header{
+  padding:18px 20px 10px;
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+header h1{
+  font-size:19px;
+  font-weight:700;
+  letter-spacing:-.4px;
+  margin:0;
+}
+header span{font-size:12px;color:var(--muted)}
+
+/* ---------- stage ---------- */
+.stage{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:linear-gradient(180deg,var(--ground) 62%,rgba(233,228,238,0));
+  padding:4px 20px 18px;
+}
+.stage-inner{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:22px;
+  height:270px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  position:relative;
+}
+.stage-inner::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0 0;
+  height:52%;
+  background:linear-gradient(180deg,rgba(51,40,60,0),rgba(51,40,60,.035));
+  pointer-events:none;
+}
+svg#art{width:100%;height:100%}
+.stage-tag{
+  position:absolute;
+  top:12px;
+  inset-inline-start:14px;
+  font-size:11px;
+  color:var(--muted);
+  background:var(--ground);
+  border-radius:999px;
+  padding:2px 10px;
+}
+
+/* ---------- sections ---------- */
+section{padding:0 20px 26px}
+h2{
+  font-size:13px;
+  font-weight:600;
+  color:var(--muted);
+  margin:0 0 12px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+h2::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--line);
+}
+
+.row{display:flex;gap:9px;flex-wrap:wrap}
+
+.pick{
+  border:1px solid var(--line);
+  background:var(--paper);
+  border-radius:14px;
+  padding:9px 14px;
+  font-family:inherit;
+  font-size:13.5px;
+  color:var(--ink);
+  cursor:pointer;
+  transition:border-color .18s,background .18s,transform .18s;
+}
+.pick:hover{border-color:var(--muted)}
+.pick[aria-pressed="true"]{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+}
+.pick:focus-visible{outline:2px solid var(--sap);outline-offset:2px}
+
+.swatch{
+  width:34px;height:34px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  padding:0;
+  cursor:pointer;
+  position:relative;
+  transition:transform .18s;
+}
+.swatch[aria-pressed="true"]{transform:scale(1.14)}
+.swatch[aria-pressed="true"]::after{
+  content:"";
+  position:absolute;
+  inset:-5px;
+  border-radius:50%;
+  border:1.5px solid var(--ink);
+}
+.swatch:focus-visible{outline:2px solid var(--sap);outline-offset:4px}
+
+/* ---------- list ---------- */
+ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ul.items li{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:11px 14px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+.dot{width:16px;height:16px;border-radius:50%;border:1px solid var(--line);flex:none}
+.nm{flex:1;font-size:14px}
+.pr{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.mini{
+  border:none;background:none;font-family:inherit;
+  font-size:12px;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:8px;
+}
+.mini:hover{color:var(--ink);background:var(--ground)}
+.empty{
+  border:1px dashed var(--line);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* ---------- bar ---------- */
+.bar{
+  position:fixed;
+  inset-inline:0;
+  bottom:0;
+  z-index:30;
+  background:var(--paper);
+  border-top:1px solid var(--line);
+  padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.total{flex:1}
+.total b{
+  display:block;
+  font-size:21px;
+  font-weight:700;
+  letter-spacing:-.5px;
+  font-variant-numeric:tabular-nums;
+}
+.total small{font-size:11.5px;color:var(--muted)}
+.buy{
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  border-radius:14px;
+  padding:13px 24px;
+  font-family:inherit;
+  font-size:14.5px;
+  font-weight:600;
+  cursor:pointer;
+}
+.buy:focus-visible{outline:2px solid var(--sap);outline-offset:3px}
+
+.write{
+  width:100%;
+  margin-top:11px;
+  font-family:inherit;
+  font-size:14px;
+  color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+}
+.write::placeholder{color:#A99DB4}
+.write:focus{outline:2px solid var(--sap);outline-offset:1px;border-color:transparent}
+.hint{margin:7px 2px 0;font-size:11.5px;color:var(--muted)}
+
+.flash{animation:pop .32s ease}
+@keyframes pop{0%{transform:scale(.97)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>کادوی خودت را بچین</h1>
+  <span>نمونه اولیه</span>
+</header>
+
+<div class="stage">
+  <div class="stage-inner">
+    <span class="stage-tag" id="tag">سایز کوچک</span>
+    <svg id="art" viewBox="0 0 300 270" aria-label="پیش‌نمایش کادو"></svg>
+  </div>
+</div>
+
+<section>
+  <h2>بسته‌بندی</h2>
+  <div class="row" id="packs"></div>
+</section>
+
+<section>
+  <h2>رنگ بسته‌بندی</h2>
+  <div class="row" id="packColors"></div>
+</section>
+
+<section>
+  <h2>گل</h2>
+  <div class="row" id="flowers"></div>
+  <div class="row" id="flowerColors" style="margin-top:12px"></div>
+</section>
+
+<section id="msgSection">
+  <h2>نوشته روی کارت</h2>
+  <div class="row" style="margin-bottom:12px" id="msgLang"></div>
+  <div class="row" id="msgs"></div>
+  <input id="custom" class="write" maxlength="42" placeholder="یا خودت بنویس — مثلاً صدف جان دلمون تنگه برات">
+  <p class="hint">حداکثر 42 نویسه تا روی کارت جا شود</p>
+</section>
+
+<section>
+  <h2>کاغذ رویی</h2>
+  <div class="row" id="wrapOuter"></div>
+</section>
+
+<section>
+  <h2>کاغذ زیرین</h2>
+  <div class="row" id="wrapInner"></div>
+</section>
+
+<section>
+  <h2>روبان</h2>
+  <div class="row" id="ribbons"></div>
+</section>
+
+<section>
+  <h2>افزودنی</h2>
+  <div class="row" id="addons"></div>
+</section>
+
+<section>
+  <h2>داخل کادو</h2>
+  <ul class="items" id="list"></ul>
+</section>
+
+<div class="bar">
+  <div class="total">
+    <b id="price">0</b>
+    <small>تومان — با هر تغییر به‌روز می‌شود</small>
+  </div>
+  <button class="buy">ثبت سفارش</button>
+</div>
+
+<script>
+/* ============ داده ============ */
+const PACKS = [
+  {id:"card", name:"کارت‌پستال", price:120000},
+  {id:"cone", name:"ساک مخروطی", price:180000},
+  {id:"box",  name:"جعبه", price:250000}
+];
+
+const PACK_COLORS = [
+  {id:"cream", name:"کرم",  hex:"#F0D9AF"},
+  {id:"rose",  name:"صورتی", hex:"#F09FB2"},
+  {id:"sky",   name:"آبی",  hex:"#8FBBE8"},
+  {id:"sage",  name:"سبز",  hex:"#7FAE72"},
+  {id:"lilac", name:"یاسی", hex:"#B592DC"},
+  {id:"coral", name:"مرجانی", hex:"#F0885F"},
+  {id:"teal",  name:"سبزآبی", hex:"#4FA7A0"},
+  {id:"coal",  name:"ذغالی", hex:"#332F3A"}
+];
+
+const MESSAGES = [
+  {en:"Happy Birthday",      fa:"تولدت مبارک"},
+  {en:"Happy Anniversary",   fa:"سالگردمون مبارک"},
+  {en:"Miss You",            fa:"دلم برات تنگ شده"},
+  {en:"Happy Mother's Day",  fa:"روز مادر مبارک"},
+  {en:"Happy Father's Day",  fa:"روز پدر مبارک"},
+  {en:"Thank You",           fa:"ممنونم ازت"},
+  {en:"Get Well Soon",       fa:"زود خوب شو"},
+  {en:"Congratulations",     fa:"تبریک می‌گم"},
+  {en:"I Love You",          fa:"دوستت دارم"},
+  {en:"Happy Nowruz",        fa:"نوروز مبارک"},
+  {en:"Happy Yalda",         fa:"شب یلدا مبارک"},
+  {en:"I'm Sorry",           fa:"معذرت می‌خوام"},
+  {en:"Good Luck",           fa:"موفق باشی"},
+  {en:"Happy Graduation",    fa:"فارغ‌التحصیلیت مبارک"},
+  {en:"Just Because",        fa:"همین‌طوری، برای تو"}
+];
+
+const WRAP_COLORS = [
+  {id:"mint",   name:"مینتی",   hex:"#B9D8CE"},
+  {id:"sky",    name:"آبی",     hex:"#B7CFE4"},
+  {id:"peach",  name:"هلویی",   hex:"#F0C3A4"},
+  {id:"blush",  name:"صورتی",   hex:"#EFC3CB"},
+  {id:"lav",    name:"یاسی",    hex:"#C3BCDD"},
+  {id:"kraft",  name:"کرافت",   hex:"#C8A276"},
+  {id:"cream",  name:"کرم",     hex:"#F2E7D5"},
+  {id:"dusty",  name:"گلبهی",   hex:"#D2A6A0"},
+  {id:"sage",   name:"سبز",     hex:"#A9BB9C"},
+  {id:"mustard",name:"خردلی",   hex:"#D9B65A"},
+  {id:"white",  name:"سفید",    hex:"#FAF8F5"},
+  {id:"coal",   name:"ذغالی",   hex:"#4A4650"}
+];
+
+const FLOWERS = [
+  {id:"gyp",  name:"ژیپسوفیلا", price:45000, kind:"puff"},
+  {id:"daisy",name:"بابونه",    price:55000, kind:"daisy"},
+  {id:"lav",  name:"لاوندر",    price:60000, kind:"spike"},
+  {id:"sun",  name:"آفتابگردان",price:70000, kind:"sun"}
+];
+
+const FLOWER_COLORS = [
+  {id:"white", name:"سفید",  hex:"#FCFAF6"},
+  {id:"blush", name:"صورتی", hex:"#E9AEB8"},
+  {id:"butter",name:"زرد",   hex:"#EBC96B"},
+  {id:"violet",name:"بنفش",  hex:"#9A86C4"}
+];
+
+const RIBBONS = [
+  {id:"white", name:"سفید", hex:"#FFFFFF"},
+  {id:"gold",  name:"طلایی", hex:"#C9A55C"},
+  {id:"rose",  name:"صورتی", hex:"#D98FA0"},
+  {id:"sap",   name:"سبز",  hex:"#5C7F49"},
+  {id:"coal",  name:"ذغالی", hex:"#3A3640"}
+];
+
+const ADDONS = [
+  {id:"choco", name:"شکلات",     price:35000, colorable:true,  hex:"#6B4226"},
+  {id:"charm", name:"چارم",      price:60000, colorable:true,  hex:"#C9A55C"},
+  {id:"note",  name:"کارت دست‌نویس", price:15000, colorable:false, hex:"#FBFAF7"}
+];
+
+const CAP = {card:1, cone:2, box:3};
+
+/* ============ وضعیت ============ */
+const state = {
+  pack:"card",
+  packColor:"cream",
+  wrapOuter:"mint",
+  wrapInner:"kraft",
+  flower:"gyp",
+  flowerColor:"white",
+  ribbon:"white",
+  msgLang:"fa",
+  msgIndex:0,
+  custom:"",
+  addons:[]
+};
+
+const hex = (arr,id) => (arr.find(x=>x.id===id)||arr[0]).hex;
+const get = (arr,id) => arr.find(x=>x.id===id)||arr[0];
+
+/* ============ نقاشی ============ */
+const NS="http://www.w3.org/2000/svg";
+
+function shade(h,amt){
+  const n=parseInt(h.slice(1),16);
+  const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v+amt))));
+  return "#"+c.map(v=>v.toString(16).padStart(2,"0")).join("");
+}
+
+function rnd(i){const x=Math.sin(i*127.1+11.3)*43758.5453;return x-Math.floor(x);}
+
+function flowerHead(cx,cy,s,kind,col,seed){
+  const rot=(rnd(seed)-.5)*70;
+  return `<g transform="rotate(${rot.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)})">${headShape(cx,cy,s,kind,col)}</g>`;
+}
+
+function headShape(cx,cy,s,kind,col){
+  const dark=shade(col,-40);
+  if(kind==="puff"){
+    let o="";
+    for(let i=0;i<7;i++){
+      const a=i*Math.PI*2/7, r=s*.62;
+      o+=`<circle cx="${cx+Math.cos(a)*r}" cy="${cy+Math.sin(a)*r*.9}" r="${s*.42}" fill="${col}"/>`;
+    }
+    return o+`<circle cx="${cx}" cy="${cy}" r="${s*.5}" fill="${shade(col,-14)}"/>`;
+  }
+  if(kind==="daisy"||kind==="sun"){
+    const petals=kind==="sun"?11:8, len=kind==="sun"?s*1.25:s;
+    let o="";
+    for(let i=0;i<petals;i++){
+      const a=i*Math.PI*2/petals;
+      o+=`<ellipse cx="${cx+Math.cos(a)*len*.62}" cy="${cy+Math.sin(a)*len*.56}" rx="${len*.42}" ry="${len*.2}" fill="${col}" transform="rotate(${a*180/Math.PI} ${cx+Math.cos(a)*len*.62} ${cy+Math.sin(a)*len*.56})"/>`;
+    }
+    return o+`<circle cx="${cx}" cy="${cy}" r="${len*.3}" fill="${kind==="sun"?"#5B3A1E":dark}"/>`;
+  }
+  // spike
+  let o="";
+  for(let i=0;i<6;i++){
+    o+=`<ellipse cx="${cx+(i%2?1.6:-1.6)}" cy="${cy-i*s*.5}" rx="${s*.34}" ry="${s*.3}" fill="${i%2?col:shade(col,-18)}"/>`;
+  }
+  return o;
+}
+
+function bouquet(cx,baseY,scale,outerCol,innerCol,flowCol,ribCol,kind){
+  const s=scale;
+  const P=(x,y)=>`${cx+x*s} ${baseY+y*s}`;
+  let g=`<g>`;
+
+  /* ---- ورق زیرین: دو بال تیز که از پشت بیرون می‌زند ---- */
+  g+=`<path d="M${P(-33,-56)} L${P(-19,-77)} L${P(2,-62)} L${P(-6,-20)} Z" fill="${innerCol}"/>`;
+  g+=`<path d="M${P(34,-54)} L${P(20,-79)} L${P(-1,-60)} L${P(7,-20)} Z" fill="${shade(innerCol,-14)}"/>`;
+
+  /* ---- ساقه‌ها ---- */
+  for(let i=-2;i<=2;i++){
+    g+=`<path d="M${P(0,-22)} Q${P(i*6,-45)} ${P(i*10,-64)}" stroke="#4E7A3A" stroke-width="${1.5*s}" fill="none" stroke-linecap="round"/>`;
+  }
+
+  /* ---- گل‌ها: از عقب به جلو، پر و با چرخش نامنظم ---- */
+  const heads=[[-22,-62],[21,-64],[-12,-76],[11,-78],[0,-84],[-26,-72],[25,-70],
+               [-16,-66],[15,-67],[-4,-70],[6,-72],[0,-60],[-9,-57],[10,-58]];
+  heads.forEach(([dx,dy],i)=>{
+    const jx=(rnd(i+3)-.5)*5, jy=(rnd(i+9)-.5)*5;
+    const sz=(7.4+rnd(i+21)*2.6)*s;
+    g+=flowerHead(cx+(dx+jx)*s, baseY+(dy+jy)*s, sz, kind, flowCol, i);
+  });
+
+  /* ---- ورق رویی: گوشه‌های تیز، گردن باریک، ته جمع‌شده ---- */
+  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(13,-52)} L${P(28,-57)}
+       L${P(8,-17)} L${P(12,-1)} L${P(-12,-1)} L${P(-8,-17)} Z" fill="${outerCol}"/>`;
+  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(-3,-17)} L${P(-12,-1)} L${P(-8,-17)} Z" fill="${shade(outerCol,-15)}"/>`;
+  g+=`<path d="M${P(13,-52)} L${P(28,-57)} L${P(8,-17)} L${P(4,-30)} Z" fill="${shade(outerCol,10)}"/>`;
+
+  /* ---- برچسب برند ---- */
+  g+=`<rect x="${cx-8*s}" y="${baseY-38*s}" width="${16*s}" height="${6*s}" rx="${1*s}" fill="#FBFAF7" opacity=".9"/>`;
+
+  /* ---- روبان با پاپیون و دنباله ---- */
+  const ny=baseY-17*s;
+  g+=`<path d="M${cx-6*s} ${ny} q-${11*s} ${9*s} -${2*s} ${16*s}" stroke="${shade(ribCol,-18)}" stroke-width="${2*s}" fill="none" stroke-linecap="round"/>`;
+  g+=`<path d="M${cx+6*s} ${ny} q${12*s} ${11*s} ${4*s} ${18*s}" stroke="${shade(ribCol,-18)}" stroke-width="${2*s}" fill="none" stroke-linecap="round"/>`;
+  g+=`<path d="M${cx-1*s} ${ny} q-${13*s} -${6*s} -${11*s} ${4*s} q${2*s} ${7*s} ${11*s} ${1*s} Z" fill="${ribCol}"/>`;
+  g+=`<path d="M${cx+1*s} ${ny} q${13*s} -${6*s} ${11*s} ${4*s} q-${2*s} ${7*s} -${11*s} ${1*s} Z" fill="${shade(ribCol,-10)}"/>`;
+  g+=`<circle cx="${cx}" cy="${ny+1*s}" r="${2.4*s}" fill="${shade(ribCol,-26)}"/>`;
+
+  return g+`</g>`;
+}
+
+function addonIcon(id,cx,cy,s,col){
+  if(id==="choco"){
+    return `<g><rect x="${cx-11*s}" y="${cy-7*s}" width="${22*s}" height="${14*s}" rx="${2.5*s}" fill="${col}"/>
+    <rect x="${cx-11*s}" y="${cy-7*s}" width="${22*s}" height="${4*s}" rx="${2*s}" fill="${shade(col,26)}"/>
+    <line x1="${cx}" y1="${cy-7*s}" x2="${cx}" y2="${cy+7*s}" stroke="${shade(col,-24)}" stroke-width="${1.2*s}"/></g>`;
+  }
+  if(id==="charm"){
+    return `<g><circle cx="${cx}" cy="${cy-6*s}" r="${3.2*s}" fill="none" stroke="${col}" stroke-width="${1.4*s}"/>
+    <path d="M${cx} ${cy+8*s} l-${6*s} -${6*s} a${3.6*s} ${3.6*s} 0 0 1 ${6*s} -${3.4*s} a${3.6*s} ${3.6*s} 0 0 1 ${6*s} ${3.4*s} Z" fill="${col}"/></g>`;
+  }
+  return `<g><rect x="${cx-11*s}" y="${cy-8*s}" width="${22*s}" height="${16*s}" rx="${2*s}" fill="${col}" stroke="#D8D0DE"/>
+  <line x1="${cx-6*s}" y1="${cy-2*s}" x2="${cx+6*s}" y2="${cy-2*s}" stroke="#B9AFC2" stroke-width="${1.2*s}"/>
+  <line x1="${cx-6*s}" y1="${cy+3*s}" x2="${cx+2*s}" y2="${cy+3*s}" stroke="#B9AFC2" stroke-width="${1.2*s}"/></g>`;
+}
+
+function cardText(){
+  const t=state.custom.trim();
+  if(t) return t;
+  const m=MESSAGES[state.msgIndex];
+  return state.msgLang==="fa"?m.fa:m.en;
+}
+
+function wrapLines(txt,max){
+  const words=txt.split(/\s+/);
+  const out=[]; let cur="";
+  words.forEach(w=>{
+    if((cur+" "+w).trim().length<=max) cur=(cur+" "+w).trim();
+    else { if(cur) out.push(cur); cur=w; }
+  });
+  if(cur) out.push(cur);
+  return out.slice(0,3);
+}
+
+function drawCard(pc){
+  const txt=cardText();
+  const size = txt.length<=16 ? 15 : txt.length<=30 ? 13 : 11.5;
+  const lines=wrapLines(txt, txt.length<=16?20:22);
+  let g="";
+  g+=`<rect x="88" y="50" width="128" height="180" rx="11" fill="#33283C" opacity=".1"/>`;
+  g+=`<rect x="84" y="46" width="128" height="180" rx="11" fill="#FFFFFF"/>`;
+  g+=`<rect x="91" y="53" width="114" height="166" rx="7" fill="none" stroke="${pc}" stroke-width="2.4"/>`;
+  g+=`<rect x="91" y="53" width="114" height="26" rx="7" fill="${pc}" opacity=".16"/>`;
+  const startY = 71 - (lines.length-1)*size*.6;
+  lines.forEach((ln,i)=>{
+    g+=`<text x="148" y="${startY+i*size*1.25}" text-anchor="middle" direction="${state.custom.trim()||state.msgLang==="fa"?"rtl":"ltr"}"
+      font-family="Vazirmatn" font-size="${size}" font-weight="700" fill="#33283C">${
+      ln.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</text>`;
+  });
+  return g;
+}
+
+function draw(){
+  const pc=hex(PACK_COLORS,state.packColor);
+  const wo=hex(WRAP_COLORS,state.wrapOuter);
+  const wi=hex(WRAP_COLORS,state.wrapInner);
+  const fc=hex(FLOWER_COLORS,state.flowerColor);
+  const rc=hex(RIBBONS,state.ribbon);
+  const kind=get(FLOWERS,state.flower).kind;
+  let svg="";
+
+  // سایه زمین
+  svg+=`<ellipse cx="150" cy="232" rx="76" ry="11" fill="#33283C" opacity=".08"/>`;
+
+  if(state.pack==="card"){
+    svg+=drawCard(pc);
+    svg+=bouquet(148,200,1.32,wo,wi,fc,rc,kind);
+    state.addons.forEach((a,i)=>{
+      svg+=addonIcon(a.id,110+i*38,214,.58,a.hex);
+    });
+  }
+
+  if(state.pack==="cone"){
+    svg+=`<g>
+      <path d="M104 96 L196 96 L176 226 L124 226 Z" fill="${pc}"/>
+      <path d="M104 96 L146 96 L136 226 L124 226 Z" fill="${shade(pc,-14)}"/>
+      <ellipse cx="150" cy="96" rx="46" ry="12" fill="${shade(pc,-30)}"/>
+      <path d="M118 92 q32 -46 64 0" fill="none" stroke="${shade(pc,-38)}" stroke-width="4" stroke-linecap="round"/>
+    </g>`;
+    svg+=bouquet(150,132,1.05,wo,wi,fc,rc,kind);
+    svg+=`<path d="M104 96 L196 96 L176 226 L124 226 Z" fill="${pc}" opacity=".97"/>
+      <path d="M104 96 L146 96 L136 226 L124 226 Z" fill="${shade(pc,-14)}"/>
+      <path d="M104 96 A46 12 0 0 0 196 96 Z" fill="${shade(pc,4)}"/>`;
+    state.addons.forEach((a,i)=>{
+      svg+=addonIcon(a.id,133+i*20,192,.62,a.hex);
+    });
+  }
+
+  if(state.pack==="box"){
+    svg+=`<g opacity=".95">
+      <path d="M46 74 L104 48 L162 74 L104 100 Z" fill="${shade(pc,10)}"/>
+      <path d="M46 74 L46 86 L104 112 L104 100 Z" fill="${shade(pc,-20)}"/>
+      <path d="M162 74 L162 86 L104 112 L104 100 Z" fill="${shade(pc,-6)}"/>
+    </g>`;
+    svg+=`<path d="M92 150 L150 124 L208 150 L150 176 Z" fill="${shade(pc,-32)}"/>`;
+    svg+=bouquet(158,158,.92,wo,wi,fc,rc,kind);
+    state.addons.forEach((a,i)=>{
+      svg+=addonIcon(a.id,118+i*13,150+i*7,.55,a.hex);
+    });
+    svg+=`<path d="M92 150 L92 206 L150 232 L150 176 Z" fill="${shade(pc,-12)}"/>
+      <path d="M208 150 L208 206 L150 232 L150 176 Z" fill="${pc}"/>`;
+  }
+
+  const art=document.getElementById("art");
+  art.innerHTML=svg;
+  art.classList.remove("flash");
+  void art.offsetWidth;
+  art.classList.add("flash");
+}
+
+/* ============ قیمت ============ */
+function total(){
+  let t=get(PACKS,state.pack).price + get(FLOWERS,state.flower).price;
+  state.addons.forEach(a=>t+=a.price);
+  return t;
+}
+const fmt=n=>n.toLocaleString("en-US");
+
+/* ============ رابط ============ */
+function chips(el,arr,sel,on){
+  el.innerHTML="";
+  arr.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="pick";
+    b.textContent=o.name;
+    b.setAttribute("aria-pressed",String(sel()===o.id));
+    b.onclick=()=>{on(o.id);render();};
+    el.appendChild(b);
+  });
+}
+
+function swatches(el,arr,sel,on){
+  el.innerHTML="";
+  arr.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="swatch";
+    b.style.background=o.hex;
+    b.title=o.name;
+    b.setAttribute("aria-label",o.name);
+    b.setAttribute("aria-pressed",String(sel()===o.id));
+    b.onclick=()=>{on(o.id);render();};
+    el.appendChild(b);
+  });
+}
+
+function renderAddons(){
+  const el=document.getElementById("addons");
+  el.innerHTML="";
+  const full=state.addons.length>=CAP[state.pack];
+  ADDONS.forEach(o=>{
+    const inside=state.addons.some(a=>a.id===o.id);
+    const b=document.createElement("button");
+    b.className="pick";
+    b.textContent=inside?"− "+o.name:"+ "+o.name;
+    b.disabled=!inside&&full;
+    b.style.opacity=(!inside&&full)?".4":"1";
+    b.onclick=()=>{
+      if(inside) state.addons=state.addons.filter(a=>a.id!==o.id);
+      else state.addons.push({...o});
+      render();
+    };
+    el.appendChild(b);
+  });
+}
+
+function renderList(){
+  const el=document.getElementById("list");
+  el.innerHTML="";
+  const f=get(FLOWERS,state.flower);
+  const rows=[{id:"__f",name:f.name,price:f.price,hex:hex(FLOWER_COLORS,state.flowerColor),fixed:true},...state.addons];
+  rows.forEach(r=>{
+    const li=document.createElement("li");
+    const dot=document.createElement("span");
+    dot.className="dot"; dot.style.background=r.hex;
+    const nm=document.createElement("span");
+    nm.className="nm"; nm.textContent=r.name;
+    const pr=document.createElement("span");
+    pr.className="pr"; pr.textContent=fmt(r.price)+" تومان";
+    li.append(dot,nm,pr);
+
+    if(!r.fixed){
+      if(r.colorable){
+        const c=document.createElement("button");
+        c.className="mini"; c.textContent="رنگ";
+        c.onclick=()=>{
+          const pal=["#6B4226","#C9A55C","#D98FA0","#5C7F49","#4A4650"];
+          r.hex=pal[(pal.indexOf(r.hex)+1)%pal.length];
+          render();
+        };
+        li.append(c);
+      }
+      const d=document.createElement("button");
+      d.className="mini"; d.textContent="حذف";
+      d.onclick=()=>{state.addons=state.addons.filter(a=>a!==r);render();};
+      li.append(d);
+    }
+    el.appendChild(li);
+  });
+
+  if(state.addons.length===0){
+    const li=document.createElement("li");
+    li.className="empty";
+    li.textContent="جا برای "+CAP[state.pack]+" افزودنی هست";
+    li.style.listStyle="none";
+    el.appendChild(li);
+  }
+}
+
+function render(){
+  const cap=CAP[state.pack];
+  if(state.addons.length>cap) state.addons=state.addons.slice(0,cap);
+
+  chips(document.getElementById("packs"),PACKS,()=>state.pack,v=>state.pack=v);
+  swatches(document.getElementById("packColors"),PACK_COLORS,()=>state.packColor,v=>state.packColor=v);
+  chips(document.getElementById("flowers"),FLOWERS,()=>state.flower,v=>state.flower=v);
+  swatches(document.getElementById("flowerColors"),FLOWER_COLORS,()=>state.flowerColor,v=>state.flowerColor=v);
+  document.getElementById("msgSection").style.display = state.pack==="card" ? "" : "none";
+  chips(document.getElementById("msgLang"),
+        [{id:"fa",name:"فارسی"},{id:"en",name:"English"}],
+        ()=>state.msgLang, v=>state.msgLang=v);
+  const mel=document.getElementById("msgs");
+  mel.innerHTML="";
+  MESSAGES.forEach((m,i)=>{
+    const b=document.createElement("button");
+    b.className="pick";
+    b.textContent=state.msgLang==="fa"?m.fa:m.en;
+    b.setAttribute("aria-pressed",String(!state.custom.trim()&&state.msgIndex===i));
+    b.onclick=()=>{state.msgIndex=i;state.custom="";document.getElementById("custom").value="";render();};
+    mel.appendChild(b);
+  });
+
+  swatches(document.getElementById("wrapOuter"),WRAP_COLORS,()=>state.wrapOuter,v=>state.wrapOuter=v);
+  swatches(document.getElementById("wrapInner"),WRAP_COLORS,()=>state.wrapInner,v=>state.wrapInner=v);
+  swatches(document.getElementById("ribbons"),RIBBONS,()=>state.ribbon,v=>state.ribbon=v);
+  renderAddons();
+  renderList();
+  document.getElementById("price").textContent=fmt(total());
+  document.getElementById("tag").textContent="سایز کوچک — ظرفیت "+cap;
+  draw();
+}
+
+document.getElementById("custom").addEventListener("input",e=>{
+  state.custom=e.target.value;
+  render();
+  e.target.focus();
+});
+
+render();
+</script>
+</body>
+</html>
