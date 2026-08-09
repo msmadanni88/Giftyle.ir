@@ -5,219 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>ساخت کادو</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <style>
 :root{
-  --ink:#33283C;
-  --ground:#E9E4EE;
-  --paper:#FBFAFC;
-  --sap:#4E7A3A;
-  --rose:#C57D8E;
-  --line:#D8D0DE;
-  --muted:#7A6E84;
+  --ink:#12100F;
+  --paper:#F5F3EE;
+  --card:#FFFFFF;
+  --accent:#FF3D68;
+  --muted:#6E6A66;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{
-  font-family:Vazirmatn,system-ui,sans-serif;
-  background:var(--ground);
-  color:var(--ink);
-  font-size:15px;
-  line-height:1.7;
-  padding-bottom:96px;
-}
-header{
-  padding:18px 20px 10px;
-  display:flex;
-  align-items:baseline;
-  gap:10px;
-}
-header h1{
-  font-size:19px;
-  font-weight:700;
-  letter-spacing:-.4px;
-  margin:0;
-}
-header span{font-size:12px;color:var(--muted)}
+body{font-family:Vazirmatn,system-ui,sans-serif;background:var(--paper);color:var(--ink);
+  font-size:15px;line-height:1.7;padding-bottom:108px}
 
-/* ---------- stage ---------- */
-.stage{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:linear-gradient(180deg,var(--ground) 62%,rgba(233,228,238,0));
-  padding:4px 20px 18px;
-}
-.stage-inner{
-  background:var(--paper);
-  border:1px solid var(--line);
-  border-radius:22px;
-  height:270px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  position:relative;
-}
-.stage-inner::after{
-  content:"";
-  position:absolute;
-  inset:auto 0 0 0;
-  height:52%;
-  background:linear-gradient(180deg,rgba(51,40,60,0),rgba(51,40,60,.035));
-  pointer-events:none;
-}
+header{padding:20px 20px 12px}
+header h1{font-size:24px;font-weight:800;letter-spacing:-.7px;margin:0}
+header p{margin:2px 0 0;font-size:12.5px;color:var(--muted);font-weight:500}
+
+.stage{position:sticky;top:0;z-index:20;background:var(--paper);padding:4px 20px 16px}
+.stage-inner{background:var(--card);border:2.5px solid var(--ink);border-radius:26px;
+  box-shadow:5px 5px 0 var(--ink);height:290px;display:flex;align-items:center;
+  justify-content:center;overflow:hidden;position:relative}
 svg#art{width:100%;height:100%}
-.stage-tag{
-  position:absolute;
-  top:12px;
-  inset-inline-start:14px;
-  font-size:11px;
-  color:var(--muted);
-  background:var(--ground);
-  border-radius:999px;
-  padding:2px 10px;
-}
+.stage-tag{position:absolute;top:12px;inset-inline-start:14px;font-size:11px;font-weight:700;
+  border:2px solid var(--ink);border-radius:999px;padding:3px 11px;background:var(--card)}
 
-/* ---------- sections ---------- */
-section{padding:0 20px 26px}
-h2{
-  font-size:13px;
-  font-weight:600;
-  color:var(--muted);
-  margin:0 0 12px;
-  display:flex;
-  align-items:center;
-  gap:9px;
-}
-h2::after{
-  content:"";
-  flex:1;
-  height:1px;
-  background:var(--line);
-}
+section{padding:0 20px 24px}
+h2{font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 12px;display:flex;
+  align-items:center;gap:10px;text-transform:uppercase}
+h2::after{content:"";flex:1;height:2px;background:var(--ink);opacity:.13}
 
-.row{display:flex;gap:9px;flex-wrap:wrap}
+.row{display:flex;gap:10px;flex-wrap:wrap}
 
-.pick{
-  border:1px solid var(--line);
-  background:var(--paper);
-  border-radius:14px;
-  padding:9px 14px;
-  font-family:inherit;
-  font-size:13.5px;
-  color:var(--ink);
-  cursor:pointer;
-  transition:border-color .18s,background .18s,transform .18s;
-}
-.pick:hover{border-color:var(--muted)}
-.pick[aria-pressed="true"]{
-  background:var(--ink);
-  color:var(--paper);
-  border-color:var(--ink);
-}
-.pick:focus-visible{outline:2px solid var(--sap);outline-offset:2px}
+.pick{border:2.5px solid var(--ink);background:var(--card);border-radius:18px;
+  padding:13px 20px;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);
+  cursor:pointer;box-shadow:3px 3px 0 var(--ink);
+  transition:transform .14s ease,box-shadow .14s ease,background .2s ease,color .2s ease}
+.pick:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+.pick[aria-pressed="true"]{background:var(--accent);color:#fff;animation:pop .3s ease}
+.pick:disabled{opacity:.32;box-shadow:none}
+.pick:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
-.swatch{
-  width:34px;height:34px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  padding:0;
-  cursor:pointer;
-  position:relative;
-  transition:transform .18s;
-}
-.swatch[aria-pressed="true"]{transform:scale(1.14)}
-.swatch[aria-pressed="true"]::after{
-  content:"";
-  position:absolute;
-  inset:-5px;
-  border-radius:50%;
-  border:1.5px solid var(--ink);
-}
-.swatch:focus-visible{outline:2px solid var(--sap);outline-offset:4px}
+.swatch{width:46px;height:46px;border-radius:50%;border:2.5px solid var(--ink);padding:0;
+  cursor:pointer;position:relative;filter:grayscale(1);opacity:.55;
+  box-shadow:2px 2px 0 var(--ink);
+  transition:filter .25s ease,opacity .25s ease,transform .18s ease,box-shadow .18s ease}
+.swatch[aria-pressed="true"]{filter:grayscale(0);opacity:1;transform:scale(1.1);
+  box-shadow:3px 3px 0 var(--ink);animation:pop .3s ease}
+.swatch:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
 
-/* ---------- list ---------- */
-ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-ul.items li{
-  background:var(--paper);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:11px 14px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-}
-.dot{width:16px;height:16px;border-radius:50%;border:1px solid var(--line);flex:none}
-.nm{flex:1;font-size:14px}
-.pr{font-size:12.5px;color:var(--muted);white-space:nowrap}
-.mini{
-  border:none;background:none;font-family:inherit;
-  font-size:12px;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:8px;
-}
-.mini:hover{color:var(--ink);background:var(--ground)}
-.empty{
-  border:1px dashed var(--line);
-  border-radius:16px;
-  padding:16px;
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
-}
+ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+ul.items li{background:var(--card);border:2.5px solid var(--ink);border-radius:18px;
+  padding:12px 15px;display:flex;align-items:center;gap:12px;box-shadow:3px 3px 0 var(--ink)}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--ink);flex:none}
+.nm{flex:1;font-size:15px;font-weight:700}
+.pr{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.qty{display:flex;align-items:center;gap:4px}
+.mini{border:2px solid var(--ink);background:var(--card);font-family:inherit;font-size:17px;
+  font-weight:800;line-height:1;width:34px;height:34px;border-radius:11px;cursor:pointer;
+  transition:background .15s,color .15s}
+.mini:active{background:var(--ink);color:var(--card)}
+.mini:disabled{opacity:.3}
+.cnt{min-width:22px;text-align:center;font-weight:800;font-size:15px}
+.empty{border:2.5px dashed var(--ink);border-radius:18px;padding:16px;text-align:center;
+  font-size:13.5px;font-weight:600;opacity:.55}
 
-/* ---------- bar ---------- */
-.bar{
-  position:fixed;
-  inset-inline:0;
-  bottom:0;
-  z-index:30;
-  background:var(--paper);
-  border-top:1px solid var(--line);
-  padding:12px 20px calc(12px + env(safe-area-inset-bottom));
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
+.write{width:100%;margin-top:12px;font-family:inherit;font-size:15px;font-weight:600;
+  color:var(--ink);background:var(--card);border:2.5px solid var(--ink);border-radius:18px;
+  padding:14px 16px;box-shadow:3px 3px 0 var(--ink)}
+.write::placeholder{color:#A5A09B;font-weight:500}
+.write:focus{outline:none;background:#FFF8FA}
+.hint{margin:8px 3px 0;font-size:11.5px;color:var(--muted);font-weight:500}
+
+.bar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--card);
+  border-top:2.5px solid var(--ink);padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:14px}
 .total{flex:1}
-.total b{
-  display:block;
-  font-size:21px;
-  font-weight:700;
-  letter-spacing:-.5px;
-  font-variant-numeric:tabular-nums;
-}
-.total small{font-size:11.5px;color:var(--muted)}
-.buy{
-  background:var(--ink);
-  color:var(--paper);
-  border:none;
-  border-radius:14px;
-  padding:13px 24px;
-  font-family:inherit;
-  font-size:14.5px;
-  font-weight:600;
-  cursor:pointer;
-}
-.buy:focus-visible{outline:2px solid var(--sap);outline-offset:3px}
+.total b{display:block;font-size:24px;font-weight:800;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.total small{font-size:11.5px;color:var(--muted);font-weight:500}
+.buy{background:var(--ink);color:var(--card);border:2.5px solid var(--ink);border-radius:18px;
+  padding:16px 28px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;
+  box-shadow:3px 3px 0 var(--accent);transition:transform .14s,box-shadow .14s}
+.buy:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--accent)}
 
-.write{
-  width:100%;
-  margin-top:11px;
-  font-family:inherit;
-  font-size:14px;
-  color:var(--ink);
-  background:var(--paper);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px 14px;
-}
-.write::placeholder{color:#A99DB4}
-.write:focus{outline:2px solid var(--sap);outline-offset:1px;border-color:transparent}
-.hint{margin:7px 2px 0;font-size:11.5px;color:var(--muted)}
-
-.flash{animation:pop .32s ease}
-@keyframes pop{0%{transform:scale(.97)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
+@keyframes drop{0%{opacity:0;transform:translateY(-10px) scale(.9)}100%{opacity:1;transform:none}}
+#art g.item{animation:drop .32s cubic-bezier(.3,1.4,.5,1)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -225,31 +99,18 @@ ul.items li{
 
 <header>
   <h1>کادوی خودت را بچین</h1>
-  <span>نمونه اولیه</span>
+  <p>هر چیزی اضافه کنی، همان‌جا رنگی می‌شود</p>
 </header>
 
 <div class="stage">
   <div class="stage-inner">
     <span class="stage-tag" id="tag">سایز کوچک</span>
-    <svg id="art" viewBox="0 0 300 270" aria-label="پیش‌نمایش کادو"></svg>
+    <svg id="art" viewBox="0 0 320 290" aria-label="پیش‌نمایش کادو"></svg>
   </div>
 </div>
 
-<section>
-  <h2>بسته‌بندی</h2>
-  <div class="row" id="packs"></div>
-</section>
-
-<section>
-  <h2>رنگ بسته‌بندی</h2>
-  <div class="row" id="packColors"></div>
-</section>
-
-<section>
-  <h2>گل</h2>
-  <div class="row" id="flowers"></div>
-  <div class="row" id="flowerColors" style="margin-top:12px"></div>
-</section>
+<section><h2>بسته‌بندی</h2><div class="row" id="packs"></div></section>
+<section><h2>رنگ بسته‌بندی</h2><div class="row" id="packColors"></div></section>
 
 <section id="msgSection">
   <h2>نوشته روی کارت</h2>
@@ -259,470 +120,385 @@ ul.items li{
   <p class="hint">حداکثر 42 نویسه تا روی کارت جا شود</p>
 </section>
 
-<section>
-  <h2>کاغذ رویی</h2>
-  <div class="row" id="wrapOuter"></div>
-</section>
-
-<section>
-  <h2>کاغذ زیرین</h2>
-  <div class="row" id="wrapInner"></div>
-</section>
-
-<section>
-  <h2>روبان</h2>
-  <div class="row" id="ribbons"></div>
-</section>
-
-<section>
-  <h2>افزودنی</h2>
-  <div class="row" id="addons"></div>
-</section>
-
-<section>
-  <h2>داخل کادو</h2>
-  <ul class="items" id="list"></ul>
-</section>
+<section><h2>گل</h2><div class="row" id="flowers"></div>
+<div class="row" id="flowerColors" style="margin-top:12px"></div></section>
+<section><h2>کاغذ رویی</h2><div class="row" id="wrapOuter"></div></section>
+<section><h2>کاغذ زیرین</h2><div class="row" id="wrapInner"></div></section>
+<section><h2>روبان</h2><div class="row" id="ribbons"></div></section>
+<section><h2>خوراکی و افزودنی</h2><div class="row" id="addons"></div></section>
+<section><h2>داخل کادو</h2><ul class="items" id="list"></ul></section>
 
 <div class="bar">
-  <div class="total">
-    <b id="price">0</b>
-    <small>تومان — با هر تغییر به‌روز می‌شود</small>
-  </div>
+  <div class="total"><b id="price">0</b><small>تومان — با هر تغییر به‌روز می‌شود</small></div>
   <button class="buy">ثبت سفارش</button>
 </div>
 
 <script>
 /* ============ داده ============ */
-const PACKS = [
-  {id:"card", name:"کارت‌پستال", price:120000},
-  {id:"cone", name:"ساک مخروطی", price:180000},
-  {id:"box",  name:"جعبه", price:250000}
+const PACKS=[{id:"card",name:"کارت‌پستال",price:120000},
+             {id:"cone",name:"ساک مخروطی",price:180000},
+             {id:"box", name:"جعبه",       price:250000}];
+
+const PACK_COLORS=[{id:"cream",name:"کرم",hex:"#F0D9AF"},{id:"rose",name:"صورتی",hex:"#F09FB2"},
+  {id:"sky",name:"آبی",hex:"#8FBBE8"},{id:"sage",name:"سبز",hex:"#7FAE72"},
+  {id:"lilac",name:"یاسی",hex:"#B592DC"},{id:"coral",name:"مرجانی",hex:"#F0885F"},
+  {id:"teal",name:"سبزآبی",hex:"#4FA7A0"},{id:"coal",name:"ذغالی",hex:"#4A4450"}];
+
+const WRAP_COLORS=[{id:"mint",name:"مینتی",hex:"#B9D8CE"},{id:"sky",name:"آبی",hex:"#B7CFE4"},
+  {id:"peach",name:"هلویی",hex:"#F0C3A4"},{id:"blush",name:"صورتی",hex:"#EFC3CB"},
+  {id:"lav",name:"یاسی",hex:"#C3BCDD"},{id:"kraft",name:"کرافت",hex:"#C8A276"},
+  {id:"cream",name:"کرم",hex:"#F2E7D5"},{id:"dusty",name:"گلبهی",hex:"#D2A6A0"},
+  {id:"sage",name:"سبز",hex:"#A9BB9C"},{id:"mustard",name:"خردلی",hex:"#D9B65A"},
+  {id:"white",name:"سفید",hex:"#F7F3EC"},{id:"coal",name:"ذغالی",hex:"#4A4450"}];
+
+const FLOWERS=[{id:"gyp",name:"ژیپسوفیلا",price:45000,kind:"puff"},
+  {id:"daisy",name:"بابونه",price:55000,kind:"daisy"},
+  {id:"lav",name:"لاوندر",price:60000,kind:"spike"},
+  {id:"sun",name:"آفتابگردان",price:70000,kind:"sun"}];
+
+const FLOWER_COLORS=[{id:"white",name:"سفید",hex:"#FAF6EE"},{id:"blush",name:"صورتی",hex:"#E9AEB8"},
+  {id:"butter",name:"زرد",hex:"#EBC96B"},{id:"violet",name:"بنفش",hex:"#9A86C4"}];
+
+const RIBBONS=[{id:"white",name:"سفید",hex:"#F7F3EC"},{id:"gold",name:"طلایی",hex:"#C9A55C"},
+  {id:"rose",name:"صورتی",hex:"#D98FA0"},{id:"sap",name:"سبز",hex:"#5C7F49"},
+  {id:"coal",name:"ذغالی",hex:"#3A3640"}];
+
+const ADDONS=[
+  {id:"snk", name:"اسنیکرز", price:75000, hex:"#9A5F30", art:"bar"},
+  {id:"kit", name:"کیت‌کت",   price:55000, hex:"#D6342C", art:"bar"},
+  {id:"oreo",name:"اورئو",    price:60000, hex:"#2F6BB8", art:"cookiepack"},
+  {id:"mm",  name:"ام‌اند‌ام", price:65000, hex:"#7A4A2A", art:"pouch"},
+  {id:"tob", name:"توبلرون",  price:95000, hex:"#E0B03F", art:"prism"},
+  {id:"kin", name:"کیندر",    price:70000, hex:"#F2EFE6", art:"carton"},
+  {id:"fer", name:"فررو",     price:85000, hex:"#C9A24A", art:"truffle"},
+  {id:"soda",name:"نوشابه",   price:40000, hex:"#E23A3A", art:"can"},
+  {id:"ram", name:"رامونه",   price:90000, hex:"#7DC242", art:"bottle"},
+  {id:"charm",name:"چارم",    price:60000, hex:"#D9AE4E", art:"charm"},
+  {id:"note",name:"کارت دست‌نویس",price:15000,hex:"#FFFFFF",art:"note"}
 ];
 
-const PACK_COLORS = [
-  {id:"cream", name:"کرم",  hex:"#F0D9AF"},
-  {id:"rose",  name:"صورتی", hex:"#F09FB2"},
-  {id:"sky",   name:"آبی",  hex:"#8FBBE8"},
-  {id:"sage",  name:"سبز",  hex:"#7FAE72"},
-  {id:"lilac", name:"یاسی", hex:"#B592DC"},
-  {id:"coral", name:"مرجانی", hex:"#F0885F"},
-  {id:"teal",  name:"سبزآبی", hex:"#4FA7A0"},
-  {id:"coal",  name:"ذغالی", hex:"#332F3A"}
-];
+const MESSAGES=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Anniversary",fa:"سالگردمون مبارک"},
+  {en:"Miss You",fa:"دلم برات تنگ شده"},{en:"Happy Mother's Day",fa:"روز مادر مبارک"},
+  {en:"Happy Father's Day",fa:"روز پدر مبارک"},{en:"Thank You",fa:"ممنونم ازت"},
+  {en:"Get Well Soon",fa:"زود خوب شو"},{en:"Congratulations",fa:"تبریک می‌گم"},
+  {en:"I Love You",fa:"دوستت دارم"},{en:"Happy Nowruz",fa:"نوروز مبارک"},
+  {en:"Happy Yalda",fa:"شب یلدا مبارک"},{en:"I'm Sorry",fa:"معذرت می‌خوام"},
+  {en:"Good Luck",fa:"موفق باشی"},{en:"Happy Graduation",fa:"فارغ‌التحصیلیت مبارک"},
+  {en:"Just Because",fa:"همین‌طوری، برای تو"}];
 
-const MESSAGES = [
-  {en:"Happy Birthday",      fa:"تولدت مبارک"},
-  {en:"Happy Anniversary",   fa:"سالگردمون مبارک"},
-  {en:"Miss You",            fa:"دلم برات تنگ شده"},
-  {en:"Happy Mother's Day",  fa:"روز مادر مبارک"},
-  {en:"Happy Father's Day",  fa:"روز پدر مبارک"},
-  {en:"Thank You",           fa:"ممنونم ازت"},
-  {en:"Get Well Soon",       fa:"زود خوب شو"},
-  {en:"Congratulations",     fa:"تبریک می‌گم"},
-  {en:"I Love You",          fa:"دوستت دارم"},
-  {en:"Happy Nowruz",        fa:"نوروز مبارک"},
-  {en:"Happy Yalda",         fa:"شب یلدا مبارک"},
-  {en:"I'm Sorry",           fa:"معذرت می‌خوام"},
-  {en:"Good Luck",           fa:"موفق باشی"},
-  {en:"Happy Graduation",    fa:"فارغ‌التحصیلیت مبارک"},
-  {en:"Just Because",        fa:"همین‌طوری، برای تو"}
-];
+const CAP={card:3,cone:3,box:5};
 
-const WRAP_COLORS = [
-  {id:"mint",   name:"مینتی",   hex:"#B9D8CE"},
-  {id:"sky",    name:"آبی",     hex:"#B7CFE4"},
-  {id:"peach",  name:"هلویی",   hex:"#F0C3A4"},
-  {id:"blush",  name:"صورتی",   hex:"#EFC3CB"},
-  {id:"lav",    name:"یاسی",    hex:"#C3BCDD"},
-  {id:"kraft",  name:"کرافت",   hex:"#C8A276"},
-  {id:"cream",  name:"کرم",     hex:"#F2E7D5"},
-  {id:"dusty",  name:"گلبهی",   hex:"#D2A6A0"},
-  {id:"sage",   name:"سبز",     hex:"#A9BB9C"},
-  {id:"mustard",name:"خردلی",   hex:"#D9B65A"},
-  {id:"white",  name:"سفید",    hex:"#FAF8F5"},
-  {id:"coal",   name:"ذغالی",   hex:"#4A4650"}
-];
+const state={pack:"card",packColor:"rose",wrapOuter:"mint",wrapInner:"kraft",
+  flower:"gyp",flowerColor:"white",ribbon:"gold",msgLang:"fa",msgIndex:0,custom:"",addons:[]};
 
-const FLOWERS = [
-  {id:"gyp",  name:"ژیپسوفیلا", price:45000, kind:"puff"},
-  {id:"daisy",name:"بابونه",    price:55000, kind:"daisy"},
-  {id:"lav",  name:"لاوندر",    price:60000, kind:"spike"},
-  {id:"sun",  name:"آفتابگردان",price:70000, kind:"sun"}
-];
+const get=(a,id)=>a.find(x=>x.id===id)||a[0];
+const hex=(a,id)=>get(a,id).hex;
 
-const FLOWER_COLORS = [
-  {id:"white", name:"سفید",  hex:"#FCFAF6"},
-  {id:"blush", name:"صورتی", hex:"#E9AEB8"},
-  {id:"butter",name:"زرد",   hex:"#EBC96B"},
-  {id:"violet",name:"بنفش",  hex:"#9A86C4"}
-];
-
-const RIBBONS = [
-  {id:"white", name:"سفید", hex:"#FFFFFF"},
-  {id:"gold",  name:"طلایی", hex:"#C9A55C"},
-  {id:"rose",  name:"صورتی", hex:"#D98FA0"},
-  {id:"sap",   name:"سبز",  hex:"#5C7F49"},
-  {id:"coal",  name:"ذغالی", hex:"#3A3640"}
-];
-
-const ADDONS = [
-  {id:"choco", name:"شکلات",     price:35000, colorable:true,  hex:"#6B4226"},
-  {id:"charm", name:"چارم",      price:60000, colorable:true,  hex:"#C9A55C"},
-  {id:"note",  name:"کارت دست‌نویس", price:15000, colorable:false, hex:"#FBFAF7"}
-];
-
-const CAP = {card:1, cone:2, box:3};
-
-/* ============ وضعیت ============ */
-const state = {
-  pack:"card",
-  packColor:"cream",
-  wrapOuter:"mint",
-  wrapInner:"kraft",
-  flower:"gyp",
-  flowerColor:"white",
-  ribbon:"white",
-  msgLang:"fa",
-  msgIndex:0,
-  custom:"",
-  addons:[]
-};
-
-const hex = (arr,id) => (arr.find(x=>x.id===id)||arr[0]).hex;
-const get = (arr,id) => arr.find(x=>x.id===id)||arr[0];
-
-/* ============ نقاشی ============ */
-const NS="http://www.w3.org/2000/svg";
-
-function shade(h,amt){
-  const n=parseInt(h.slice(1),16);
-  const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v+amt))));
-  return "#"+c.map(v=>v.toString(16).padStart(2,"0")).join("");
-}
-
+/* ============ سبک ============ */
+const LINE="#1A1512";
+function mul(h,f){const n=parseInt(h.slice(1),16);
+  const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))));
+  return "#"+c.map(v=>v.toString(16).padStart(2,"0")).join("");}
+function mix(h,f){const n=parseInt(h.slice(1),16);
+  const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.round(v+(255-v)*f));
+  return "#"+c.map(v=>v.toString(16).padStart(2,"0")).join("");}
+const dark=h=>mul(h,.78), lite=h=>mix(h,.36), ink=h=>mul(h,.42);
 function rnd(i){const x=Math.sin(i*127.1+11.3)*43758.5453;return x-Math.floor(x);}
+/* خط دور یکدست و تیره — سبک استیکری */
+const O=(col,w)=>`fill="${col}" stroke="${LINE}" stroke-width="${w||2.2}" stroke-linejoin="round" stroke-linecap="round"`;
+const F=c=>`fill="${c}"`;
+/* خط دور نرم‌تر برای گل و کاغذ */
+const S=(col,w)=>`fill="${col}" stroke="${ink(col)}" stroke-width="${w||1.8}" stroke-linejoin="round" stroke-linecap="round"`;
 
-function flowerHead(cx,cy,s,kind,col,seed){
-  const rot=(rnd(seed)-.5)*70;
-  return `<g transform="rotate(${rot.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)})">${headShape(cx,cy,s,kind,col)}</g>`;
-}
-
-function headShape(cx,cy,s,kind,col){
-  const dark=shade(col,-40);
+/* ============ گل ============ */
+function head(cx,cy,s,kind,col){
+  const L=lite(col),D=dark(col);
   if(kind==="puff"){
     let o="";
-    for(let i=0;i<7;i++){
-      const a=i*Math.PI*2/7, r=s*.62;
-      o+=`<circle cx="${cx+Math.cos(a)*r}" cy="${cy+Math.sin(a)*r*.9}" r="${s*.42}" fill="${col}"/>`;
-    }
-    return o+`<circle cx="${cx}" cy="${cy}" r="${s*.5}" fill="${shade(col,-14)}"/>`;
+    for(let i=0;i<7;i++){const a=i*Math.PI*2/7;
+      o+=`<circle cx="${cx+Math.cos(a)*s*.6}" cy="${cy+Math.sin(a)*s*.54}" r="${s*.44}" ${S(col,1.3)}/>`;}
+    o+=`<circle cx="${cx}" cy="${cy}" r="${s*.46}" ${S(D,1.3)}/>`;
+    return o+`<circle cx="${cx-s*.18}" cy="${cy-s*.2}" r="${s*.16}" ${F(L)}/>`;
   }
   if(kind==="daisy"||kind==="sun"){
-    const petals=kind==="sun"?11:8, len=kind==="sun"?s*1.25:s;
+    const p=kind==="sun"?11:8, len=kind==="sun"?s*1.15:s*.95;
     let o="";
-    for(let i=0;i<petals;i++){
-      const a=i*Math.PI*2/petals;
-      o+=`<ellipse cx="${cx+Math.cos(a)*len*.62}" cy="${cy+Math.sin(a)*len*.56}" rx="${len*.42}" ry="${len*.2}" fill="${col}" transform="rotate(${a*180/Math.PI} ${cx+Math.cos(a)*len*.62} ${cy+Math.sin(a)*len*.56})"/>`;
-    }
-    return o+`<circle cx="${cx}" cy="${cy}" r="${len*.3}" fill="${kind==="sun"?"#5B3A1E":dark}"/>`;
+    for(let i=0;i<p;i++){const a=i*Math.PI*2/p;
+      const px=cx+Math.cos(a)*len*.62, py=cy+Math.sin(a)*len*.58;
+      o+=`<ellipse cx="${px}" cy="${py}" rx="${len*.44}" ry="${len*.22}" ${S(col,1.3)} transform="rotate(${a*180/Math.PI} ${px} ${py})"/>`;}
+    o+=`<circle cx="${cx}" cy="${cy}" r="${len*.34}" ${S(kind==="sun"?"#7A4A22":D,1.3)}/>`;
+    return o+`<circle cx="${cx-len*.1}" cy="${cy-len*.11}" r="${len*.1}" ${F(mix(col,.5))}/>`;
   }
-  // spike
   let o="";
-  for(let i=0;i<6;i++){
-    o+=`<ellipse cx="${cx+(i%2?1.6:-1.6)}" cy="${cy-i*s*.5}" rx="${s*.34}" ry="${s*.3}" fill="${i%2?col:shade(col,-18)}"/>`;
-  }
+  for(let i=0;i<6;i++)
+    o+=`<ellipse cx="${cx+(i%2?1.7:-1.7)}" cy="${cy-i*s*.46}" rx="${s*.36}" ry="${s*.32}" ${S(i%2?col:D,1.2)}/>`;
   return o;
 }
 
-function bouquet(cx,baseY,scale,outerCol,innerCol,flowCol,ribCol,kind){
-  const s=scale;
-  const P=(x,y)=>`${cx+x*s} ${baseY+y*s}`;
-  let g=`<g>`;
-
-  /* ---- ورق زیرین: دو بال تیز که از پشت بیرون می‌زند ---- */
-  g+=`<path d="M${P(-33,-56)} L${P(-19,-77)} L${P(2,-62)} L${P(-6,-20)} Z" fill="${innerCol}"/>`;
-  g+=`<path d="M${P(34,-54)} L${P(20,-79)} L${P(-1,-60)} L${P(7,-20)} Z" fill="${shade(innerCol,-14)}"/>`;
-
-  /* ---- ساقه‌ها ---- */
-  for(let i=-2;i<=2;i++){
-    g+=`<path d="M${P(0,-22)} Q${P(i*6,-45)} ${P(i*10,-64)}" stroke="#4E7A3A" stroke-width="${1.5*s}" fill="none" stroke-linecap="round"/>`;
-  }
-
-  /* ---- گل‌ها: از عقب به جلو، پر و با چرخش نامنظم ---- */
-  const heads=[[-22,-62],[21,-64],[-12,-76],[11,-78],[0,-84],[-26,-72],[25,-70],
-               [-16,-66],[15,-67],[-4,-70],[6,-72],[0,-60],[-9,-57],[10,-58]];
-  heads.forEach(([dx,dy],i)=>{
-    const jx=(rnd(i+3)-.5)*5, jy=(rnd(i+9)-.5)*5;
-    const sz=(7.4+rnd(i+21)*2.6)*s;
-    g+=flowerHead(cx+(dx+jx)*s, baseY+(dy+jy)*s, sz, kind, flowCol, i);
-  });
-
-  /* ---- ورق رویی: گوشه‌های تیز، گردن باریک، ته جمع‌شده ---- */
-  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(13,-52)} L${P(28,-57)}
-       L${P(8,-17)} L${P(12,-1)} L${P(-12,-1)} L${P(-8,-17)} Z" fill="${outerCol}"/>`;
-  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(-3,-17)} L${P(-12,-1)} L${P(-8,-17)} Z" fill="${shade(outerCol,-15)}"/>`;
-  g+=`<path d="M${P(13,-52)} L${P(28,-57)} L${P(8,-17)} L${P(4,-30)} Z" fill="${shade(outerCol,10)}"/>`;
-
-  /* ---- برچسب برند ---- */
-  g+=`<rect x="${cx-8*s}" y="${baseY-38*s}" width="${16*s}" height="${6*s}" rx="${1*s}" fill="#FBFAF7" opacity=".9"/>`;
-
-  /* ---- روبان با پاپیون و دنباله ---- */
-  const ny=baseY-17*s;
-  g+=`<path d="M${cx-6*s} ${ny} q-${11*s} ${9*s} -${2*s} ${16*s}" stroke="${shade(ribCol,-18)}" stroke-width="${2*s}" fill="none" stroke-linecap="round"/>`;
-  g+=`<path d="M${cx+6*s} ${ny} q${12*s} ${11*s} ${4*s} ${18*s}" stroke="${shade(ribCol,-18)}" stroke-width="${2*s}" fill="none" stroke-linecap="round"/>`;
-  g+=`<path d="M${cx-1*s} ${ny} q-${13*s} -${6*s} -${11*s} ${4*s} q${2*s} ${7*s} ${11*s} ${1*s} Z" fill="${ribCol}"/>`;
-  g+=`<path d="M${cx+1*s} ${ny} q${13*s} -${6*s} ${11*s} ${4*s} q-${2*s} ${7*s} -${11*s} ${1*s} Z" fill="${shade(ribCol,-10)}"/>`;
-  g+=`<circle cx="${cx}" cy="${ny+1*s}" r="${2.4*s}" fill="${shade(ribCol,-26)}"/>`;
-
+function bouquet(cx,by,sc,outer,inner,fcol,rcol,kind){
+  const s=sc,P=(x,y)=>`${cx+x*s} ${by+y*s}`;
+  let g=`<g filter="url(#ds)">`;
+  g+=`<path d="M${P(-33,-56)} L${P(-19,-77)} L${P(2,-62)} L${P(-6,-20)} Z" ${S(inner,1.8)}/>`;
+  g+=`<path d="M${P(34,-54)} L${P(20,-79)} L${P(-1,-60)} L${P(7,-20)} Z" ${S(dark(inner),1.8)}/>`;
+  for(let i=-2;i<=2;i++)
+    g+=`<path d="M${P(0,-22)} Q${P(i*6,-45)} ${P(i*10,-64)}" stroke="#3F6330" stroke-width="${1.7*s}" fill="none" stroke-linecap="round"/>`;
+  [[-22,-62],[21,-64],[-12,-76],[11,-78],[0,-84],[-26,-72],[25,-70],
+   [-16,-66],[15,-67],[-4,-70],[6,-72],[0,-60],[-9,-57],[10,-58]].forEach(([dx,dy],i)=>{
+    const jx=(rnd(i+3)-.5)*5,jy=(rnd(i+9)-.5)*5,sz=(7.6+rnd(i+21)*2.8)*s,rot=(rnd(i)-.5)*70;
+    g+=`<g transform="rotate(${rot.toFixed(1)} ${(cx+(dx+jx)*s).toFixed(1)} ${(by+(dy+jy)*s).toFixed(1)})">${head(cx+(dx+jx)*s,by+(dy+jy)*s,sz,kind,fcol)}</g>`;});
+  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(13,-52)} L${P(28,-57)} L${P(8,-17)} L${P(12,-1)} L${P(-12,-1)} L${P(-8,-17)} Z" ${S(outer,1.9)}/>`;
+  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(-3,-17)} L${P(-12,-1)} L${P(-8,-17)} Z" ${F(dark(outer))}/>`;
+  g+=`<path d="M${P(13,-52)} L${P(28,-57)} L${P(8,-17)} L${P(4,-30)} Z" ${F(lite(outer))}/>`;
+  const ny=by-17*s;
+  g+=`<path d="M${cx-6*s} ${ny} q-${11*s} ${9*s} -${2*s} ${16*s}" stroke="${ink(rcol)}" stroke-width="${2.4*s}" fill="none" stroke-linecap="round"/>`;
+  g+=`<path d="M${cx+6*s} ${ny} q${12*s} ${11*s} ${4*s} ${18*s}" stroke="${ink(rcol)}" stroke-width="${2.4*s}" fill="none" stroke-linecap="round"/>`;
+  g+=`<path d="M${cx-1*s} ${ny} q-${13*s} -${6*s} -${11*s} ${4*s} q${2*s} ${7*s} ${11*s} ${1*s} Z" ${S(rcol,1.5)}/>`;
+  g+=`<path d="M${cx+1*s} ${ny} q${13*s} -${6*s} ${11*s} ${4*s} q-${2*s} ${7*s} -${11*s} ${1*s} Z" ${S(rcol,1.5)}/>`;
+  g+=`<circle cx="${cx}" cy="${ny+1*s}" r="${2.6*s}" ${S(dark(rcol),1.3)}/>`;
   return g+`</g>`;
 }
 
-function addonIcon(id,cx,cy,s,col){
-  if(id==="choco"){
-    return `<g><rect x="${cx-11*s}" y="${cy-7*s}" width="${22*s}" height="${14*s}" rx="${2.5*s}" fill="${col}"/>
-    <rect x="${cx-11*s}" y="${cy-7*s}" width="${22*s}" height="${4*s}" rx="${2*s}" fill="${shade(col,26)}"/>
-    <line x1="${cx}" y1="${cy-7*s}" x2="${cx}" y2="${cy+7*s}" stroke="${shade(col,-24)}" stroke-width="${1.2*s}"/></g>`;
-  }
-  if(id==="charm"){
-    return `<g><circle cx="${cx}" cy="${cy-6*s}" r="${3.2*s}" fill="none" stroke="${col}" stroke-width="${1.4*s}"/>
-    <path d="M${cx} ${cy+8*s} l-${6*s} -${6*s} a${3.6*s} ${3.6*s} 0 0 1 ${6*s} -${3.4*s} a${3.6*s} ${3.6*s} 0 0 1 ${6*s} ${3.4*s} Z" fill="${col}"/></g>`;
-  }
-  return `<g><rect x="${cx-11*s}" y="${cy-8*s}" width="${22*s}" height="${16*s}" rx="${2*s}" fill="${col}" stroke="#D8D0DE"/>
-  <line x1="${cx-6*s}" y1="${cy-2*s}" x2="${cx+6*s}" y2="${cy-2*s}" stroke="#B9AFC2" stroke-width="${1.2*s}"/>
-  <line x1="${cx-6*s}" y1="${cy+3*s}" x2="${cx+2*s}" y2="${cy+3*s}" stroke="#B9AFC2" stroke-width="${1.2*s}"/></g>`;
+/* ============ خوراکی‌ها — سبک استیکری ============ */
+/* لبه دندانه‌دار بسته‌بندی */
+function zig(x0,x1,y,n,amp){
+  let d=`M${x0} ${y}`;
+  const step=(x1-x0)/n;
+  for(let i=0;i<n;i++){d+=` L${x0+step*(i+.5)} ${y+(i%2?amp:-amp)} L${x0+step*(i+1)} ${y}`;}
+  return d;
 }
 
-function cardText(){
-  const t=state.custom.trim();
-  if(t) return t;
-  const m=MESSAGES[state.msgIndex];
-  return state.msgLang==="fa"?m.fa:m.en;
+function itemArt(kind,col){
+  const L=lite(col),D=dark(col),W="#FFFDF8";
+  if(kind==="bar"){                       /* شکلات تخته‌ای در بسته */
+    let o=`<path d="${zig(-15,15,-38,4,3.5)} L15 -6 ${zig(15,-15,-6,4,3.5).slice(1)} Z" ${O(col)}/>`;
+    o+=`<rect x="-15" y="-34" width="30" height="24" rx="2" ${O(col,2.2)}/>`;
+    o+=`<ellipse cx="0" cy="-22" rx="11" ry="8" ${O(W,2)}/>`;
+    o+=`<ellipse cx="0" cy="-22" rx="7" ry="4.6" ${F(col)}/>`;
+    o+=`<path d="M-11 -32 l3 0 l-2 18 l-3 0 Z" ${F(mix(col,.55))} opacity=".75"/>`;
+    return o;
+  }
+  if(kind==="cookiepack"){                /* بسته بیسکویت با یک کوکی بیرون */
+    let o=`<path d="${zig(-16,16,-36,4,3.5)} L16 -8 ${zig(16,-16,-8,4,3.5).slice(1)} Z" ${O(col)}/>`;
+    o+=`<rect x="-16" y="-33" width="32" height="23" rx="2.5" ${O(col,2.2)}/>`;
+    o+=`<ellipse cx="-2" cy="-22" rx="10" ry="7" ${O(W,2)}/>`;
+    o+=`<circle cx="12" cy="-15" r="9" ${O(mul(col,.42),2.2)}/>`;
+    o+=`<circle cx="12" cy="-15" r="4.4" ${F(W)}/>`;
+    return o;
+  }
+  if(kind==="pouch"){                     /* پاکت آبنبات با دانه‌های بیرون‌ریخته */
+    let o=`<path d="M-16 -4 L-14 -30 q14 -8 28 0 L16 -4 Z" ${O(col)}/>`;
+    o+=`<path d="${zig(-15,15,-30,4,3)} l0 -6 ${zig(15,-15,-36,4,3).slice(1)} Z" ${O(D,2)}/>`;
+    o+=`<ellipse cx="0" cy="-17" rx="11" ry="7" ${O(W,2)}/>`;
+    [["#E0453C",-9,-46],["#3E88CF",3,-50],["#E8C33F",12,-44]]
+      .forEach(([c,x,y])=>{o+=`<circle cx="${x}" cy="${y}" r="4.6" ${O(c,2)}/>`;});
+    o+=`<circle cx="-14" cy="-40" r="4.2" ${O("#5CA455",2)}/>`;
+    return o;
+  }
+  if(kind==="prism"){                     /* شکلات مثلثی */
+    let o=`<path d="M-14 -2 L-10 -40 L14 -35 L10 2 Z" ${O(col)}/>`;
+    o+=`<path d="M-10 -40 L14 -35 L10 2 L4 -4 Z" ${F(L)}/>`;
+    for(let i=0;i<3;i++)
+      o+=`<path d="M${-11+i*7.5} ${-8-i*1.6} l4.5 -25 l4.5 25" fill="none" stroke="${LINE}" stroke-width="1.6"/>`;
+    o+=`<path d="M-14 -2 L-10 -40 L14 -35 L10 2 Z" fill="none" stroke="${LINE}" stroke-width="2.2" stroke-linejoin="round"/>`;
+    return o;
+  }
+  if(kind==="carton"){                    /* جعبه مقوایی */
+    let o=`<rect x="-14" y="-38" width="28" height="36" rx="3" ${O(col)}/>`;
+    o+=`<path d="M-14 -20 L14 -30 L14 -18 L-14 -8 Z" ${O("#E8853F",2)}/>`;
+    o+=`<rect x="-14" y="-38" width="9" height="36" rx="3" ${F(mul(col,.93))}/>`;
+    o+=`<rect x="-14" y="-38" width="28" height="36" rx="3" fill="none" stroke="${LINE}" stroke-width="2.2"/>`;
+    return o;
+  }
+  if(kind==="truffle"){                   /* شکلات گرد در کپسول */
+    let o=`<path d="M-14 -2 q0 -8 14 -8 q14 0 14 8 Z" ${O(mix(col,.5),2.2)}/>`;
+    o+=`<circle cx="0" cy="-19" r="13" ${O(col)}/>`;
+    o+=`<circle cx="-5" cy="-24" r="4" ${F(mix(col,.6))}/>`;
+    return o;
+  }
+  if(kind==="can"){                       /* قوطی نوشابه */
+    let o=`<path d="M-12 -4 q-2 -16 0 -30 q12 -4 24 0 q2 14 0 30 q-12 4 -24 0 Z" ${O(col)}/>`;
+    o+=`<ellipse cx="0" cy="-34" rx="12" ry="4" ${O("#C9C4BC",2)}/>`;
+    o+=`<ellipse cx="0" cy="-34" rx="5" ry="2" ${F("#8E8880")}/>`;
+    o+=`<ellipse cx="0" cy="-19" rx="9" ry="6" ${O("#FFFDF8",2)}/>`;
+    o+=`<path d="M-9 -30 q-1 10 0 20" fill="none" stroke="${mix(col,.55)}" stroke-width="2.6"/>`;
+    return o;
+  }
+  if(kind==="bottle"){                    /* بطری شیشه‌ای */
+    let o=`<path d="M-9 -2 q-2 -20 0 -26 q0 -6 4 -9 l0 -6 q5 -2 10 0 l0 6 q4 3 4 9 q2 6 0 26 q-9 3 -18 0 Z" ${O(col)}/>`;
+    o+=`<rect x="-6" y="-49" width="12" height="7" rx="2.5" ${O("#8FA6C4",2)}/>`;
+    o+=`<rect x="-8" y="-22" width="16" height="14" rx="2" ${O("#FFFDF8",2)}/>`;
+    o+=`<circle cx="0" cy="-36" r="3" ${F(mix(col,.7))}/>`;
+    return o;
+  }
+  if(kind==="charm"){
+    let o=`<circle cx="0" cy="-32" r="5" fill="none" stroke="${LINE}" stroke-width="2.4"/>`;
+    o+=`<path d="M0 -2 l-12 -13 a7 7 0 0 1 12 -6.5 a7 7 0 0 1 12 6.5 Z" ${O(col)}/>`;
+    o+=`<path d="M-4 -16 a4.5 4.5 0 0 1 4 -5.5" fill="none" stroke="${mix(col,.62)}" stroke-width="2.4"/>`;
+    return o;
+  }
+  let o=`<rect x="-17" y="-26" width="34" height="26" rx="3" ${O(col)}/>`;
+  o+=`<path d="M-17 -26 L0 -13 L17 -26 Z" ${O(mix(col,.05),2.2)}/>`;
+  o+=`<line x1="-9" y1="-8" x2="9" y2="-8" stroke="${LINE}" stroke-width="1.6" opacity=".4"/>`;
+  return o;
 }
 
-function wrapLines(txt,max){
-  const words=txt.split(/\s+/);
-  const out=[]; let cur="";
-  words.forEach(w=>{
-    if((cur+" "+w).trim().length<=max) cur=(cur+" "+w).trim();
-    else { if(cur) out.push(cur); cur=w; }
-  });
-  if(cur) out.push(cur);
-  return out.slice(0,3);
+/* ============ چیدمان: تک‌ردیف، بدون همپوشانی ============ */
+function rowLayout(n,x0,x1,baseFn,maxScale){
+  if(!n)return[];
+  const step=(x1-x0)/n, sc=Math.min(maxScale,step/42);
+  const out=[];
+  for(let i=0;i<n;i++){const x=x0+step*(i+.5);out.push({x,y:baseFn(x),s:sc});}
+  return out;
 }
+function flatItems(){const o=[];state.addons.forEach(a=>{for(let i=0;i<(a.qty||1);i++)o.push(a);});return o;}
+function slotsUsed(){return state.addons.reduce((t,a)=>t+(a.qty||1),0);}
+function drawItems(x0,x1,baseFn,maxScale){
+  const F2=flatItems(), P=rowLayout(F2.length,x0,x1,baseFn,maxScale);
+  return P.map((p,i)=>`<g class="item" filter="url(#ds)" transform="translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) scale(${p.s.toFixed(2)})">${itemArt(F2[i].art,F2[i].hex)}</g>`).join("");
+}
+
+/* ============ کارت ============ */
+function cardText(){const t=state.custom.trim();if(t)return t;
+  const m=MESSAGES[state.msgIndex];return state.msgLang==="fa"?m.fa:m.en;}
+function wrapLines(t,max){const w=t.split(/\s+/),o=[];let c="";
+  w.forEach(x=>{if((c+" "+x).trim().length<=max)c=(c+" "+x).trim();else{if(c)o.push(c);c=x;}});
+  if(c)o.push(c);return o.slice(0,3);}
 
 function drawCard(pc){
-  const txt=cardText();
-  const size = txt.length<=16 ? 15 : txt.length<=30 ? 13 : 11.5;
-  const lines=wrapLines(txt, txt.length<=16?20:22);
-  let g="";
-  g+=`<rect x="88" y="50" width="128" height="180" rx="11" fill="#33283C" opacity=".1"/>`;
-  g+=`<rect x="84" y="46" width="128" height="180" rx="11" fill="#FFFFFF"/>`;
-  g+=`<rect x="91" y="53" width="114" height="166" rx="7" fill="none" stroke="${pc}" stroke-width="2.4"/>`;
-  g+=`<rect x="91" y="53" width="114" height="26" rx="7" fill="${pc}" opacity=".16"/>`;
-  const startY = 71 - (lines.length-1)*size*.6;
+  const txt=cardText(), size=txt.length<=16?15:txt.length<=30?13:11.5;
+  const lines=wrapLines(txt,txt.length<=16?20:22);
+  let g=`<g filter="url(#ds)">`;
+  g+=`<rect x="98" y="30" width="124" height="168" rx="10" fill="#FFFDF8" stroke="${LINE}" stroke-width="2.4"/>`;
+  g+=`<rect x="105" y="37" width="110" height="154" rx="6" fill="none" stroke="${pc}" stroke-width="3"/>`;
+  const y0=56-(lines.length-1)*size*.6;
   lines.forEach((ln,i)=>{
-    g+=`<text x="148" y="${startY+i*size*1.25}" text-anchor="middle" direction="${state.custom.trim()||state.msgLang==="fa"?"rtl":"ltr"}"
-      font-family="Vazirmatn" font-size="${size}" font-weight="700" fill="#33283C">${
-      ln.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</text>`;
-  });
-  return g;
+    g+=`<text x="160" y="${y0+i*size*1.25}" text-anchor="middle" font-family="Vazirmatn" font-size="${size}" font-weight="800" fill="${LINE}">${ln.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</text>`;});
+  return g+`</g>`;
 }
 
+/* ============ صحنه ============ */
 function draw(){
-  const pc=hex(PACK_COLORS,state.packColor);
-  const wo=hex(WRAP_COLORS,state.wrapOuter);
-  const wi=hex(WRAP_COLORS,state.wrapInner);
-  const fc=hex(FLOWER_COLORS,state.flowerColor);
-  const rc=hex(RIBBONS,state.ribbon);
-  const kind=get(FLOWERS,state.flower).kind;
-  let svg="";
+  const pc=hex(PACK_COLORS,state.packColor), wo=hex(WRAP_COLORS,state.wrapOuter),
+        wi=hex(WRAP_COLORS,state.wrapInner), fc=hex(FLOWER_COLORS,state.flowerColor),
+        rc=hex(RIBBONS,state.ribbon), kind=get(FLOWERS,state.flower).kind;
 
-  // سایه زمین
-  svg+=`<ellipse cx="150" cy="232" rx="76" ry="11" fill="#33283C" opacity=".08"/>`;
+  let svg=`<defs><filter id="ds" x="-40%" y="-40%" width="190%" height="190%">
+    <feDropShadow dx="3" dy="4" stdDeviation="0" flood-color="${LINE}" flood-opacity=".22"/>
+  </filter></defs>`;
 
   if(state.pack==="card"){
+    svg+=`<ellipse cx="160" cy="200" rx="70" ry="8" fill="${LINE}" opacity=".07"/>`;
     svg+=drawCard(pc);
-    svg+=bouquet(148,200,1.32,wo,wi,fc,rc,kind);
-    state.addons.forEach((a,i)=>{
-      svg+=addonIcon(a.id,110+i*38,214,.58,a.hex);
-    });
+    svg+=bouquet(160,174,1.1,wo,wi,fc,rc,kind);
+    svg+=drawItems(24,296,()=>272,1.15);
   }
 
   if(state.pack==="cone"){
-    svg+=`<g>
-      <path d="M104 96 L196 96 L176 226 L124 226 Z" fill="${pc}"/>
-      <path d="M104 96 L146 96 L136 226 L124 226 Z" fill="${shade(pc,-14)}"/>
-      <ellipse cx="150" cy="96" rx="46" ry="12" fill="${shade(pc,-30)}"/>
-      <path d="M118 92 q32 -46 64 0" fill="none" stroke="${shade(pc,-38)}" stroke-width="4" stroke-linecap="round"/>
-    </g>`;
-    svg+=bouquet(150,132,1.05,wo,wi,fc,rc,kind);
-    svg+=`<path d="M104 96 L196 96 L176 226 L124 226 Z" fill="${pc}" opacity=".97"/>
-      <path d="M104 96 L146 96 L136 226 L124 226 Z" fill="${shade(pc,-14)}"/>
-      <path d="M104 96 A46 12 0 0 0 196 96 Z" fill="${shade(pc,4)}"/>`;
-    state.addons.forEach((a,i)=>{
-      svg+=addonIcon(a.id,133+i*20,192,.62,a.hex);
-    });
+    svg+=`<ellipse cx="160" cy="212" rx="52" ry="8" fill="${LINE}" opacity=".07"/>`;
+    svg+=bouquet(160,120,1.02,wo,wi,fc,rc,kind);
+    svg+=`<g filter="url(#ds)">
+      <path d="M118 84 A44 11 0 0 0 202 84 L184 212 L136 212 Z" fill="${pc}" stroke="${LINE}" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M118 84 A44 11 0 0 0 160 95 L149 212 L136 212 Z" ${F(dark(pc))}/>
+      <path d="M130 80 q30 -42 60 0" fill="none" stroke="${LINE}" stroke-width="4.5" stroke-linecap="round"/></g>`;
+    svg+=drawItems(24,296,()=>272,1.15);
   }
 
   if(state.pack==="box"){
-    svg+=`<g opacity=".95">
-      <path d="M46 74 L104 48 L162 74 L104 100 Z" fill="${shade(pc,10)}"/>
-      <path d="M46 74 L46 86 L104 112 L104 100 Z" fill="${shade(pc,-20)}"/>
-      <path d="M162 74 L162 86 L104 112 L104 100 Z" fill="${shade(pc,-6)}"/>
-    </g>`;
-    svg+=`<path d="M92 150 L150 124 L208 150 L150 176 Z" fill="${shade(pc,-32)}"/>`;
-    svg+=bouquet(158,158,.92,wo,wi,fc,rc,kind);
-    state.addons.forEach((a,i)=>{
-      svg+=addonIcon(a.id,118+i*13,150+i*7,.55,a.hex);
-    });
-    svg+=`<path d="M92 150 L92 206 L150 232 L150 176 Z" fill="${shade(pc,-12)}"/>
-      <path d="M208 150 L208 206 L150 232 L150 176 Z" fill="${pc}"/>`;
+    svg+=`<ellipse cx="160" cy="242" rx="76" ry="9" fill="${LINE}" opacity=".07"/>`;
+    svg+=`<g filter="url(#ds)"><path d="M44 62 L104 34 L164 62 L104 90 Z" ${O(lite(pc),2.4)}/>
+      <path d="M44 62 L44 76 L104 104 L104 90 Z" ${O(dark(pc),2.4)}/>
+      <path d="M164 62 L164 76 L104 104 L104 90 Z" ${O(pc,2.4)}/></g>`;
+    svg+=bouquet(160,132,.86,wo,wi,fc,rc,kind);
+    svg+=`<path d="M92 156 L160 128 L228 156 L160 184 Z" ${O(mul(pc,.72),2.4)}/>`;
+    /* آیتم‌ها روی لبه جلویی جعبه می‌نشینند تا هرگز پشت دیواره نروند */
+    const rim=x=>156+(34*(1-Math.abs(x-160)/68));
+    svg+=drawItems(100,220,rim,.92);
+    svg+=`<path d="M92 156 L92 216 L160 244 L160 184 Z" ${O(dark(pc),2.4)}/>`;
+    svg+=`<path d="M228 156 L228 216 L160 244 L160 184 Z" ${O(pc,2.4)}/>`;
   }
 
   const art=document.getElementById("art");
   art.innerHTML=svg;
-  art.classList.remove("flash");
-  void art.offsetWidth;
-  art.classList.add("flash");
 }
 
-/* ============ قیمت ============ */
-function total(){
-  let t=get(PACKS,state.pack).price + get(FLOWERS,state.flower).price;
-  state.addons.forEach(a=>t+=a.price);
-  return t;
-}
+/* ============ قیمت و رابط ============ */
 const fmt=n=>n.toLocaleString("en-US");
+function total(){let t=get(PACKS,state.pack).price+get(FLOWERS,state.flower).price;
+  state.addons.forEach(a=>t+=a.price*(a.qty||1));return t;}
 
-/* ============ رابط ============ */
-function chips(el,arr,sel,on){
-  el.innerHTML="";
-  arr.forEach(o=>{
-    const b=document.createElement("button");
-    b.className="pick";
-    b.textContent=o.name;
-    b.setAttribute("aria-pressed",String(sel()===o.id));
-    b.onclick=()=>{on(o.id);render();};
-    el.appendChild(b);
-  });
-}
+function chips(el,arr,sel,on){el.innerHTML="";
+  arr.forEach(o=>{const b=document.createElement("button");b.className="pick";b.textContent=o.name;
+    b.setAttribute("aria-pressed",String(sel()===o.id));b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
 
-function swatches(el,arr,sel,on){
-  el.innerHTML="";
-  arr.forEach(o=>{
-    const b=document.createElement("button");
-    b.className="swatch";
-    b.style.background=o.hex;
-    b.title=o.name;
-    b.setAttribute("aria-label",o.name);
-    b.setAttribute("aria-pressed",String(sel()===o.id));
-    b.onclick=()=>{on(o.id);render();};
-    el.appendChild(b);
-  });
-}
+function swatches(el,arr,sel,on){el.innerHTML="";
+  arr.forEach(o=>{const b=document.createElement("button");b.className="swatch";b.style.background=o.hex;
+    b.title=o.name;b.setAttribute("aria-label",o.name);b.setAttribute("aria-pressed",String(sel()===o.id));
+    b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
 
-function renderAddons(){
-  const el=document.getElementById("addons");
-  el.innerHTML="";
-  const full=state.addons.length>=CAP[state.pack];
-  ADDONS.forEach(o=>{
-    const inside=state.addons.some(a=>a.id===o.id);
-    const b=document.createElement("button");
-    b.className="pick";
-    b.textContent=inside?"− "+o.name:"+ "+o.name;
-    b.disabled=!inside&&full;
-    b.style.opacity=(!inside&&full)?".4":"1";
-    b.onclick=()=>{
-      if(inside) state.addons=state.addons.filter(a=>a.id!==o.id);
-      else state.addons.push({...o});
-      render();
-    };
-    el.appendChild(b);
-  });
-}
+function renderAddons(){const el=document.getElementById("addons");el.innerHTML="";
+  const full=slotsUsed()>=CAP[state.pack];
+  ADDONS.forEach(o=>{const cur=state.addons.find(a=>a.id===o.id);
+    const b=document.createElement("button");b.className="pick";
+    b.textContent=cur?o.name+" ×"+cur.qty:o.name;
+    b.setAttribute("aria-pressed",String(!!cur));
+    b.disabled=full&&!cur;
+    b.onclick=()=>{if(slotsUsed()>=CAP[state.pack])return;
+      if(cur)cur.qty++;else state.addons.push({...o,qty:1});render();};
+    el.appendChild(b);});}
 
-function renderList(){
-  const el=document.getElementById("list");
-  el.innerHTML="";
+function renderList(){const el=document.getElementById("list");el.innerHTML="";
   const f=get(FLOWERS,state.flower);
-  const rows=[{id:"__f",name:f.name,price:f.price,hex:hex(FLOWER_COLORS,state.flowerColor),fixed:true},...state.addons];
-  rows.forEach(r=>{
-    const li=document.createElement("li");
-    const dot=document.createElement("span");
-    dot.className="dot"; dot.style.background=r.hex;
-    const nm=document.createElement("span");
-    nm.className="nm"; nm.textContent=r.name;
-    const pr=document.createElement("span");
-    pr.className="pr"; pr.textContent=fmt(r.price)+" تومان";
-    li.append(dot,nm,pr);
+  const li0=document.createElement("li");
+  const d0=document.createElement("span");d0.className="dot";d0.style.background=hex(FLOWER_COLORS,state.flowerColor);
+  const n0=document.createElement("span");n0.className="nm";n0.textContent=f.name;
+  const p0=document.createElement("span");p0.className="pr";p0.textContent=fmt(f.price)+" تومان";
+  li0.append(d0,n0,p0);el.appendChild(li0);
 
-    if(!r.fixed){
-      if(r.colorable){
-        const c=document.createElement("button");
-        c.className="mini"; c.textContent="رنگ";
-        c.onclick=()=>{
-          const pal=["#6B4226","#C9A55C","#D98FA0","#5C7F49","#4A4650"];
-          r.hex=pal[(pal.indexOf(r.hex)+1)%pal.length];
-          render();
-        };
-        li.append(c);
-      }
-      const d=document.createElement("button");
-      d.className="mini"; d.textContent="حذف";
-      d.onclick=()=>{state.addons=state.addons.filter(a=>a!==r);render();};
-      li.append(d);
-    }
-    el.appendChild(li);
-  });
+  state.addons.forEach(r=>{const li=document.createElement("li");
+    const d=document.createElement("span");d.className="dot";d.style.background=r.hex;
+    const n=document.createElement("span");n.className="nm";n.textContent=r.name;
+    const p=document.createElement("span");p.className="pr";p.textContent=fmt(r.price*r.qty)+" تومان";
+    const q=document.createElement("span");q.className="qty";
+    const m=document.createElement("button");m.className="mini";m.textContent="−";
+    m.onclick=()=>{r.qty--;if(r.qty<1)state.addons=state.addons.filter(a=>a!==r);render();};
+    const c=document.createElement("span");c.className="cnt";c.textContent=r.qty;
+    const pl=document.createElement("button");pl.className="mini";pl.textContent="+";
+    pl.disabled=slotsUsed()>=CAP[state.pack];
+    pl.onclick=()=>{if(slotsUsed()<CAP[state.pack]){r.qty++;render();}};
+    q.append(m,c,pl);li.append(d,n,p,q);el.appendChild(li);});
 
-  if(state.addons.length===0){
-    const li=document.createElement("li");
-    li.className="empty";
-    li.textContent="جا برای "+CAP[state.pack]+" افزودنی هست";
-    li.style.listStyle="none";
-    el.appendChild(li);
-  }
-}
+  const free=CAP[state.pack]-slotsUsed();
+  if(free>0){const li=document.createElement("li");li.className="empty";
+    li.textContent="جا برای "+free+" آیتم دیگر هست";el.appendChild(li);}}
 
 function render(){
   const cap=CAP[state.pack];
-  if(state.addons.length>cap) state.addons=state.addons.slice(0,cap);
-
+  while(slotsUsed()>cap){const last=state.addons[state.addons.length-1];
+    last.qty--;if(last.qty<1)state.addons.pop();}
   chips(document.getElementById("packs"),PACKS,()=>state.pack,v=>state.pack=v);
   swatches(document.getElementById("packColors"),PACK_COLORS,()=>state.packColor,v=>state.packColor=v);
-  chips(document.getElementById("flowers"),FLOWERS,()=>state.flower,v=>state.flower=v);
-  swatches(document.getElementById("flowerColors"),FLOWER_COLORS,()=>state.flowerColor,v=>state.flowerColor=v);
-  document.getElementById("msgSection").style.display = state.pack==="card" ? "" : "none";
-  chips(document.getElementById("msgLang"),
-        [{id:"fa",name:"فارسی"},{id:"en",name:"English"}],
-        ()=>state.msgLang, v=>state.msgLang=v);
-  const mel=document.getElementById("msgs");
-  mel.innerHTML="";
-  MESSAGES.forEach((m,i)=>{
-    const b=document.createElement("button");
-    b.className="pick";
+  document.getElementById("msgSection").style.display=state.pack==="card"?"":"none";
+  chips(document.getElementById("msgLang"),[{id:"fa",name:"فارسی"},{id:"en",name:"English"}],
+        ()=>state.msgLang,v=>state.msgLang=v);
+  const mel=document.getElementById("msgs");mel.innerHTML="";
+  MESSAGES.forEach((m,i)=>{const b=document.createElement("button");b.className="pick";
     b.textContent=state.msgLang==="fa"?m.fa:m.en;
     b.setAttribute("aria-pressed",String(!state.custom.trim()&&state.msgIndex===i));
     b.onclick=()=>{state.msgIndex=i;state.custom="";document.getElementById("custom").value="";render();};
-    mel.appendChild(b);
-  });
-
+    mel.appendChild(b);});
+  chips(document.getElementById("flowers"),FLOWERS,()=>state.flower,v=>state.flower=v);
+  swatches(document.getElementById("flowerColors"),FLOWER_COLORS,()=>state.flowerColor,v=>state.flowerColor=v);
   swatches(document.getElementById("wrapOuter"),WRAP_COLORS,()=>state.wrapOuter,v=>state.wrapOuter=v);
   swatches(document.getElementById("wrapInner"),WRAP_COLORS,()=>state.wrapInner,v=>state.wrapInner=v);
   swatches(document.getElementById("ribbons"),RIBBONS,()=>state.ribbon,v=>state.ribbon=v);
-  renderAddons();
-  renderList();
+  renderAddons();renderList();
   document.getElementById("price").textContent=fmt(total());
   document.getElementById("tag").textContent="سایز کوچک — ظرفیت "+cap;
   draw();
 }
 
 document.getElementById("custom").addEventListener("input",e=>{
-  state.custom=e.target.value;
-  render();
-  e.target.focus();
-});
+  state.custom=e.target.value;render();e.target.focus();});
 
 render();
 </script>
