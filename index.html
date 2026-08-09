@@ -80,6 +80,31 @@ padding:11px 18px calc(11px + env(safe-area-inset-bottom));display:flex;align-it
 .buy{background:var(--ink);color:var(--card);border:2px solid var(--ink);border-radius:11px;
 padding:11px 20px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:3px 3px 0 var(--accent)}
 .buy:disabled{opacity:.4;box-shadow:none}
+.ovl{position:fixed;inset:0;z-index:60;background:rgba(58,56,53,.55);display:none;
+align-items:flex-end;justify-content:center}
+.ovl.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:520px;max-height:92vh;overflow:auto;
+border:2px solid var(--ink);border-top-left-radius:22px;border-top-right-radius:22px;
+padding:18px 18px calc(18px + env(safe-area-inset-bottom))}
+.sheet h3{margin:0 0 4px;font-size:17px;font-weight:800}
+.sheet p.lead{margin:0 0 14px;font-size:12.5px;color:var(--muted);font-weight:600}
+.fld{display:block;margin-bottom:10px}
+.fld span{display:block;font-size:12px;font-weight:700;margin-bottom:4px}
+.fld input{width:100%;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);
+background:var(--card);border:2px solid var(--ink);border-radius:11px;padding:10px 12px;
+box-shadow:2px 2px 0 var(--sh)}
+.fld input:focus{outline:none;background:#FCFFF2}
+.err{color:#C4442F;font-size:11.5px;font-weight:700;margin:2px 0 8px}
+.acts{display:flex;gap:8px;margin-top:12px}
+.acts .buy{flex:1;text-align:center}
+.ghost{background:var(--card);color:var(--ink);box-shadow:3px 3px 0 var(--sh)}
+table.inv{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+table.inv th,table.inv td{border:1px solid var(--sh);padding:6px 7px;text-align:right}
+table.inv th{background:var(--paper);font-weight:800;font-size:11.5px}
+table.inv td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.kv{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;font-weight:600}
+.kv b{font-weight:800}
+.tot2{border-top:2px solid var(--ink);margin-top:8px;padding-top:8px;font-size:15px}
 @keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -97,6 +122,8 @@ padding:11px 20px;font-family:inherit;font-size:14px;font-weight:800;cursor:poin
 
 <div id="cards"></div>
 
+<div class="ovl" id="ovl"><div class="sheet" id="sheet"></div></div>
+
 <div class="bar">
   <div class="tot"><b id="price">0</b><small id="psrc">تومان</small></div>
   <button class="buy" id="buy">ثبت سفارش</button>
@@ -108,7 +135,7 @@ padding:11px 20px;font-family:inherit;font-size:14px;font-weight:800;cursor:poin
 "use strict";
 /* ============ قیمت‌ها: از فایل بیرونی، با مقدار پیش‌فرض ============ */
 const PRICE_URL="prices.csv";
-const PRICES={box:250000,cone:180000,card:120000,
+const PRICES={none:0,ship:60000,box:250000,cone:180000,card:120000,
   gyp:45000,daisy:55000,lav:60000,sun:70000,
   wrap_sheet:12000,wrap_clear:0,wrap_matte:2000,wrap_pattern:5000,
   sad:35000,aroos:40000,rosepink:85000,roseblue:120000,tulip:75000,saboni:60000,
@@ -120,7 +147,8 @@ const PRICES={box:250000,cone:180000,card:120000,
   soda:40000,ram:90000,charm:60000,note:15000};
 const P=id=>PRICES[id]||0;
 
-const PACKS=[{id:"card",name:"کارت‌پستال"},{id:"cone",name:"ساک مخروطی"},{id:"box",name:"جعبه"}];
+const PACKS=[{id:"none",name:"بدون بسته‌بندی"},{id:"card",name:"کارت‌پستال"},
+{id:"cone",name:"ساک مخروطی"},{id:"box",name:"جعبه"}];
 const PACK_COLORS=[{id:"rose",name:"صورتی",hex:"#F09FB2"},{id:"cream",name:"کرم",hex:"#F0D9AF"},
 {id:"sky",name:"آبی",hex:"#8FBBE8"},{id:"sage",name:"سبز",hex:"#7FAE72"},
 {id:"lilac",name:"یاسی",hex:"#B592DC"},{id:"coral",name:"مرجانی",hex:"#F0885F"},
@@ -191,7 +219,7 @@ const MSGS=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Annivers
 {en:"Just Because",fa:"همین‌طوری، برای تو"}];
 
 const FLOWER_MIN=2,FLOWER_MAX=10,WRAP_MIN=4,WRAP_MAX=12;
-const CAP={card:4,cone:6,box:10};
+const CAP={none:0,card:4,cone:6,box:10};
 
 const S={pack:"box",packColor:"rose",flowers:[{id:"daisy",qty:2}],nat:[],leaves:[],flowerColor:"white",
 wrapFinish:"matte",wrapColor:"mint",wrapSheets:4,ribbon:"gold",
@@ -430,20 +458,20 @@ function bouquet(){
   const wrapG=new THREE.Group();g.add(wrapG);
   for(let i=0;i<layers;i++){
     const k=1+i*.05;
-    const c=solid(new THREE.CylinderGeometry(.6*k,.18,1.2,8,1,true),
+    const c=solid(new THREE.CylinderGeometry(.78*k,.23,1.56,8,1,true),
       (S.wrapFinish==="pattern"&&i%2)?tint(wc,-.22):wc,op);
-    c.position.y=.6;c.rotation.y=i*.42;wrapG.add(c);
+    c.position.y=.78;c.rotation.y=i*.42;wrapG.add(c);
   }
-  gltf(WRAP_MODEL,m=>{kill(wrapG);wrapG.add(m);},{height:1.24,color:wc});
+  gltf(WRAP_MODEL,m=>{kill(wrapG);wrapG.add(m);},{height:1.61,color:wc});
   const b=solid(new THREE.TorusGeometry(.14,.038,6,12),rc,{edges:false});
-  b.position.y=.26;b.rotation.x=Math.PI/2;g.add(b);
+  b.position.y=.34;b.rotation.x=Math.PI/2;g.add(b);
   /* برگ‌ها عقب‌تر و بازتر می‌ایستند تا پس‌زمینه گل‌ها شوند */
   const lv=[];S.leaves.forEach(f=>{for(let i=0;i<f.qty;i++)lv.push(f);});
   const ln=Math.max(lv.length,1);
   lv.forEach((L,i)=>{
     const a=i/ln*Math.PI*2+.4, r=.2;
     const e=leafArt(L.shape,L.hex);
-    e.position.set(Math.cos(a)*r,.95,Math.sin(a)*r);
+    e.position.set(Math.cos(a)*r,1.24,Math.sin(a)*r);
     e.rotation.z=-Math.cos(a)*.5;e.rotation.x=Math.sin(a)*.5;
     e.scale.setScalar(1.3);g.add(e);
   });
@@ -457,10 +485,10 @@ function bouquet(){
   list.forEach((t,i)=>{
     const a=i/n*Math.PI*2,lean=.14+(i%3)*.07,h=.5+(i%4)*.09;
     const st=solid(new THREE.CylinderGeometry(.016,.016,h,5),"#4F7A3A",{edges:false});
-    st.position.set(Math.cos(a)*lean*.5,1.02+h*.5,Math.sin(a)*lean*.5);
+    st.position.set(Math.cos(a)*lean*.5,1.33+h*.5,Math.sin(a)*lean*.5);
     st.rotation.z=-Math.cos(a)*.24;st.rotation.x=Math.sin(a)*.24;g.add(st);
     const hd=t.k==="art"?head(t.id,fc):natHead(t.shape,t.hex);
-    hd.position.set(Math.cos(a)*lean*2.1,1.02+h*1.02,Math.sin(a)*lean*2.1);
+    hd.position.set(Math.cos(a)*lean*2.1,1.33+h*1.02,Math.sin(a)*lean*2.1);
     hd.scale.setScalar(1.2);
     g.add(hd);
   });
@@ -502,6 +530,7 @@ function item(kind,c){
 /* ---- بسته‌بندی ---- */
 function pack(){
   const g=new THREE.Group(),pc=hx(PACK_COLORS,S.packColor),lt=tint(pc,.24),dk=tint(pc,-.22);
+  if(S.pack==="none"){g.userData.floor=0;g.userData.rim=0;return g;}
   if(S.pack==="box"){
     const W=2.4,D=1.4,H=.92,T=.07;
     g.add(at(box(W,T,D,dk),0,T/2,0));
@@ -536,6 +565,7 @@ function pack(){
 /* ---- چیدمان ---- */
 function slots(n){
   const c={box:{w:1.9,d:.82,z:-.2},cone:{w:.7,d:.42,z:-.08},card:{w:1.5,d:.5,z:.55}}[S.pack];
+  if(!c||n<1)return [];
   const rows=n<=4?1:2,per=Math.ceil(n/rows),o=[];let i=0;
   for(let r=0;r<rows;r++){const k=Math.min(per,n-i),z=c.z+(rows===1?c.d*.5:r*c.d);
     for(let j=0;j<k;j++,i++){const t=k===1?.5:j/(k-1);
@@ -548,10 +578,11 @@ function draw(){
   kill(packG);kill(itemG);kill(bqG);
   const p=pack();packG.add(p);
   const fl=p.userData.floor||0;
-  gltf(MODELS[S.pack],m=>{kill(packG);packG.add(m);},{height:S.pack==="box"?1:1.4});
+  if(MODELS[S.pack])gltf(MODELS[S.pack],m=>{kill(packG);packG.add(m);},{height:S.pack==="box"?1:1.4});
 
   const bq=bouquet();
-  if(S.pack==="box"){bq.position.set(0,fl,-.36);bq.scale.setScalar(1.1);}
+  if(S.pack==="none"){bq.position.set(0,0,0);bq.scale.setScalar(1.05);}
+  else if(S.pack==="box"){bq.position.set(0,fl,-.36);bq.scale.setScalar(1.1);}
   else if(S.pack==="cone"){bq.position.set(0,.72,0);bq.scale.setScalar(.95);}
   else{bq.position.set(0,.55,.09);bq.rotation.x=1.5;bq.scale.setScalar(.72);}
   bqG.add(bq);
@@ -885,7 +916,149 @@ function popItem(){
   burst((Math.random()-.5)*1.2,y,(Math.random()-.5)*.6,"#D2F32C",16);
 }
 
-document.getElementById("buy").onclick=()=>{if(mode()&&(mode()==="art"?aFQty():nFQty())>=FLOWER_MIN)startDelivery();};
+/* ============ حساب کاربری و فاکتور ============
+   این هاست ایستا است و سرور ندارد، پس اطلاعات در همین مرورگر می‌ماند.
+   برای ذخیره واقعی سفارش‌ها آدرس یک سرویس دریافت فرم را در ORDER_ENDPOINT بگذار. */
+const ORDER_ENDPOINT="";
+const mem={};
+const DB={get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}},
+          set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}};
+
+const ovl=document.getElementById("ovl"),sheet=document.getElementById("sheet");
+function closeOvl(){ovl.className="ovl";sheet.innerHTML="";}
+ovl.addEventListener("click",e=>{if(e.target===ovl)closeOvl();});
+
+function user(){try{return JSON.parse(DB.get("gf_user")||"null")}catch(e){return null}}
+function saveUser(u){DB.set("gf_user",JSON.stringify(u));}
+function orders(){try{return JSON.parse(DB.get("gf_orders")||"[]")}catch(e){return []}}
+function saveOrder(o){const a=orders();a.unshift(o);DB.set("gf_orders",JSON.stringify(a.slice(0,50)));}
+
+const rnd=n=>Math.random().toString(36).slice(2,2+n).toUpperCase();
+function faDate(d){
+  try{return new Intl.DateTimeFormat("fa-IR",{dateStyle:"full"}).format(d)}
+  catch(e){return d.toISOString().slice(0,10)}}
+function faTime(d){
+  try{return new Intl.DateTimeFormat("fa-IR",{hour:"2-digit",minute:"2-digit"}).format(d)}
+  catch(e){return d.toTimeString().slice(0,5)}}
+
+/* اقلام فاکتور: هر چیزی که قیمت دارد، با تعداد و قیمت واحد */
+function invoiceLines(){
+  const L=[];
+  const pk=find(PACKS,S.pack);
+  if(P(S.pack)>0)L.push({t:"بسته‌بندی",n:pk.name+" — "+find(PACK_COLORS,S.packColor).name,q:1,u:P(S.pack)});
+  S.flowers.forEach(f=>L.push({t:"گل مصنوعی",
+    n:find(FLOWERS,f.id).name+" — "+find(FLOWER_COLORS,S.flowerColor).name,q:f.qty,u:P(f.id)}));
+  S.nat.forEach(f=>L.push({t:"گل طبیعی",n:find(NAT,f.id).name,q:f.qty,u:P(f.id)}));
+  S.leaves.forEach(f=>L.push({t:"برگ تزئینی",n:find(LEAF,f.id).name,q:f.qty,u:P(f.id)}));
+  const wu=P("wrap_sheet")+P("wrap_"+S.wrapFinish);
+  L.push({t:"کاغذ کادو",n:find(WRAP_FINISH,S.wrapFinish).name+" — "+find(WRAP_COLORS,S.wrapColor).name,
+    q:S.wrapSheets,u:wu});
+  L.push({t:"روبان",n:find(RIBBONS,S.ribbon).name,q:1,u:0});
+  S.addons.forEach(a=>L.push({t:"افزودنی",n:a.name,q:a.qty,u:P(a.id)}));
+  return L;
+}
+
+function buildInvoice(u){
+  const now=new Date(),L=invoiceLines();
+  const sub=L.reduce((t,l)=>t+l.u*l.q,0);
+  const ship=P("ship");
+  return {code:"GF-"+now.toISOString().slice(2,10).replace(/-/g,"")+"-"+rnd(4),
+    customer:u.code,name:u.name,phone:u.phone,email:u.email,
+    dateISO:now.toISOString(),date:faDate(now),time:faTime(now),
+    lines:L,sub:sub,ship:ship,grand:sub+ship,
+    prep:"2 تا 4 ساعت کاری",
+    ship_time:"تهران همان روز، شهرستان 2 تا 3 روز کاری",
+    pay:"کارت‌به‌کارت — پس از تأیید رسید ارسال می‌شود",
+    status:"در انتظار پرداخت",
+    note:S.pack==="card"?("نوشته کارت: "+cardTxt()):"—"};
+}
+
+function invoiceHTML(v){
+  const rows=v.lines.map(l=>
+    "<tr><td>"+l.t+"</td><td>"+l.n+"</td><td class='n'>"+l.q+
+    "</td><td class='n'>"+fmt(l.u)+"</td><td class='n'>"+fmt(l.u*l.q)+"</td></tr>").join("");
+  return "<h3>فاکتور سفارش</h3><p class='lead'>این فاکتور را نگه دار — کد سفارش برای پیگیری لازم است.</p>"+
+   "<div class='kv'><span>کد سفارش</span><b>"+v.code+"</b></div>"+
+   "<div class='kv'><span>کد مشتری</span><b>"+v.customer+"</b></div>"+
+   "<div class='kv'><span>تاریخ</span><b>"+v.date+"</b></div>"+
+   "<div class='kv'><span>ساعت ثبت</span><b>"+v.time+"</b></div>"+
+   "<div class='kv'><span>نام خریدار</span><b>"+v.name+"</b></div>"+
+   "<div class='kv'><span>تلفن</span><b>"+v.phone+"</b></div>"+
+   "<div class='kv'><span>ایمیل</span><b>"+(v.email||"—")+"</b></div>"+
+   "<table class='inv'><tr><th>دسته</th><th>شرح</th><th>تعداد</th><th>قیمت واحد</th><th>جمع</th></tr>"+
+   rows+"</table>"+
+   "<div class='kv'><span>جمع اقلام</span><b>"+fmt(v.sub)+" تومان</b></div>"+
+   "<div class='kv'><span>هزینه ارسال</span><b>"+fmt(v.ship)+" تومان</b></div>"+
+   "<div class='kv tot2'><span>مبلغ قابل پرداخت</span><b>"+fmt(v.grand)+" تومان</b></div>"+
+   "<div class='kv'><span>زمان آماده‌سازی</span><b>"+v.prep+"</b></div>"+
+   "<div class='kv'><span>زمان ارسال</span><b>"+v.ship_time+"</b></div>"+
+   "<div class='kv'><span>روش پرداخت</span><b>"+v.pay+"</b></div>"+
+   "<div class='kv'><span>وضعیت</span><b>"+v.status+"</b></div>"+
+   "<div class='kv'><span>توضیحات</span><b>"+v.note+"</b></div>";
+}
+
+function showInvoice(v){
+  ovl.className="ovl on";
+  sheet.innerHTML=invoiceHTML(v);
+  const a=el("div","acts");
+  const dl=el("button","buy","دانلود فاکتور");
+  dl.onclick=()=>{
+    const doc="<!DOCTYPE html><html lang='fa' dir='rtl'><meta charset='utf-8'>"+
+      "<title>"+v.code+"</title><style>body{font-family:Vazirmatn,Tahoma,sans-serif;padding:24px;color:#3A3835}"+
+      "table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #C6C3BB;padding:7px;text-align:right}"+
+      ".kv{display:flex;justify-content:space-between;padding:3px 0}</style><body>"+invoiceHTML(v)+"</body></html>";
+    const b=new Blob([doc],{type:"text/html"}),url=URL.createObjectURL(b);
+    const link=document.createElement("a");link.href=url;link.download=v.code+".html";link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+  };
+  const ok=el("button","buy ghost","بستن");ok.onclick=closeOvl;
+  a.appendChild(dl);a.appendChild(ok);sheet.appendChild(a);
+}
+
+function showAuth(){
+  ovl.className="ovl on";
+  const u=user()||{};
+  sheet.innerHTML="";
+  sheet.appendChild(el("h3",null,"ورود یا ثبت‌نام"));
+  sheet.appendChild(el("p","lead","برای ثبت سفارش، نام و یک راه تماس لازم است."));
+  const mkf=(lbl,ph,val,type)=>{const w=el("label","fld");w.appendChild(el("span",null,lbl));
+    const i=el("input");i.placeholder=ph;i.value=val||"";if(type)i.type=type;
+    w.appendChild(i);sheet.appendChild(w);return i;};
+  const fn=mkf("نام و نام خانوادگی","مثلاً صدف رضایی",u.name);
+  const fp=mkf("شماره همراه","09xxxxxxxxx",u.phone,"tel");
+  const fe=mkf("ایمیل — اختیاری","name@mail.com",u.email,"email");
+  const er=el("div","err","");er.style.display="none";sheet.appendChild(er);
+  const a=el("div","acts");
+  const go=el("button","buy","ادامه و ثبت سفارش");
+  go.onclick=()=>{
+    const name=fn.value.trim(),phone=fp.value.trim().replace(/\D/g,""),email=fe.value.trim();
+    if(name.length<3){er.textContent="نام را کامل بنویس";er.style.display="";return;}
+    if(!/^09\d{9}$/.test(phone)){er.textContent="شماره همراه باید 11 رقم و با 09 شروع شود";er.style.display="";return;}
+    if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){er.textContent="ایمیل درست نیست";er.style.display="";return;}
+    const prev=user();
+    saveUser({name:name,phone:phone,email:email,code:(prev&&prev.code)||("CU-"+rnd(6))});
+    placeOrder();
+  };
+  const no=el("button","buy ghost","بعداً");no.onclick=closeOvl;
+  a.appendChild(go);a.appendChild(no);sheet.appendChild(a);
+}
+
+function placeOrder(){
+  const u=user();if(!u){showAuth();return;}
+  const v=buildInvoice(u);
+  saveOrder(v);
+  if(ORDER_ENDPOINT){
+    try{fetch(ORDER_ENDPOINT,{method:"POST",mode:"no-cors",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify(v)});}catch(e){}
+  }
+  closeOvl();startDelivery();
+  setTimeout(()=>showInvoice(v),1400);
+}
+
+document.getElementById("buy").onclick=()=>{
+  if(!mode()||(mode()==="art"?aFQty():nFQty())<FLOWER_MIN)return;
+  if(!user())showAuth();else placeOrder();
+};
 
 makeCardTex();init();paint();pullPrices();
 setInterval(pullPrices,60000);
