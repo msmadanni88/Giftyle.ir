@@ -7,123 +7,94 @@
 <title>ساخت کادو</title>
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <style>
-:root{
-  --ink:#12100F;
-  --paper:#F5F3EE;
-  --card:#FFFFFF;
-  --accent:#FF3D68;
-  --muted:#6E6A66;
-}
+:root{--ink:#3A3835;--paper:#F5F3EE;--card:#FFFFFF;--accent:#D2F32C;--muted:#7C7872;--shadow:#C6C3BB}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{font-family:Vazirmatn,system-ui,sans-serif;background:var(--paper);color:var(--ink);
-  font-size:15px;line-height:1.7;padding-bottom:108px}
-
-header{padding:20px 20px 12px}
-header h1{font-size:24px;font-weight:800;letter-spacing:-.7px;margin:0}
+  font-size:15px;line-height:1.7;padding-bottom:104px}
+header{padding:18px 20px 10px}
+header h1{font-size:21px;font-weight:800;letter-spacing:-.6px;margin:0}
 header p{margin:2px 0 0;font-size:12.5px;color:var(--muted);font-weight:500}
 
-.stage{position:sticky;top:0;z-index:20;background:var(--paper);padding:4px 20px 16px}
-.stage-inner{background:var(--card);border:2.5px solid var(--ink);border-radius:26px;
-  box-shadow:5px 5px 0 var(--ink);height:290px;display:flex;align-items:center;
-  justify-content:center;overflow:hidden;position:relative}
-svg#art{width:100%;height:100%}
-.stage-tag{position:absolute;top:12px;inset-inline-start:14px;font-size:11px;font-weight:700;
-  border:2px solid var(--ink);border-radius:999px;padding:3px 11px;background:var(--card)}
+.stage{position:sticky;top:0;z-index:20;background:var(--paper);padding:4px 20px 14px}
+.stage-inner{background:var(--card);border:2px solid var(--ink);border-radius:22px;
+  box-shadow:5px 5px 0 var(--shadow);height:266px;overflow:hidden;position:relative;touch-action:none}
+#gl{display:block;width:100%;height:100%}
+.stage-tag{position:absolute;top:11px;inset-inline-start:13px;font-size:11px;font-weight:700;
+  border:2px solid var(--ink);border-radius:999px;padding:2px 10px;background:var(--card);pointer-events:none}
+.spin{position:absolute;bottom:10px;inset-inline-end:13px;font-size:10.5px;font-weight:600;
+  color:var(--muted);pointer-events:none}
 
-section{padding:0 20px 24px}
-h2{font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 12px;display:flex;
-  align-items:center;gap:10px;text-transform:uppercase}
+section{padding:0 20px 22px}
+h2{font-size:12px;font-weight:800;letter-spacing:.4px;margin:0 0 11px;display:flex;align-items:center;gap:10px}
 h2::after{content:"";flex:1;height:2px;background:var(--ink);opacity:.13}
-
-.row{display:flex;gap:10px;flex-wrap:wrap}
-
-.pick{border:2.5px solid var(--ink);background:var(--card);border-radius:18px;
-  padding:13px 20px;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);
-  cursor:pointer;box-shadow:3px 3px 0 var(--ink);
-  transition:transform .14s ease,box-shadow .14s ease,background .2s ease,color .2s ease}
-.pick:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-.pick[aria-pressed="true"]{background:var(--accent);color:#fff;animation:pop .3s ease}
+.row{display:flex;gap:9px;flex-wrap:wrap}
+.pick{border:2px solid var(--ink);background:var(--card);border-radius:14px;padding:10px 16px;
+  font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;
+  box-shadow:3px 3px 0 var(--shadow);transition:transform .14s,box-shadow .14s,background .2s,color .2s}
+.pick:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--shadow)}
+.pick[aria-pressed="true"]{background:var(--accent);color:var(--ink);animation:pop .3s ease}
 .pick:disabled{opacity:.32;box-shadow:none}
-.pick:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-
-.swatch{width:46px;height:46px;border-radius:50%;border:2.5px solid var(--ink);padding:0;
-  cursor:pointer;position:relative;filter:grayscale(1);opacity:.55;
-  box-shadow:2px 2px 0 var(--ink);
-  transition:filter .25s ease,opacity .25s ease,transform .18s ease,box-shadow .18s ease}
-.swatch[aria-pressed="true"]{filter:grayscale(0);opacity:1;transform:scale(1.1);
-  box-shadow:3px 3px 0 var(--ink);animation:pop .3s ease}
-.swatch:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
-
-ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-ul.items li{background:var(--card);border:2.5px solid var(--ink);border-radius:18px;
-  padding:12px 15px;display:flex;align-items:center;gap:12px;box-shadow:3px 3px 0 var(--ink)}
-.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--ink);flex:none}
-.nm{flex:1;font-size:15px;font-weight:700}
-.pr{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.swatch{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);padding:0;cursor:pointer;
+  filter:grayscale(1);opacity:.55;box-shadow:2px 2px 0 var(--shadow);
+  transition:filter .25s,opacity .25s,transform .18s}
+.swatch[aria-pressed="true"]{filter:none;opacity:1;transform:scale(1.1);animation:pop .3s ease}
+ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+ul.items li{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:10px 13px;
+  display:flex;align-items:center;gap:11px;box-shadow:3px 3px 0 var(--shadow)}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink);flex:none}
+.nm{flex:1;font-size:14px;font-weight:700}
+.pr{font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
 .qty{display:flex;align-items:center;gap:4px}
-.mini{border:2px solid var(--ink);background:var(--card);font-family:inherit;font-size:17px;
-  font-weight:800;line-height:1;width:34px;height:34px;border-radius:11px;cursor:pointer;
-  transition:background .15s,color .15s}
+.mini{border:2px solid var(--ink);background:var(--card);font-family:inherit;font-size:16px;font-weight:800;
+  line-height:1;width:30px;height:30px;border-radius:9px;cursor:pointer}
 .mini:active{background:var(--ink);color:var(--card)}
 .mini:disabled{opacity:.3}
-.cnt{min-width:22px;text-align:center;font-weight:800;font-size:15px}
-.empty{border:2.5px dashed var(--ink);border-radius:18px;padding:16px;text-align:center;
-  font-size:13.5px;font-weight:600;opacity:.55}
-
-.write{width:100%;margin-top:12px;font-family:inherit;font-size:15px;font-weight:600;
-  color:var(--ink);background:var(--card);border:2.5px solid var(--ink);border-radius:18px;
-  padding:14px 16px;box-shadow:3px 3px 0 var(--ink)}
-.write::placeholder{color:#A5A09B;font-weight:500}
-.write:focus{outline:none;background:#FFF8FA}
-.hint{margin:8px 3px 0;font-size:11.5px;color:var(--muted);font-weight:500}
-
-.bar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--card);
-  border-top:2.5px solid var(--ink);padding:14px 20px calc(14px + env(safe-area-inset-bottom));
-  display:flex;align-items:center;gap:14px}
+.cnt{min-width:20px;text-align:center;font-weight:800}
+.empty{border:2px dashed var(--ink);border-radius:14px;padding:14px;text-align:center;font-size:13px;
+  font-weight:600;opacity:.55}
+.write{width:100%;margin-top:11px;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);
+  background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:12px 14px;
+  box-shadow:3px 3px 0 var(--shadow)}
+.write:focus{outline:none;background:#FCFFF2}
+.hint{margin:7px 3px 0;font-size:11.5px;color:var(--muted);font-weight:500}
+.bar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--card);border-top:2px solid var(--ink);
+  padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px}
 .total{flex:1}
-.total b{display:block;font-size:24px;font-weight:800;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.total b{display:block;font-size:21px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
 .total small{font-size:11.5px;color:var(--muted);font-weight:500}
-.buy{background:var(--ink);color:var(--card);border:2.5px solid var(--ink);border-radius:18px;
-  padding:16px 28px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;
-  box-shadow:3px 3px 0 var(--accent);transition:transform .14s,box-shadow .14s}
+.buy{background:var(--ink);color:var(--card);border:2px solid var(--ink);border-radius:14px;
+  padding:13px 22px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:3px 3px 0 var(--accent)}
 .buy:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--accent)}
-
 @keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
-@keyframes drop{0%{opacity:0;transform:translateY(-10px) scale(.9)}100%{opacity:1;transform:none}}
-#art g.item{animation:drop .32s cubic-bezier(.3,1.4,.5,1)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>کادوی خودت را بچین</h1>
-  <p>هر چیزی اضافه کنی، همان‌جا رنگی می‌شود</p>
-</header>
+<header><h1>کادوی خودت را بچین</h1><p>جعبه را با انگشت بچرخان</p></header>
 
 <div class="stage">
-  <div class="stage-inner">
+  <div class="stage-inner" id="stageBox">
+    <canvas id="gl"></canvas>
     <span class="stage-tag" id="tag">سایز کوچک</span>
-    <svg id="art" viewBox="0 0 320 290" aria-label="پیش‌نمایش کادو"></svg>
+    <span class="spin">بکش تا بچرخد</span>
   </div>
 </div>
 
 <section><h2>بسته‌بندی</h2><div class="row" id="packs"></div></section>
 <section><h2>رنگ بسته‌بندی</h2><div class="row" id="packColors"></div></section>
-
 <section id="msgSection">
   <h2>نوشته روی کارت</h2>
-  <div class="row" style="margin-bottom:12px" id="msgLang"></div>
+  <div class="row" style="margin-bottom:11px" id="msgLang"></div>
   <div class="row" id="msgs"></div>
   <input id="custom" class="write" maxlength="42" placeholder="یا خودت بنویس — مثلاً صدف جان دلمون تنگه برات">
   <p class="hint">حداکثر 42 نویسه تا روی کارت جا شود</p>
 </section>
-
 <section><h2>گل</h2><div class="row" id="flowers"></div>
-<div class="row" id="flowerColors" style="margin-top:12px"></div></section>
-<section><h2>کاغذ رویی</h2><div class="row" id="wrapOuter"></div></section>
-<section><h2>کاغذ زیرین</h2><div class="row" id="wrapInner"></div></section>
+<div class="row" id="flowerColors" style="margin-top:11px"></div></section>
+<section><h2>کاغذ دور گل</h2><div class="row" id="wrapOuter"></div></section>
 <section><h2>روبان</h2><div class="row" id="ribbons"></div></section>
 <section><h2>خوراکی و افزودنی</h2><div class="row" id="addons"></div></section>
 <section><h2>داخل کادو</h2><ul class="items" id="list"></ul></section>
@@ -133,50 +104,40 @@ ul.items li{background:var(--card);border:2.5px solid var(--ink);border-radius:1
   <button class="buy">ثبت سفارش</button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-/* ============ داده ============ */
+/* ===================== داده ===================== */
 const PACKS=[{id:"card",name:"کارت‌پستال",price:120000},
              {id:"cone",name:"ساک مخروطی",price:180000},
              {id:"box", name:"جعبه",       price:250000}];
-
-const PACK_COLORS=[{id:"cream",name:"کرم",hex:"#F0D9AF"},{id:"rose",name:"صورتی",hex:"#F09FB2"},
+const PACK_COLORS=[{id:"rose",name:"صورتی",hex:"#F09FB2"},{id:"cream",name:"کرم",hex:"#F0D9AF"},
   {id:"sky",name:"آبی",hex:"#8FBBE8"},{id:"sage",name:"سبز",hex:"#7FAE72"},
   {id:"lilac",name:"یاسی",hex:"#B592DC"},{id:"coral",name:"مرجانی",hex:"#F0885F"},
-  {id:"teal",name:"سبزآبی",hex:"#4FA7A0"},{id:"coal",name:"ذغالی",hex:"#4A4450"}];
-
+  {id:"teal",name:"سبزآبی",hex:"#4FA7A0"},{id:"coal",name:"ذغالی",hex:"#54505A"}];
 const WRAP_COLORS=[{id:"mint",name:"مینتی",hex:"#B9D8CE"},{id:"sky",name:"آبی",hex:"#B7CFE4"},
   {id:"peach",name:"هلویی",hex:"#F0C3A4"},{id:"blush",name:"صورتی",hex:"#EFC3CB"},
   {id:"lav",name:"یاسی",hex:"#C3BCDD"},{id:"kraft",name:"کرافت",hex:"#C8A276"},
-  {id:"cream",name:"کرم",hex:"#F2E7D5"},{id:"dusty",name:"گلبهی",hex:"#D2A6A0"},
-  {id:"sage",name:"سبز",hex:"#A9BB9C"},{id:"mustard",name:"خردلی",hex:"#D9B65A"},
-  {id:"white",name:"سفید",hex:"#F7F3EC"},{id:"coal",name:"ذغالی",hex:"#4A4450"}];
-
-const FLOWERS=[{id:"gyp",name:"ژیپسوفیلا",price:45000,kind:"puff"},
-  {id:"daisy",name:"بابونه",price:55000,kind:"daisy"},
-  {id:"lav",name:"لاوندر",price:60000,kind:"spike"},
-  {id:"sun",name:"آفتابگردان",price:70000,kind:"sun"}];
-
+  {id:"cream",name:"کرم",hex:"#F2E7D5"},{id:"sage",name:"سبز",hex:"#A9BB9C"},
+  {id:"mustard",name:"خردلی",hex:"#D9B65A"},{id:"coal",name:"ذغالی",hex:"#54505A"}];
+const FLOWERS=[{id:"gyp",name:"ژیپسوفیلا",price:45000},{id:"daisy",name:"بابونه",price:55000},
+  {id:"lav",name:"لاوندر",price:60000},{id:"sun",name:"آفتابگردان",price:70000}];
 const FLOWER_COLORS=[{id:"white",name:"سفید",hex:"#FAF6EE"},{id:"blush",name:"صورتی",hex:"#E9AEB8"},
   {id:"butter",name:"زرد",hex:"#EBC96B"},{id:"violet",name:"بنفش",hex:"#9A86C4"}];
-
-const RIBBONS=[{id:"white",name:"سفید",hex:"#F7F3EC"},{id:"gold",name:"طلایی",hex:"#C9A55C"},
+const RIBBONS=[{id:"gold",name:"طلایی",hex:"#C9A55C"},{id:"white",name:"سفید",hex:"#F7F3EC"},
   {id:"rose",name:"صورتی",hex:"#D98FA0"},{id:"sap",name:"سبز",hex:"#5C7F49"},
-  {id:"coal",name:"ذغالی",hex:"#3A3640"}];
-
+  {id:"coal",name:"ذغالی",hex:"#4A4650"}];
 const ADDONS=[
   {id:"snk", name:"اسنیکرز", price:75000, hex:"#9A5F30", art:"bar"},
   {id:"kit", name:"کیت‌کت",   price:55000, hex:"#D6342C", art:"bar"},
-  {id:"oreo",name:"اورئو",    price:60000, hex:"#2F6BB8", art:"cookiepack"},
+  {id:"oreo",name:"اورئو",    price:60000, hex:"#2F6BB8", art:"bar"},
   {id:"mm",  name:"ام‌اند‌ام", price:65000, hex:"#7A4A2A", art:"pouch"},
   {id:"tob", name:"توبلرون",  price:95000, hex:"#E0B03F", art:"prism"},
-  {id:"kin", name:"کیندر",    price:70000, hex:"#F2EFE6", art:"carton"},
+  {id:"kin", name:"کیندر",    price:70000, hex:"#EFE7D8", art:"carton"},
   {id:"fer", name:"فررو",     price:85000, hex:"#C9A24A", art:"truffle"},
   {id:"soda",name:"نوشابه",   price:40000, hex:"#E23A3A", art:"can"},
   {id:"ram", name:"رامونه",   price:90000, hex:"#7DC242", art:"bottle"},
   {id:"charm",name:"چارم",    price:60000, hex:"#D9AE4E", art:"charm"},
-  {id:"note",name:"کارت دست‌نویس",price:15000,hex:"#FFFFFF",art:"note"}
-];
-
+  {id:"note",name:"کارت دست‌نویس",price:15000,hex:"#FFFFFF",art:"note"}];
 const MESSAGES=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Anniversary",fa:"سالگردمون مبارک"},
   {en:"Miss You",fa:"دلم برات تنگ شده"},{en:"Happy Mother's Day",fa:"روز مادر مبارک"},
   {en:"Happy Father's Day",fa:"روز پدر مبارک"},{en:"Thank You",fa:"ممنونم ازت"},
@@ -185,267 +146,288 @@ const MESSAGES=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Anni
   {en:"Happy Yalda",fa:"شب یلدا مبارک"},{en:"I'm Sorry",fa:"معذرت می‌خوام"},
   {en:"Good Luck",fa:"موفق باشی"},{en:"Happy Graduation",fa:"فارغ‌التحصیلیت مبارک"},
   {en:"Just Because",fa:"همین‌طوری، برای تو"}];
+const CAP={card:3,cone:4,box:6};
 
-const CAP={card:3,cone:3,box:5};
-
-const state={pack:"card",packColor:"rose",wrapOuter:"mint",wrapInner:"kraft",
-  flower:"gyp",flowerColor:"white",ribbon:"gold",msgLang:"fa",msgIndex:0,custom:"",addons:[]};
-
+const state={pack:"box",packColor:"rose",wrapOuter:"mint",flower:"gyp",flowerColor:"white",
+  ribbon:"gold",msgLang:"fa",msgIndex:0,custom:"",addons:[]};
 const get=(a,id)=>a.find(x=>x.id===id)||a[0];
 const hex=(a,id)=>get(a,id).hex;
+const flatItems=()=>{const o=[];state.addons.forEach(a=>{for(let i=0;i<a.qty;i++)o.push(a);});return o;};
+const slotsUsed=()=>state.addons.reduce((t,a)=>t+a.qty,0);
 
-/* ============ سبک ============ */
-const LINE="#1A1512";
-function mul(h,f){const n=parseInt(h.slice(1),16);
-  const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))));
-  return "#"+c.map(v=>v.toString(16).padStart(2,"0")).join("");}
-function mix(h,f){const n=parseInt(h.slice(1),16);
-  const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.round(v+(255-v)*f));
-  return "#"+c.map(v=>v.toString(16).padStart(2,"0")).join("");}
-const dark=h=>mul(h,.78), lite=h=>mix(h,.36), ink=h=>mul(h,.42);
-function rnd(i){const x=Math.sin(i*127.1+11.3)*43758.5453;return x-Math.floor(x);}
-/* خط دور یکدست و تیره — سبک استیکری */
-const O=(col,w)=>`fill="${col}" stroke="${LINE}" stroke-width="${w||2.2}" stroke-linejoin="round" stroke-linecap="round"`;
-const F=c=>`fill="${c}"`;
-/* خط دور نرم‌تر برای گل و کاغذ */
-const S=(col,w)=>`fill="${col}" stroke="${ink(col)}" stroke-width="${w||1.8}" stroke-linejoin="round" stroke-linecap="round"`;
+/* ===================== صحنه سه‌بعدی ===================== */
+const OUTLINE=0x3A3835;
+let renderer,scene,camera,root,boxGrp,itemsGrp,bouquetGrp,cardMesh,cardTex,ready=false;
+let spin=0.35, drag=null, idle=0;
 
-/* ============ گل ============ */
-function head(cx,cy,s,kind,col){
-  const L=lite(col),D=dark(col);
-  if(kind==="puff"){
-    let o="";
-    for(let i=0;i<7;i++){const a=i*Math.PI*2/7;
-      o+=`<circle cx="${cx+Math.cos(a)*s*.6}" cy="${cy+Math.sin(a)*s*.54}" r="${s*.44}" ${S(col,1.3)}/>`;}
-    o+=`<circle cx="${cx}" cy="${cy}" r="${s*.46}" ${S(D,1.3)}/>`;
-    return o+`<circle cx="${cx-s*.18}" cy="${cy-s*.2}" r="${s*.16}" ${F(L)}/>`;
-  }
-  if(kind==="daisy"||kind==="sun"){
-    const p=kind==="sun"?11:8, len=kind==="sun"?s*1.15:s*.95;
-    let o="";
-    for(let i=0;i<p;i++){const a=i*Math.PI*2/p;
-      const px=cx+Math.cos(a)*len*.62, py=cy+Math.sin(a)*len*.58;
-      o+=`<ellipse cx="${px}" cy="${py}" rx="${len*.44}" ry="${len*.22}" ${S(col,1.3)} transform="rotate(${a*180/Math.PI} ${px} ${py})"/>`;}
-    o+=`<circle cx="${cx}" cy="${cy}" r="${len*.34}" ${S(kind==="sun"?"#7A4A22":D,1.3)}/>`;
-    return o+`<circle cx="${cx-len*.1}" cy="${cy-len*.11}" r="${len*.1}" ${F(mix(col,.5))}/>`;
-  }
-  let o="";
-  for(let i=0;i<6;i++)
-    o+=`<ellipse cx="${cx+(i%2?1.7:-1.7)}" cy="${cy-i*s*.46}" rx="${s*.36}" ry="${s*.32}" ${S(i%2?col:D,1.2)}/>`;
-  return o;
+/* رنگ‌آمیزی کارتونی: سه پله نور، بدون بافت خارجی */
+function toonRamp(){
+  const c=new Uint8Array([70,160,235]);
+  const t=new THREE.DataTexture(c,c.length,1,THREE.RedFormat);
+  t.minFilter=t.magFilter=THREE.NearestFilter; t.generateMipmaps=false; t.needsUpdate=true;
+  return t;
+}
+let RAMP, OUTMAT;
+const MATS=[];
+function mat(color){
+  const m=new THREE.MeshToonMaterial({color:new THREE.Color(color),gradientMap:RAMP});
+  MATS.push(m); return m;
+}
+/* هر قطعه یک بدنه دارد و یک پوسته وارونه که خط دور کارتونی می‌سازد */
+function piece(geo,color,thick){
+  const g=new THREE.Group();
+  const m=new THREE.Mesh(geo,mat(color));
+  const o=new THREE.Mesh(geo,OUTMAT);
+  o.scale.multiplyScalar(1+(thick||0.05));
+  g.add(o,m); g.userData.body=m;
+  return g;
+}
+function disposeTree(obj){
+  obj.traverse(n=>{if(n.isMesh){n.geometry.dispose();}});
+  while(obj.children.length)obj.remove(obj.children[0]);
 }
 
-function bouquet(cx,by,sc,outer,inner,fcol,rcol,kind){
-  const s=sc,P=(x,y)=>`${cx+x*s} ${by+y*s}`;
-  let g=`<g filter="url(#ds)">`;
-  g+=`<path d="M${P(-33,-56)} L${P(-19,-77)} L${P(2,-62)} L${P(-6,-20)} Z" ${S(inner,1.8)}/>`;
-  g+=`<path d="M${P(34,-54)} L${P(20,-79)} L${P(-1,-60)} L${P(7,-20)} Z" ${S(dark(inner),1.8)}/>`;
-  for(let i=-2;i<=2;i++)
-    g+=`<path d="M${P(0,-22)} Q${P(i*6,-45)} ${P(i*10,-64)}" stroke="#3F6330" stroke-width="${1.7*s}" fill="none" stroke-linecap="round"/>`;
-  [[-22,-62],[21,-64],[-12,-76],[11,-78],[0,-84],[-26,-72],[25,-70],
-   [-16,-66],[15,-67],[-4,-70],[6,-72],[0,-60],[-9,-57],[10,-58]].forEach(([dx,dy],i)=>{
-    const jx=(rnd(i+3)-.5)*5,jy=(rnd(i+9)-.5)*5,sz=(7.6+rnd(i+21)*2.8)*s,rot=(rnd(i)-.5)*70;
-    g+=`<g transform="rotate(${rot.toFixed(1)} ${(cx+(dx+jx)*s).toFixed(1)} ${(by+(dy+jy)*s).toFixed(1)})">${head(cx+(dx+jx)*s,by+(dy+jy)*s,sz,kind,fcol)}</g>`;});
-  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(13,-52)} L${P(28,-57)} L${P(8,-17)} L${P(12,-1)} L${P(-12,-1)} L${P(-8,-17)} Z" ${S(outer,1.9)}/>`;
-  g+=`<path d="M${P(-28,-50)} L${P(-8,-59)} L${P(-3,-17)} L${P(-12,-1)} L${P(-8,-17)} Z" ${F(dark(outer))}/>`;
-  g+=`<path d="M${P(13,-52)} L${P(28,-57)} L${P(8,-17)} L${P(4,-30)} Z" ${F(lite(outer))}/>`;
-  const ny=by-17*s;
-  g+=`<path d="M${cx-6*s} ${ny} q-${11*s} ${9*s} -${2*s} ${16*s}" stroke="${ink(rcol)}" stroke-width="${2.4*s}" fill="none" stroke-linecap="round"/>`;
-  g+=`<path d="M${cx+6*s} ${ny} q${12*s} ${11*s} ${4*s} ${18*s}" stroke="${ink(rcol)}" stroke-width="${2.4*s}" fill="none" stroke-linecap="round"/>`;
-  g+=`<path d="M${cx-1*s} ${ny} q-${13*s} -${6*s} -${11*s} ${4*s} q${2*s} ${7*s} ${11*s} ${1*s} Z" ${S(rcol,1.5)}/>`;
-  g+=`<path d="M${cx+1*s} ${ny} q${13*s} -${6*s} ${11*s} ${4*s} q-${2*s} ${7*s} -${11*s} ${1*s} Z" ${S(rcol,1.5)}/>`;
-  g+=`<circle cx="${cx}" cy="${ny+1*s}" r="${2.6*s}" ${S(dark(rcol),1.3)}/>`;
-  return g+`</g>`;
+/* ---------- آیتم‌ها: همه از احجام پایه ساخته می‌شوند ---------- */
+function buildItem(kind,color){
+  const g=new THREE.Group(); const C=new THREE.Color(color);
+  const light="#"+C.clone().lerp(new THREE.Color(0xffffff),.42).getHexString();
+  const dark ="#"+C.clone().multiplyScalar(.72).getHexString();
+  if(kind==="bar"){
+    const b=piece(new THREE.BoxGeometry(.46,.86,.14),color,.045); b.position.y=.43; g.add(b);
+    const l=piece(new THREE.BoxGeometry(.3,.3,.02),light,.05); l.position.set(0,.46,.08); g.add(l);
+  }else if(kind==="prism"){
+    const p=piece(new THREE.CylinderGeometry(.26,.26,.9,3),color,.045); p.position.y=.45; g.add(p);
+    const t=piece(new THREE.CylinderGeometry(.12,.12,.06,3),light,.06); t.position.y=.92; g.add(t);
+  }else if(kind==="pouch"){
+    const b=piece(new THREE.BoxGeometry(.5,.62,.24),color,.045); b.position.y=.34; g.add(b);
+    const s=piece(new THREE.BoxGeometry(.52,.1,.06),dark,.06); s.position.y=.68; g.add(s);
+    [["#E0453C",-.16],["#3E88CF",0],["#E8C33F",.16]].forEach(([c,x],i)=>{
+      const d=piece(new THREE.SphereGeometry(.07,10,8),c,.08);
+      d.position.set(x,.82+i*.05,.05); g.add(d);});
+  }else if(kind==="carton"){
+    const b=piece(new THREE.BoxGeometry(.42,.84,.3),color,.045); b.position.y=.42; g.add(b);
+    const s=piece(new THREE.BoxGeometry(.44,.2,.32),"#E8853F",.045); s.position.y=.5; g.add(s);
+  }else if(kind==="truffle"){
+    const c=piece(new THREE.CylinderGeometry(.26,.2,.14,14),light,.05); c.position.y=.07; g.add(c);
+    const s=piece(new THREE.SphereGeometry(.22,14,10),color,.05); s.position.y=.3; g.add(s);
+  }else if(kind==="can"){
+    const b=piece(new THREE.CylinderGeometry(.22,.22,.72,16),color,.04); b.position.y=.36; g.add(b);
+    const t=piece(new THREE.CylinderGeometry(.225,.225,.06,16),"#C9C4BC",.05); t.position.y=.73; g.add(t);
+  }else if(kind==="bottle"){
+    const b=piece(new THREE.CylinderGeometry(.2,.2,.62,14),color,.04); b.position.y=.31; g.add(b);
+    const n=piece(new THREE.CylinderGeometry(.09,.16,.24,14),color,.05); n.position.y=.74; g.add(n);
+    const c=piece(new THREE.CylinderGeometry(.1,.1,.1,14),"#8FA6C4",.06); c.position.y=.9; g.add(c);
+    const l=piece(new THREE.CylinderGeometry(.205,.205,.24,14),"#FFFDF8",.04); l.position.y=.3; g.add(l);
+  }else if(kind==="charm"){
+    const r=piece(new THREE.TorusGeometry(.1,.03,8,16),color,.07); r.position.y=.74; g.add(r);
+    const h=piece(new THREE.SphereGeometry(.17,12,10),color,.06); h.position.y=.42;
+    h.scale.set(1,.9,.55); g.add(h);
+    const t=piece(new THREE.CylinderGeometry(.015,.015,.34,6),dark,.1); t.position.y=.6; g.add(t);
+  }else{
+    const b=piece(new THREE.BoxGeometry(.56,.4,.03),color,.05); b.position.y=.2;
+    b.rotation.x=-.12; g.add(b);
+    const f=piece(new THREE.BoxGeometry(.3,.02,.04),"#B9AFC2",.1); f.position.set(0,.22,.03); g.add(f);
+  }
+  return g;
 }
 
-/* ============ خوراکی‌ها — سبک استیکری ============ */
-/* لبه دندانه‌دار بسته‌بندی */
-function zig(x0,x1,y,n,amp){
-  let d=`M${x0} ${y}`;
-  const step=(x1-x0)/n;
-  for(let i=0;i<n;i++){d+=` L${x0+step*(i+.5)} ${y+(i%2?amp:-amp)} L${x0+step*(i+1)} ${y}`;}
-  return d;
+/* ---------- دسته گل ---------- */
+function buildBouquet(){
+  const g=new THREE.Group();
+  const wrap=hex(WRAP_COLORS,state.wrapOuter), fc=hex(FLOWER_COLORS,state.flowerColor),
+        rc=hex(RIBBONS,state.ribbon), kind=state.flower;
+  const cone=piece(new THREE.CylinderGeometry(.5,.12,.92,10,1,true),wrap,.03);
+  cone.position.y=.48; g.add(cone);
+  const bow=piece(new THREE.TorusGeometry(.12,.045,8,14),rc,.07);
+  bow.position.y=.14; bow.rotation.x=Math.PI/2; g.add(bow);
+  const n=kind==="sun"?7:11, R=kind==="sun"?.19:.13;
+  for(let i=0;i<n;i++){
+    const a=(i/n)*Math.PI*2, r=.1+ (i%3)*.12;
+    const f=piece(new THREE.SphereGeometry(R*(.85+(i%3)*.12),10,8),fc,.06);
+    f.position.set(Math.cos(a)*r,1.0+((i*37)%9)/60,Math.sin(a)*r*.8);
+    if(kind==="lav")f.scale.set(.6,1.5,.6);
+    if(kind==="sun")f.scale.set(1,.55,1);
+    g.add(f);
+  }
+  return g;
 }
 
-function itemArt(kind,col){
-  const L=lite(col),D=dark(col),W="#FFFDF8";
-  if(kind==="bar"){                       /* شکلات تخته‌ای در بسته */
-    let o=`<path d="${zig(-15,15,-38,4,3.5)} L15 -6 ${zig(15,-15,-6,4,3.5).slice(1)} Z" ${O(col)}/>`;
-    o+=`<rect x="-15" y="-34" width="30" height="24" rx="2" ${O(col,2.2)}/>`;
-    o+=`<ellipse cx="0" cy="-22" rx="11" ry="8" ${O(W,2)}/>`;
-    o+=`<ellipse cx="0" cy="-22" rx="7" ry="4.6" ${F(col)}/>`;
-    o+=`<path d="M-11 -32 l3 0 l-2 18 l-3 0 Z" ${F(mix(col,.55))} opacity=".75"/>`;
-    return o;
+/* ---------- بسته‌بندی ---------- */
+function buildPack(){
+  const g=new THREE.Group(), pc=hex(PACK_COLORS,state.packColor);
+  const C=new THREE.Color(pc);
+  const light="#"+C.clone().lerp(new THREE.Color(0xffffff),.3).getHexString();
+  const dark ="#"+C.clone().multiplyScalar(.78).getHexString();
+
+  if(state.pack==="box"){
+    const W=2.5,D=1.5,H=1.0,T=.07;
+    const floor=piece(new THREE.BoxGeometry(W,T,D),dark,.02); floor.position.y=T/2; g.add(floor);
+    [[0,-D/2+T/2,W,T],[0,D/2-T/2,W,T]].forEach(([x,z,w])=>{
+      const p=piece(new THREE.BoxGeometry(w,H,T),pc,.02); p.position.set(x,H/2,z); g.add(p);});
+    [[-W/2+T/2],[W/2-T/2]].forEach(([x])=>{
+      const p=piece(new THREE.BoxGeometry(T,H,D),pc,.02); p.position.set(x,H/2,0); g.add(p);});
+    const r1=piece(new THREE.BoxGeometry(.28,H+.02,D+.02),light,.02); r1.position.y=H/2; g.add(r1);
+    const lid=piece(new THREE.BoxGeometry(W+.14,.12,D+.14),light,.03);
+    lid.position.set(-W*.72,H*.55,-.3); lid.rotation.z=.42; lid.rotation.y=-.25; g.add(lid);
+    g.userData.slotY=T;
   }
-  if(kind==="cookiepack"){                /* بسته بیسکویت با یک کوکی بیرون */
-    let o=`<path d="${zig(-16,16,-36,4,3.5)} L16 -8 ${zig(16,-16,-8,4,3.5).slice(1)} Z" ${O(col)}/>`;
-    o+=`<rect x="-16" y="-33" width="32" height="23" rx="2.5" ${O(col,2.2)}/>`;
-    o+=`<ellipse cx="-2" cy="-22" rx="10" ry="7" ${O(W,2)}/>`;
-    o+=`<circle cx="12" cy="-15" r="9" ${O(mul(col,.42),2.2)}/>`;
-    o+=`<circle cx="12" cy="-15" r="4.4" ${F(W)}/>`;
-    return o;
+  if(state.pack==="cone"){
+    const bag=piece(new THREE.CylinderGeometry(.92,.5,1.5,14,1,true),pc,.02);
+    bag.position.y=.75; g.add(bag);
+    const base=piece(new THREE.CylinderGeometry(.5,.5,.06,14),dark,.04); base.position.y=.03; g.add(base);
+    const h=piece(new THREE.TorusGeometry(.5,.05,8,20,Math.PI),dark,.05);
+    h.position.y=1.5; h.rotation.y=Math.PI/2; g.add(h);
+    g.userData.slotY=.06;
   }
-  if(kind==="pouch"){                     /* پاکت آبنبات با دانه‌های بیرون‌ریخته */
-    let o=`<path d="M-16 -4 L-14 -30 q14 -8 28 0 L16 -4 Z" ${O(col)}/>`;
-    o+=`<path d="${zig(-15,15,-30,4,3)} l0 -6 ${zig(15,-15,-36,4,3).slice(1)} Z" ${O(D,2)}/>`;
-    o+=`<ellipse cx="0" cy="-17" rx="11" ry="7" ${O(W,2)}/>`;
-    [["#E0453C",-9,-46],["#3E88CF",3,-50],["#E8C33F",12,-44]]
-      .forEach(([c,x,y])=>{o+=`<circle cx="${x}" cy="${y}" r="4.6" ${O(c,2)}/>`;});
-    o+=`<circle cx="-14" cy="-40" r="4.2" ${O("#5CA455",2)}/>`;
-    return o;
+  if(state.pack==="card"){
+    const c=piece(new THREE.BoxGeometry(1.7,2.3,.05),pc,.02); c.position.y=1.15; g.add(c);
+    const face=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.1),
+      new THREE.MeshBasicMaterial({map:cardTex,transparent:true}));
+    face.position.set(0,1.15,.032); g.add(face);
+    const stand=piece(new THREE.BoxGeometry(1.2,.06,.5),dark,.03); stand.position.y=.03; g.add(stand);
+    g.userData.slotY=.06;
   }
-  if(kind==="prism"){                     /* شکلات مثلثی */
-    let o=`<path d="M-14 -2 L-10 -40 L14 -35 L10 2 Z" ${O(col)}/>`;
-    o+=`<path d="M-10 -40 L14 -35 L10 2 L4 -4 Z" ${F(L)}/>`;
-    for(let i=0;i<3;i++)
-      o+=`<path d="M${-11+i*7.5} ${-8-i*1.6} l4.5 -25 l4.5 25" fill="none" stroke="${LINE}" stroke-width="1.6"/>`;
-    o+=`<path d="M-14 -2 L-10 -40 L14 -35 L10 2 Z" fill="none" stroke="${LINE}" stroke-width="2.2" stroke-linejoin="round"/>`;
-    return o;
-  }
-  if(kind==="carton"){                    /* جعبه مقوایی */
-    let o=`<rect x="-14" y="-38" width="28" height="36" rx="3" ${O(col)}/>`;
-    o+=`<path d="M-14 -20 L14 -30 L14 -18 L-14 -8 Z" ${O("#E8853F",2)}/>`;
-    o+=`<rect x="-14" y="-38" width="9" height="36" rx="3" ${F(mul(col,.93))}/>`;
-    o+=`<rect x="-14" y="-38" width="28" height="36" rx="3" fill="none" stroke="${LINE}" stroke-width="2.2"/>`;
-    return o;
-  }
-  if(kind==="truffle"){                   /* شکلات گرد در کپسول */
-    let o=`<path d="M-14 -2 q0 -8 14 -8 q14 0 14 8 Z" ${O(mix(col,.5),2.2)}/>`;
-    o+=`<circle cx="0" cy="-19" r="13" ${O(col)}/>`;
-    o+=`<circle cx="-5" cy="-24" r="4" ${F(mix(col,.6))}/>`;
-    return o;
-  }
-  if(kind==="can"){                       /* قوطی نوشابه */
-    let o=`<path d="M-12 -4 q-2 -16 0 -30 q12 -4 24 0 q2 14 0 30 q-12 4 -24 0 Z" ${O(col)}/>`;
-    o+=`<ellipse cx="0" cy="-34" rx="12" ry="4" ${O("#C9C4BC",2)}/>`;
-    o+=`<ellipse cx="0" cy="-34" rx="5" ry="2" ${F("#8E8880")}/>`;
-    o+=`<ellipse cx="0" cy="-19" rx="9" ry="6" ${O("#FFFDF8",2)}/>`;
-    o+=`<path d="M-9 -30 q-1 10 0 20" fill="none" stroke="${mix(col,.55)}" stroke-width="2.6"/>`;
-    return o;
-  }
-  if(kind==="bottle"){                    /* بطری شیشه‌ای */
-    let o=`<path d="M-9 -2 q-2 -20 0 -26 q0 -6 4 -9 l0 -6 q5 -2 10 0 l0 6 q4 3 4 9 q2 6 0 26 q-9 3 -18 0 Z" ${O(col)}/>`;
-    o+=`<rect x="-6" y="-49" width="12" height="7" rx="2.5" ${O("#8FA6C4",2)}/>`;
-    o+=`<rect x="-8" y="-22" width="16" height="14" rx="2" ${O("#FFFDF8",2)}/>`;
-    o+=`<circle cx="0" cy="-36" r="3" ${F(mix(col,.7))}/>`;
-    return o;
-  }
-  if(kind==="charm"){
-    let o=`<circle cx="0" cy="-32" r="5" fill="none" stroke="${LINE}" stroke-width="2.4"/>`;
-    o+=`<path d="M0 -2 l-12 -13 a7 7 0 0 1 12 -6.5 a7 7 0 0 1 12 6.5 Z" ${O(col)}/>`;
-    o+=`<path d="M-4 -16 a4.5 4.5 0 0 1 4 -5.5" fill="none" stroke="${mix(col,.62)}" stroke-width="2.4"/>`;
-    return o;
-  }
-  let o=`<rect x="-17" y="-26" width="34" height="26" rx="3" ${O(col)}/>`;
-  o+=`<path d="M-17 -26 L0 -13 L17 -26 Z" ${O(mix(col,.05),2.2)}/>`;
-  o+=`<line x1="-9" y1="-8" x2="9" y2="-8" stroke="${LINE}" stroke-width="1.6" opacity=".4"/>`;
-  return o;
+  return g;
 }
 
-/* ============ چیدمان: تک‌ردیف، بدون همپوشانی ============ */
-function rowLayout(n,x0,x1,baseFn,maxScale){
-  if(!n)return[];
-  const step=(x1-x0)/n, sc=Math.min(maxScale,step/42);
-  const out=[];
-  for(let i=0;i<n;i++){const x=x0+step*(i+.5);out.push({x,y:baseFn(x),s:sc});}
+/* ---------- جای‌گذاری آیتم‌ها: شبکه واقعی، بدون همپوشانی ---------- */
+function slots(n){
+  const cfg={box:{w:2.0,rows:[-0.3,0.32],y:0.07},
+             cone:{w:1.0,rows:[-0.18,0.2],y:0.06},
+             card:{w:2.0,rows:[0.42],y:0.06}}[state.pack];
+  const rows=cfg.rows.length===1?[cfg.rows[0]]:(n<=3?[cfg.rows[1]]:cfg.rows);
+  const per=Math.ceil(n/rows.length), out=[];
+  let i=0;
+  rows.forEach((z,ri)=>{
+    const cnt=Math.min(per,n-i);
+    for(let k=0;k<cnt;k++,i++){
+      const t=cnt===1?.5:k/(cnt-1);
+      out.push({x:(t-.5)*cfg.w*(cnt===1?0:1),z,y:cfg.y,
+                rot:((k*53)%17-8)*Math.PI/180});
+    }
+  });
   return out;
 }
-function flatItems(){const o=[];state.addons.forEach(a=>{for(let i=0;i<(a.qty||1);i++)o.push(a);});return o;}
-function slotsUsed(){return state.addons.reduce((t,a)=>t+(a.qty||1),0);}
-function drawItems(x0,x1,baseFn,maxScale){
-  const F2=flatItems(), P=rowLayout(F2.length,x0,x1,baseFn,maxScale);
-  return P.map((p,i)=>`<g class="item" filter="url(#ds)" transform="translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) scale(${p.s.toFixed(2)})">${itemArt(F2[i].art,F2[i].hex)}</g>`).join("");
+
+function rebuildScene(){
+  if(!ready)return;
+  disposeTree(boxGrp); disposeTree(itemsGrp); disposeTree(bouquetGrp);
+  MATS.length=0;
+  boxGrp.add(buildPack());
+  const bq=buildBouquet();
+  bq.position.set(state.pack==="card"?0:0, boxGrp.children[0].userData.slotY,
+                  state.pack==="box"?-0.42:(state.pack==="card"?0.1:0));
+  if(state.pack==="card"){bq.position.y=.06;bq.position.z=.12;bq.scale.setScalar(.8);}
+  if(state.pack==="cone"){bq.position.y=.9;bq.scale.setScalar(.95);}
+  bouquetGrp.add(bq);
+
+  const F=flatItems(), P=slots(F.length);
+  F.forEach((it,i)=>{
+    const m=buildItem(it.art,it.hex);
+    m.position.set(P[i].x,P[i].y,P[i].z);
+    m.rotation.y=P[i].rot;
+    m.userData.t=0;
+    itemsGrp.add(m);
+  });
 }
 
-/* ============ کارت ============ */
+function init3D(){
+  const canvas=document.getElementById("gl"), holder=document.getElementById("stageBox");
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(34,1,.1,50);
+  RAMP=toonRamp();
+  OUTMAT=new THREE.MeshBasicMaterial({color:OUTLINE,side:THREE.BackSide});
+
+  scene.add(new THREE.AmbientLight(0xffffff,.72));
+  const key=new THREE.DirectionalLight(0xffffff,.85); key.position.set(3,5,4); scene.add(key);
+  const fill=new THREE.DirectionalLight(0xffffff,.3); fill.position.set(-4,2,-3); scene.add(fill);
+
+  root=new THREE.Group(); scene.add(root);
+  boxGrp=new THREE.Group(); itemsGrp=new THREE.Group(); bouquetGrp=new THREE.Group();
+  root.add(boxGrp,itemsGrp,bouquetGrp);
+
+  const sh=new THREE.Mesh(new THREE.CircleGeometry(1.7,28),
+    new THREE.MeshBasicMaterial({color:0x3A3835,transparent:true,opacity:.1}));
+  sh.rotation.x=-Math.PI/2; sh.position.y=-.01; root.add(sh);
+
+  function resize(){
+    const w=holder.clientWidth,h=holder.clientHeight;
+    renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+    camera.position.set(0,2.5,4.6); camera.lookAt(0,.85,0);
+  }
+  addEventListener("resize",resize); resize();
+
+  const pos=e=>(e.touches?e.touches[0]:e).clientX;
+  holder.addEventListener("pointerdown",e=>{drag=pos(e);idle=0;});
+  addEventListener("pointermove",e=>{if(drag!==null){spin+=(pos(e)-drag)*.008;drag=pos(e);}});
+  addEventListener("pointerup",()=>{drag=null;});
+
+  const clock=new THREE.Clock();
+  (function loop(){
+    requestAnimationFrame(loop);
+    const dt=clock.getDelta();
+    if(drag===null){idle+=dt; if(idle>2.5)spin+=dt*.28;}
+    root.rotation.y=spin;
+    itemsGrp.children.forEach(m=>{
+      if(m.userData.t<1){m.userData.t=Math.min(1,m.userData.t+dt*3.2);
+        const t=m.userData.t, e=1-Math.pow(1-t,3);
+        m.scale.setScalar(.4+.6*e+Math.sin(e*Math.PI)*.12);}
+    });
+    renderer.render(scene,camera);
+  })();
+  ready=true;
+}
+
+/* ---------- بافت متن کارت ---------- */
+function makeCardTexture(){
+  const c=document.createElement("canvas"); c.width=440; c.height=616;
+  cardTex=new THREE.CanvasTexture(c); cardTex.anisotropy=2;
+  cardTex.userData={canvas:c}; return cardTex;
+}
+function paintCard(){
+  if(!cardTex)return;
+  const c=cardTex.userData.canvas, x=c.getContext("2d");
+  x.clearRect(0,0,c.width,c.height);
+  x.fillStyle="#FFFDF8"; x.strokeStyle="#3A3835"; x.lineWidth=6;
+  roundRect(x,18,18,c.width-36,c.height-36,22); x.fill(); x.stroke();
+  const txt=cardText(), size=txt.length<=16?46:txt.length<=30?38:32;
+  x.fillStyle="#3A3835"; x.direction="rtl"; x.textAlign="center";
+  x.font="800 "+size+"px Vazirmatn, sans-serif";
+  const lines=wrapLines(txt,txt.length<=16?18:22);
+  lines.forEach((ln,i)=>x.fillText(ln,c.width/2,110+i*size*1.3));
+  cardTex.needsUpdate=true;
+}
+function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);
+  x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);
+  x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
 function cardText(){const t=state.custom.trim();if(t)return t;
   const m=MESSAGES[state.msgIndex];return state.msgLang==="fa"?m.fa:m.en;}
 function wrapLines(t,max){const w=t.split(/\s+/),o=[];let c="";
-  w.forEach(x=>{if((c+" "+x).trim().length<=max)c=(c+" "+x).trim();else{if(c)o.push(c);c=x;}});
+  w.forEach(y=>{if((c+" "+y).trim().length<=max)c=(c+" "+y).trim();else{if(c)o.push(c);c=y;}});
   if(c)o.push(c);return o.slice(0,3);}
 
-function drawCard(pc){
-  const txt=cardText(), size=txt.length<=16?15:txt.length<=30?13:11.5;
-  const lines=wrapLines(txt,txt.length<=16?20:22);
-  let g=`<g filter="url(#ds)">`;
-  g+=`<rect x="98" y="30" width="124" height="168" rx="10" fill="#FFFDF8" stroke="${LINE}" stroke-width="2.4"/>`;
-  g+=`<rect x="105" y="37" width="110" height="154" rx="6" fill="none" stroke="${pc}" stroke-width="3"/>`;
-  const y0=56-(lines.length-1)*size*.6;
-  lines.forEach((ln,i)=>{
-    g+=`<text x="160" y="${y0+i*size*1.25}" text-anchor="middle" font-family="Vazirmatn" font-size="${size}" font-weight="800" fill="${LINE}">${ln.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</text>`;});
-  return g+`</g>`;
-}
-
-/* ============ صحنه ============ */
-function draw(){
-  const pc=hex(PACK_COLORS,state.packColor), wo=hex(WRAP_COLORS,state.wrapOuter),
-        wi=hex(WRAP_COLORS,state.wrapInner), fc=hex(FLOWER_COLORS,state.flowerColor),
-        rc=hex(RIBBONS,state.ribbon), kind=get(FLOWERS,state.flower).kind;
-
-  let svg=`<defs><filter id="ds" x="-40%" y="-40%" width="190%" height="190%">
-    <feDropShadow dx="3" dy="4" stdDeviation="0" flood-color="${LINE}" flood-opacity=".22"/>
-  </filter></defs>`;
-
-  if(state.pack==="card"){
-    svg+=`<ellipse cx="160" cy="200" rx="70" ry="8" fill="${LINE}" opacity=".07"/>`;
-    svg+=drawCard(pc);
-    svg+=bouquet(160,174,1.1,wo,wi,fc,rc,kind);
-    svg+=drawItems(24,296,()=>272,1.15);
-  }
-
-  if(state.pack==="cone"){
-    svg+=`<ellipse cx="160" cy="212" rx="52" ry="8" fill="${LINE}" opacity=".07"/>`;
-    svg+=bouquet(160,120,1.02,wo,wi,fc,rc,kind);
-    svg+=`<g filter="url(#ds)">
-      <path d="M118 84 A44 11 0 0 0 202 84 L184 212 L136 212 Z" fill="${pc}" stroke="${LINE}" stroke-width="2.4" stroke-linejoin="round"/>
-      <path d="M118 84 A44 11 0 0 0 160 95 L149 212 L136 212 Z" ${F(dark(pc))}/>
-      <path d="M130 80 q30 -42 60 0" fill="none" stroke="${LINE}" stroke-width="4.5" stroke-linecap="round"/></g>`;
-    svg+=drawItems(24,296,()=>272,1.15);
-  }
-
-  if(state.pack==="box"){
-    svg+=`<ellipse cx="160" cy="242" rx="76" ry="9" fill="${LINE}" opacity=".07"/>`;
-    svg+=`<g filter="url(#ds)"><path d="M44 62 L104 34 L164 62 L104 90 Z" ${O(lite(pc),2.4)}/>
-      <path d="M44 62 L44 76 L104 104 L104 90 Z" ${O(dark(pc),2.4)}/>
-      <path d="M164 62 L164 76 L104 104 L104 90 Z" ${O(pc,2.4)}/></g>`;
-    svg+=bouquet(160,132,.86,wo,wi,fc,rc,kind);
-    svg+=`<path d="M92 156 L160 128 L228 156 L160 184 Z" ${O(mul(pc,.72),2.4)}/>`;
-    /* آیتم‌ها روی لبه جلویی جعبه می‌نشینند تا هرگز پشت دیواره نروند */
-    const rim=x=>156+(34*(1-Math.abs(x-160)/68));
-    svg+=drawItems(100,220,rim,.92);
-    svg+=`<path d="M92 156 L92 216 L160 244 L160 184 Z" ${O(dark(pc),2.4)}/>`;
-    svg+=`<path d="M228 156 L228 216 L160 244 L160 184 Z" ${O(pc,2.4)}/>`;
-  }
-
-  const art=document.getElementById("art");
-  art.innerHTML=svg;
-}
-
-/* ============ قیمت و رابط ============ */
+/* ===================== رابط ===================== */
 const fmt=n=>n.toLocaleString("en-US");
 function total(){let t=get(PACKS,state.pack).price+get(FLOWERS,state.flower).price;
-  state.addons.forEach(a=>t+=a.price*(a.qty||1));return t;}
-
+  state.addons.forEach(a=>t+=a.price*a.qty);return t;}
 function chips(el,arr,sel,on){el.innerHTML="";
   arr.forEach(o=>{const b=document.createElement("button");b.className="pick";b.textContent=o.name;
     b.setAttribute("aria-pressed",String(sel()===o.id));b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
-
 function swatches(el,arr,sel,on){el.innerHTML="";
   arr.forEach(o=>{const b=document.createElement("button");b.className="swatch";b.style.background=o.hex;
     b.title=o.name;b.setAttribute("aria-label",o.name);b.setAttribute("aria-pressed",String(sel()===o.id));
     b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
-
 function renderAddons(){const el=document.getElementById("addons");el.innerHTML="";
   const full=slotsUsed()>=CAP[state.pack];
   ADDONS.forEach(o=>{const cur=state.addons.find(a=>a.id===o.id);
     const b=document.createElement("button");b.className="pick";
     b.textContent=cur?o.name+" ×"+cur.qty:o.name;
-    b.setAttribute("aria-pressed",String(!!cur));
-    b.disabled=full&&!cur;
+    b.setAttribute("aria-pressed",String(!!cur));b.disabled=full&&!cur;
     b.onclick=()=>{if(slotsUsed()>=CAP[state.pack])return;
       if(cur)cur.qty++;else state.addons.push({...o,qty:1});render();};
     el.appendChild(b);});}
-
 function renderList(){const el=document.getElementById("list");el.innerHTML="";
   const f=get(FLOWERS,state.flower);
   const li0=document.createElement("li");
@@ -453,7 +435,6 @@ function renderList(){const el=document.getElementById("list");el.innerHTML="";
   const n0=document.createElement("span");n0.className="nm";n0.textContent=f.name;
   const p0=document.createElement("span");p0.className="pr";p0.textContent=fmt(f.price)+" تومان";
   li0.append(d0,n0,p0);el.appendChild(li0);
-
   state.addons.forEach(r=>{const li=document.createElement("li");
     const d=document.createElement("span");d.className="dot";d.style.background=r.hex;
     const n=document.createElement("span");n.className="nm";n.textContent=r.name;
@@ -466,7 +447,6 @@ function renderList(){const el=document.getElementById("list");el.innerHTML="";
     pl.disabled=slotsUsed()>=CAP[state.pack];
     pl.onclick=()=>{if(slotsUsed()<CAP[state.pack]){r.qty++;render();}};
     q.append(m,c,pl);li.append(d,n,p,q);el.appendChild(li);});
-
   const free=CAP[state.pack]-slotsUsed();
   if(free>0){const li=document.createElement("li");li.className="empty";
     li.textContent="جا برای "+free+" آیتم دیگر هست";el.appendChild(li);}}
@@ -489,18 +469,20 @@ function render(){
   chips(document.getElementById("flowers"),FLOWERS,()=>state.flower,v=>state.flower=v);
   swatches(document.getElementById("flowerColors"),FLOWER_COLORS,()=>state.flowerColor,v=>state.flowerColor=v);
   swatches(document.getElementById("wrapOuter"),WRAP_COLORS,()=>state.wrapOuter,v=>state.wrapOuter=v);
-  swatches(document.getElementById("wrapInner"),WRAP_COLORS,()=>state.wrapInner,v=>state.wrapInner=v);
   swatches(document.getElementById("ribbons"),RIBBONS,()=>state.ribbon,v=>state.ribbon=v);
   renderAddons();renderList();
   document.getElementById("price").textContent=fmt(total());
   document.getElementById("tag").textContent="سایز کوچک — ظرفیت "+cap;
-  draw();
+  paintCard(); rebuildScene();
 }
 
 document.getElementById("custom").addEventListener("input",e=>{
   state.custom=e.target.value;render();e.target.focus();});
 
+makeCardTexture();
+init3D();
 render();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(paintCard);
 </script>
 </body>
 </html>
