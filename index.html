@@ -69,6 +69,23 @@ ul.items li{background:var(--card);border:2px solid var(--ink);border-radius:14p
 .buy:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--accent)}
 @keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== GIFTYLE V2 PREVIEW ===== */
+#stageBox{background:radial-gradient(circle at 50% 35%,#fff 0,#fbfaf6 52%,#f0ede6 100%)}
+.stage-inner::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.28),transparent 32%,transparent 72%,rgba(58,56,53,.035))}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.product-card{position:relative;border:2px solid var(--ink);background:var(--card);border-radius:14px;padding:8px 7px 7px;min-height:84px;box-shadow:3px 3px 0 var(--shadow);cursor:pointer;text-align:center;font-family:inherit;transition:.14s}
+.product-card:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--shadow)}
+.product-card[aria-pressed="true"]{background:var(--accent)}
+.product-thumb{height:43px;display:flex;align-items:center;justify-content:center;font-size:30px;line-height:1}
+.product-name{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.product-price{font-size:9.5px;color:var(--muted);font-weight:600}
+.product-qty{position:absolute;top:5px;inset-inline-end:5px;min-width:20px;height:20px;border-radius:999px;background:var(--ink);color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.scene-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);pointer-events:none;opacity:0;transition:.2s}
+.scene-loading.show{opacity:1}
+.legend{font-size:10px;color:var(--muted);margin:-5px 2px 10px}
+@media(min-width:700px){.product-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -96,7 +113,7 @@ ul.items li{background:var(--card);border:2px solid var(--ink);border-radius:14p
 <div class="row" id="flowerColors" style="margin-top:11px"></div></section>
 <section><h2>کاغذ دور گل</h2><div class="row" id="wrapOuter"></div></section>
 <section><h2>روبان</h2><div class="row" id="ribbons"></div></section>
-<section><h2>خوراکی و افزودنی</h2><div class="row" id="addons"></div></section>
+<section><h2>خوراکی و افزودنی</h2><p class="legend">روی هر محصول بزن تا به جعبه اضافه شود</p><div class="product-grid" id="addons"></div></section>
 <section><h2>داخل کادو</h2><ul class="items" id="list"></ul></section>
 
 <div class="bar">
@@ -155,155 +172,194 @@ const hex=(a,id)=>get(a,id).hex;
 const flatItems=()=>{const o=[];state.addons.forEach(a=>{for(let i=0;i<a.qty;i++)o.push(a);});return o;};
 const slotsUsed=()=>state.addons.reduce((t,a)=>t+a.qty,0);
 
-/* ===================== صحنه سه‌بعدی ===================== */
+/* ===================== صحنه سه‌بعدی — Giftyle V2 ===================== */
 const OUTLINE=0x3A3835;
 let renderer,scene,camera,root,boxGrp,itemsGrp,bouquetGrp,cardMesh,cardTex,ready=false;
-let spin=0.35, drag=null, idle=0;
+let spin=0.35, drag=null, idle=0, clock;
 
-/* رنگ‌آمیزی کارتونی: سه پله نور، بدون بافت خارجی */
+const productEmoji={snk:"🍫",kit:"🍫",oreo:"🍪",mm:"🍬",tob:"🍫",kin:"🍫",fer:"🍫",soda:"🥤",ram:"🧃",charm:"💛",note:"💌"};
+
 function toonRamp(){
   const c=new Uint8Array([70,160,235]);
   const t=new THREE.DataTexture(c,c.length,1,THREE.RedFormat);
-  t.minFilter=t.magFilter=THREE.NearestFilter; t.generateMipmaps=false; t.needsUpdate=true;
+  t.minFilter=t.magFilter=THREE.NearestFilter;t.generateMipmaps=false;t.needsUpdate=true;
   return t;
 }
-let RAMP, OUTMAT;
+let RAMP,OUTMAT;
 const MATS=[];
-function mat(color){
+function mat(color,rough=.7){
   const m=new THREE.MeshToonMaterial({color:new THREE.Color(color),gradientMap:RAMP});
-  MATS.push(m); return m;
+  m.userData.rough=rough;MATS.push(m);return m;
 }
-/* هر قطعه یک بدنه دارد و یک پوسته وارونه که خط دور کارتونی می‌سازد */
-function piece(geo,color,thick){
+function piece(geo,color,thick=.04){
   const g=new THREE.Group();
   const m=new THREE.Mesh(geo,mat(color));
   const o=new THREE.Mesh(geo,OUTMAT);
-  o.scale.multiplyScalar(1+(thick||0.05));
-  g.add(o,m); g.userData.body=m;
-  return g;
+  o.scale.multiplyScalar(1+thick);
+  g.add(o,m);g.userData.body=m;return g;
 }
 function disposeTree(obj){
-  obj.traverse(n=>{if(n.isMesh){n.geometry.dispose();}});
+  obj.traverse(n=>{
+    if(n.isMesh){
+      n.geometry.dispose();
+      if(n.material && n.material.map && n.material.map!==cardTex)n.material.map.dispose?.();
+    }
+  });
   while(obj.children.length)obj.remove(obj.children[0]);
 }
+function labelTexture(text,bg,fg="#FFFFFF"){
+  const c=document.createElement("canvas");c.width=256;c.height=128;
+  const x=c.getContext("2d");x.fillStyle=bg;x.fillRect(0,0,256,128);
+  x.fillStyle=fg;x.font="900 34px Arial";x.textAlign="center";x.textBaseline="middle";
+  x.fillText(text,128,64);
+  const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;return t;
+}
+function labelPlane(text,bg,fg,w=.3,h=.16){
+  const geo=new THREE.PlaneGeometry(w,h);
+  const m=new THREE.MeshBasicMaterial({map:labelTexture(text,bg,fg),transparent:true});
+  const p=new THREE.Mesh(geo,m);return p;
+}
 
-/* ---------- آیتم‌ها: همه از احجام پایه ساخته می‌شوند ---------- */
+/* Product models are intentionally procedural in this demo:
+   no third-party binary asset is bundled, so the GitHub demo works immediately.
+   Candidate downloadable assets researched for later replacement:
+   - Poly Pizza "Chocolate" by jeremy (CC-BY): https://poly.pizza/m/1PfSi8Y5J4u
+   - Sketchfab "Bar of Chocolate" by rhcreations (CC Attribution)
+   - Sketchfab "Game Ready | Free Chocolates" by Saritasa (CC Attribution)
+   - Sketchfab "Blue Flower Animated" by morphy.vision (CC Attribution)
+   glTF/GLB is the recommended runtime format for Three.js. */
+
 function buildItem(kind,color){
-  const g=new THREE.Group(); const C=new THREE.Color(color);
-  const light="#"+C.clone().lerp(new THREE.Color(0xffffff),.42).getHexString();
-  const dark ="#"+C.clone().multiplyScalar(.72).getHexString();
+  const g=new THREE.Group(),C=new THREE.Color(color);
+  const light="#"+C.clone().lerp(new THREE.Color("#ffffff"),.42).getHexString();
+  const dark="#"+C.clone().multiplyScalar(.62).getHexString();
+
   if(kind==="bar"){
-    const b=piece(new THREE.BoxGeometry(.46,.86,.14),color,.045); b.position.y=.43; g.add(b);
-    const l=piece(new THREE.BoxGeometry(.3,.3,.02),light,.05); l.position.set(0,.46,.08); g.add(l);
-  }else if(kind==="prism"){
-    const p=piece(new THREE.CylinderGeometry(.26,.26,.9,3),color,.045); p.position.y=.45; g.add(p);
-    const t=piece(new THREE.CylinderGeometry(.12,.12,.06,3),light,.06); t.position.y=.92; g.add(t);
-  }else if(kind==="pouch"){
-    const b=piece(new THREE.BoxGeometry(.5,.62,.24),color,.045); b.position.y=.34; g.add(b);
-    const s=piece(new THREE.BoxGeometry(.52,.1,.06),dark,.06); s.position.y=.68; g.add(s);
+    const body=piece(new THREE.BoxGeometry(.48,.88,.16),color,.045);body.position.y=.44;g.add(body);
+    for(let y=0;y<3;y++)for(let x=-1;x<=1;x++){
+      const s=piece(new THREE.BoxGeometry(.12,.20,.025),light,.025);
+      s.position.set(x*.135,.22+y*.22,.09);g.add(s);
+    }
+    const lab=labelPlane("CHOCOLATE",color,"#fff",.36,.09);lab.position.set(0,.72,.095);g.add(lab);
+  }
+  else if(kind==="prism"){
+    const p=piece(new THREE.CylinderGeometry(.27,.27,.92,3),color,.045);p.position.y=.46;p.rotation.y=Math.PI/6;g.add(p);
+    const top=piece(new THREE.CylinderGeometry(.12,.12,.05,3),light,.05);top.position.y=.94;g.add(top);
+    const lab=labelPlane("TRIANGLE",light,"#3A3835",.25,.07);lab.position.set(0,.52,.24);lab.rotation.y=.0;g.add(lab);
+  }
+  else if(kind==="pouch"){
+    const b=piece(new THREE.BoxGeometry(.52,.66,.25),color,.045);b.position.y=.34;b.scale.z=.9;g.add(b);
+    const seal=piece(new THREE.BoxGeometry(.54,.08,.27),dark,.05);seal.position.y=.68;g.add(seal);
     [["#E0453C",-.16],["#3E88CF",0],["#E8C33F",.16]].forEach(([c,x],i)=>{
-      const d=piece(new THREE.SphereGeometry(.07,10,8),c,.08);
-      d.position.set(x,.82+i*.05,.05); g.add(d);});
-  }else if(kind==="carton"){
-    const b=piece(new THREE.BoxGeometry(.42,.84,.3),color,.045); b.position.y=.42; g.add(b);
-    const s=piece(new THREE.BoxGeometry(.44,.2,.32),"#E8853F",.045); s.position.y=.5; g.add(s);
-  }else if(kind==="truffle"){
-    const c=piece(new THREE.CylinderGeometry(.26,.2,.14,14),light,.05); c.position.y=.07; g.add(c);
-    const s=piece(new THREE.SphereGeometry(.22,14,10),color,.05); s.position.y=.3; g.add(s);
-  }else if(kind==="can"){
-    const b=piece(new THREE.CylinderGeometry(.22,.22,.72,16),color,.04); b.position.y=.36; g.add(b);
-    const t=piece(new THREE.CylinderGeometry(.225,.225,.06,16),"#C9C4BC",.05); t.position.y=.73; g.add(t);
-  }else if(kind==="bottle"){
-    const b=piece(new THREE.CylinderGeometry(.2,.2,.62,14),color,.04); b.position.y=.31; g.add(b);
-    const n=piece(new THREE.CylinderGeometry(.09,.16,.24,14),color,.05); n.position.y=.74; g.add(n);
-    const c=piece(new THREE.CylinderGeometry(.1,.1,.1,14),"#8FA6C4",.06); c.position.y=.9; g.add(c);
-    const l=piece(new THREE.CylinderGeometry(.205,.205,.24,14),"#FFFDF8",.04); l.position.y=.3; g.add(l);
-  }else if(kind==="charm"){
-    const r=piece(new THREE.TorusGeometry(.1,.03,8,16),color,.07); r.position.y=.74; g.add(r);
-    const h=piece(new THREE.SphereGeometry(.17,12,10),color,.06); h.position.y=.42;
-    h.scale.set(1,.9,.55); g.add(h);
-    const t=piece(new THREE.CylinderGeometry(.015,.015,.34,6),dark,.1); t.position.y=.6; g.add(t);
-  }else{
-    const b=piece(new THREE.BoxGeometry(.56,.4,.03),color,.05); b.position.y=.2;
-    b.rotation.x=-.12; g.add(b);
-    const f=piece(new THREE.BoxGeometry(.3,.02,.04),"#B9AFC2",.1); f.position.set(0,.22,.03); g.add(f);
+      const d=piece(new THREE.SphereGeometry(.065,12,10),c,.04);d.position.set(x,.40+i*.03,.14);g.add(d);
+    });
+    const lab=labelPlane("CANDY",color,"#fff",.27,.075);lab.position.set(0,.53,.14);g.add(lab);
+  }
+  else if(kind==="carton"){
+    const b=piece(new THREE.BoxGeometry(.44,.86,.31),color,.045);b.position.y=.43;g.add(b);
+    const top=piece(new THREE.BoxGeometry(.46,.16,.33),light,.045);top.position.y=.82;g.add(top);
+    const lab=labelPlane("KINDER",light,"#C33",.25,.09);lab.position.set(0,.48,.17);g.add(lab);
+  }
+  else if(kind==="truffle"){
+    const cup=piece(new THREE.CylinderGeometry(.26,.21,.15,16),light,.04);cup.position.y=.08;g.add(cup);
+    const s=piece(new THREE.SphereGeometry(.22,18,14),color,.045);s.position.y=.31;g.add(s);
+    const ring=piece(new THREE.TorusGeometry(.17,.025,8,18),light,.04);ring.position.y=.43;g.add(ring);
+  }
+  else if(kind==="can"){
+    const b=piece(new THREE.CylinderGeometry(.225,.225,.72,20),color,.04);b.position.y=.36;g.add(b);
+    const top=piece(new THREE.CylinderGeometry(.23,.23,.055,20),light,.04);top.position.y=.735;g.add(top);
+    const tab=piece(new THREE.TorusGeometry(.055,.012,6,14),dark,.04);tab.position.set(0,.77,0);g.add(tab);
+    const lab=labelPlane("DRINK",color,"#fff",.25,.075);lab.position.set(0,.37,.23);g.add(lab);
+  }
+  else if(kind==="bottle"){
+    const b=piece(new THREE.CylinderGeometry(.2,.23,.60,18),color,.04);b.position.y=.30;g.add(b);
+    const neck=piece(new THREE.CylinderGeometry(.09,.14,.25,18),color,.045);neck.position.y=.72;g.add(neck);
+    const cap=piece(new THREE.CylinderGeometry(.105,.105,.10,18),light,.045);cap.position.y=.895;g.add(cap);
+    const lab=labelPlane("RAMUNE","#FFFDF8","#3A3835",.23,.10);lab.position.set(0,.30,.225);g.add(lab);
+  }
+  else if(kind==="charm"){
+    const ring=piece(new THREE.TorusGeometry(.11,.028,8,18),color,.05);ring.position.y=.78;g.add(ring);
+    const h=piece(new THREE.SphereGeometry(.18,14,12),light,.05);h.position.y=.43;h.scale.set(1,.82,.55);g.add(h);
+    const stem=piece(new THREE.CylinderGeometry(.018,.018,.32,8),dark,.04);stem.position.y=.62;g.add(stem);
+    const heart=piece(new THREE.SphereGeometry(.08,10,8),color,.03);heart.position.set(0,.43,.10);heart.scale.set(1,.8,.45);g.add(heart);
+  }
+  else{
+    const paper=piece(new THREE.BoxGeometry(.58,.42,.035),color,.045);paper.position.y=.21;paper.rotation.x=-.12;g.add(paper);
+    const line1=piece(new THREE.BoxGeometry(.30,.018,.04),"#B9AFC2",.04);line1.position.set(0,.25,.025);g.add(line1);
+    const line2=piece(new THREE.BoxGeometry(.22,.018,.04),"#B9AFC2",.04);line2.position.set(0,.17,.025);g.add(line2);
   }
   return g;
 }
 
-/* ---------- دسته گل ---------- */
+/* Better stylized bouquet: stems + petals instead of spheres only */
+function flowerHead(kind,fc){
+  const g=new THREE.Group();
+  const petals=kind==="sun"?12:kind==="daisy"?10:6;
+  for(let i=0;i<petals;i++){
+    const a=i/petals*Math.PI*2;
+    const p=piece(new THREE.SphereGeometry(kind==="sun"?.075:.065,10,8),fc,.035);
+    p.scale.set(kind==="lav"?.65:1,kind==="lav"?1.7:1.15,.55);
+    p.position.set(Math.cos(a)*.10,.02,Math.sin(a)*.10);p.rotation.y=-a;g.add(p);
+  }
+  const center=piece(new THREE.SphereGeometry(kind==="sun"?.105:.07,12,10),kind==="sun"?"#6B4A28":"#E9C95F",.035);
+  center.position.y=.03;g.add(center);
+  return g;
+}
 function buildBouquet(){
   const g=new THREE.Group();
-  const wrap=hex(WRAP_COLORS,state.wrapOuter), fc=hex(FLOWER_COLORS,state.flowerColor),
-        rc=hex(RIBBONS,state.ribbon), kind=state.flower;
-  const cone=piece(new THREE.CylinderGeometry(.5,.12,.92,10,1,true),wrap,.03);
-  cone.position.y=.48; g.add(cone);
-  const bow=piece(new THREE.TorusGeometry(.12,.045,8,14),rc,.07);
-  bow.position.y=.14; bow.rotation.x=Math.PI/2; g.add(bow);
-  const n=kind==="sun"?7:11, R=kind==="sun"?.19:.13;
+  const wrap=hex(WRAP_COLORS,state.wrapOuter),fc=hex(FLOWER_COLORS,state.flowerColor),rc=hex(RIBBONS,state.ribbon),kind=state.flower;
+  const cone=piece(new THREE.CylinderGeometry(.54,.16,.98,12,1,true),wrap,.03);cone.position.y=.49;g.add(cone);
+  const fold=piece(new THREE.BoxGeometry(.72,.025,.025),"#ffffff",.02);fold.position.set(0,.35,.48);g.add(fold);
+  const bow=piece(new THREE.TorusGeometry(.13,.045,8,14),rc,.05);bow.position.set(0,.13,.48);bow.rotation.x=Math.PI/2;g.add(bow);
+  const n=kind==="sun"?7:kind==="lav"?8:10;
   for(let i=0;i<n;i++){
-    const a=(i/n)*Math.PI*2, r=.1+ (i%3)*.12;
-    const f=piece(new THREE.SphereGeometry(R*(.85+(i%3)*.12),10,8),fc,.06);
-    f.position.set(Math.cos(a)*r,1.0+((i*37)%9)/60,Math.sin(a)*r*.8);
-    if(kind==="lav")f.scale.set(.6,1.5,.6);
-    if(kind==="sun")f.scale.set(1,.55,1);
-    g.add(f);
+    const a=i/n*Math.PI*2,r=.08+(i%3)*.11;
+    const stem=piece(new THREE.CylinderGeometry(.012,.012,.8,6), "#5D7F4D",.02);
+    stem.position.set(Math.cos(a)*r,.72,Math.sin(a)*r*.65);stem.rotation.z=Math.cos(a)*.15;stem.rotation.x=Math.sin(a)*.12;g.add(stem);
+    const f=flowerHead(kind,fc);f.position.set(Math.cos(a)*r,1.12+((i*37)%9)/80,Math.sin(a)*r*.65);g.add(f);
   }
   return g;
 }
 
-/* ---------- بسته‌بندی ---------- */
 function buildPack(){
-  const g=new THREE.Group(), pc=hex(PACK_COLORS,state.packColor);
-  const C=new THREE.Color(pc);
-  const light="#"+C.clone().lerp(new THREE.Color(0xffffff),.3).getHexString();
-  const dark ="#"+C.clone().multiplyScalar(.78).getHexString();
-
+  const g=new THREE.Group(),pc=hex(PACK_COLORS,state.packColor),C=new THREE.Color(pc);
+  const light="#"+C.clone().lerp(new THREE.Color("#ffffff"),.30).getHexString(),dark="#"+C.clone().multiplyScalar(.78).getHexString();
   if(state.pack==="box"){
-    const W=2.5,D=1.5,H=1.0,T=.07;
-    const floor=piece(new THREE.BoxGeometry(W,T,D),dark,.02); floor.position.y=T/2; g.add(floor);
-    [[0,-D/2+T/2,W,T],[0,D/2-T/2,W,T]].forEach(([x,z,w])=>{
-      const p=piece(new THREE.BoxGeometry(w,H,T),pc,.02); p.position.set(x,H/2,z); g.add(p);});
-    [[-W/2+T/2],[W/2-T/2]].forEach(([x])=>{
-      const p=piece(new THREE.BoxGeometry(T,H,D),pc,.02); p.position.set(x,H/2,0); g.add(p);});
-    const r1=piece(new THREE.BoxGeometry(.28,H+.02,D+.02),light,.02); r1.position.y=H/2; g.add(r1);
-    const lid=piece(new THREE.BoxGeometry(W+.14,.12,D+.14),light,.03);
-    lid.position.set(-W*.72,H*.55,-.3); lid.rotation.z=.42; lid.rotation.y=-.25; g.add(lid);
+    const W=2.55,D=1.58,H=1.03,T=.075;
+    const floor=piece(new THREE.BoxGeometry(W,T,D),dark,.02);floor.position.y=T/2;g.add(floor);
+    [[0,-D/2+T/2,W,T],[0,D/2-T/2,W,T]].forEach(([x,z,w])=>{const p=piece(new THREE.BoxGeometry(w,H,T),pc,.02);p.position.set(x,H/2,z);g.add(p);});
+    [[-W/2+T/2],[W/2-T/2]].forEach(([x])=>{const p=piece(new THREE.BoxGeometry(T,H,D),pc,.02);p.position.set(x,H/2,0);g.add(p);});
+    const band=piece(new THREE.BoxGeometry(.30,H+.02,D+.02),light,.02);band.position.y=H/2;g.add(band);
+    const lid=piece(new THREE.BoxGeometry(W+.14,.12,D+.14),light,.03);lid.position.set(-W*.72,H*.55,-.3);lid.rotation.z=.42;lid.rotation.y=-.25;g.add(lid);
     g.userData.slotY=T;
   }
   if(state.pack==="cone"){
-    const bag=piece(new THREE.CylinderGeometry(.92,.5,1.5,14,1,true),pc,.02);
-    bag.position.y=.75; g.add(bag);
-    const base=piece(new THREE.CylinderGeometry(.5,.5,.06,14),dark,.04); base.position.y=.03; g.add(base);
-    const h=piece(new THREE.TorusGeometry(.5,.05,8,20,Math.PI),dark,.05);
-    h.position.y=1.5; h.rotation.y=Math.PI/2; g.add(h);
+    const bag=piece(new THREE.CylinderGeometry(.94,.50,1.52,16,1,true),pc,.025);bag.position.y=.76;g.add(bag);
+    const base=piece(new THREE.CylinderGeometry(.50,.50,.06,16),dark,.04);base.position.y=.03;g.add(base);
+    const h=piece(new THREE.TorusGeometry(.5,.05,8,20,Math.PI),dark,.05);h.position.y=1.52;h.rotation.y=Math.PI/2;g.add(h);
     g.userData.slotY=.06;
   }
   if(state.pack==="card"){
-    const c=piece(new THREE.BoxGeometry(1.7,2.3,.05),pc,.02); c.position.y=1.15; g.add(c);
-    const face=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.1),
-      new THREE.MeshBasicMaterial({map:cardTex,transparent:true}));
-    face.position.set(0,1.15,.032); g.add(face);
-    const stand=piece(new THREE.BoxGeometry(1.2,.06,.5),dark,.03); stand.position.y=.03; g.add(stand);
-    g.userData.slotY=.06;
+    const c=piece(new THREE.BoxGeometry(1.7,2.3,.05),pc,.02);c.position.y=1.15;g.add(c);
+    const face=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.1),new THREE.MeshBasicMaterial({map:cardTex,transparent:true}));face.position.set(0,1.15,.032);g.add(face);
+    const stand=piece(new THREE.BoxGeometry(1.2,.06,.5),dark,.03);stand.position.y=.03;g.add(stand);g.userData.slotY=.06;
   }
   return g;
 }
 
-/* ---------- جای‌گذاری آیتم‌ها: شبکه واقعی، بدون همپوشانی ---------- */
 function slots(n){
-  const cfg={box:{w:2.0,rows:[-0.3,0.32],y:0.07},
-             cone:{w:1.0,rows:[-0.18,0.2],y:0.06},
-             card:{w:2.0,rows:[0.42],y:0.06}}[state.pack];
+  const cfg={
+    box:{w:1.85,rows:[-.34,.30],y:.09},
+    cone:{w:.92,rows:[-.18,.18],y:.09},
+    card:{w:1.78,rows:[.34],y:.08}
+  }[state.pack];
   const rows=cfg.rows.length===1?[cfg.rows[0]]:(n<=3?[cfg.rows[1]]:cfg.rows);
-  const per=Math.ceil(n/rows.length), out=[];
-  let i=0;
-  rows.forEach((z,ri)=>{
+  const per=Math.ceil(n/rows.length),out=[];let i=0;
+  rows.forEach(z=>{
     const cnt=Math.min(per,n-i);
     for(let k=0;k<cnt;k++,i++){
       const t=cnt===1?.5:k/(cnt-1);
-      out.push({x:(t-.5)*cfg.w*(cnt===1?0:1),z,y:cfg.y,
-                rot:((k*53)%17-8)*Math.PI/180});
+      out.push({x:(t-.5)*cfg.w*(cnt===1?0:1),z,y:cfg.y,rot:((k*37)%13-6)*Math.PI/180});
     }
   });
   return out;
@@ -311,102 +367,53 @@ function slots(n){
 
 function rebuildScene(){
   if(!ready)return;
-  disposeTree(boxGrp); disposeTree(itemsGrp); disposeTree(bouquetGrp);
-  MATS.length=0;
-  boxGrp.add(buildPack());
+  disposeTree(boxGrp);disposeTree(itemsGrp);disposeTree(bouquetGrp);MATS.length=0;
+  const pack=buildPack();boxGrp.add(pack);
   const bq=buildBouquet();
-  bq.position.set(state.pack==="card"?0:0, boxGrp.children[0].userData.slotY,
-                  state.pack==="box"?-0.42:(state.pack==="card"?0.1:0));
-  if(state.pack==="card"){bq.position.y=.06;bq.position.z=.12;bq.scale.setScalar(.8);}
-  if(state.pack==="cone"){bq.position.y=.9;bq.scale.setScalar(.95);}
+  bq.position.set(0,pack.userData.slotY,state.pack==="box"?-.42:(state.pack==="card"?.10:0));
+  if(state.pack==="card"){bq.position.y=.06;bq.position.z=.12;bq.scale.setScalar(.80)}
+  if(state.pack==="cone"){bq.position.y=.88;bq.scale.setScalar(.92)}
   bouquetGrp.add(bq);
-
-  const F=flatItems(), P=slots(F.length);
+  const F=flatItems(),P=slots(F.length);
   F.forEach((it,i)=>{
-    const m=buildItem(it.art,it.hex);
-    m.position.set(P[i].x,P[i].y,P[i].z);
-    m.rotation.y=P[i].rot;
-    m.userData.t=0;
-    itemsGrp.add(m);
+    const m=buildItem(it.art,it.hex);m.position.set(P[i].x,P[i].y,P[i].z);m.rotation.y=P[i].rot;
+    m.userData.t=0;m.userData.target=.0;itemsGrp.add(m);
   });
 }
 
 function init3D(){
-  const canvas=document.getElementById("gl"), holder=document.getElementById("stageBox");
+  const canvas=document.getElementById("gl"),holder=document.getElementById("stageBox");
   renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  scene=new THREE.Scene();
-  camera=new THREE.PerspectiveCamera(34,1,.1,50);
-  RAMP=toonRamp();
-  OUTMAT=new THREE.MeshBasicMaterial({color:OUTLINE,side:THREE.BackSide});
-
-  scene.add(new THREE.AmbientLight(0xffffff,.72));
-  const key=new THREE.DirectionalLight(0xffffff,.85); key.position.set(3,5,4); scene.add(key);
-  const fill=new THREE.DirectionalLight(0xffffff,.3); fill.position.set(-4,2,-3); scene.add(fill);
-
-  root=new THREE.Group(); scene.add(root);
-  boxGrp=new THREE.Group(); itemsGrp=new THREE.Group(); bouquetGrp=new THREE.Group();
-  root.add(boxGrp,itemsGrp,bouquetGrp);
-
-  const sh=new THREE.Mesh(new THREE.CircleGeometry(1.7,28),
-    new THREE.MeshBasicMaterial({color:0x3A3835,transparent:true,opacity:.1}));
-  sh.rotation.x=-Math.PI/2; sh.position.y=-.01; root.add(sh);
-
-  function resize(){
-    const w=holder.clientWidth,h=holder.clientHeight;
-    renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
-    camera.position.set(0,2.5,4.6); camera.lookAt(0,.85,0);
-  }
-  addEventListener("resize",resize); resize();
-
-  const pos=e=>(e.touches?e.touches[0]:e).clientX;
-  holder.addEventListener("pointerdown",e=>{drag=pos(e);idle=0;});
-  addEventListener("pointermove",e=>{if(drag!==null){spin+=(pos(e)-drag)*.008;drag=pos(e);}});
-  addEventListener("pointerup",()=>{drag=null;});
-
-  const clock=new THREE.Clock();
-  (function loop(){
-    requestAnimationFrame(loop);
-    const dt=clock.getDelta();
-    if(drag===null){idle+=dt; if(idle>2.5)spin+=dt*.28;}
+  renderer.setClearColor(0x000000,0);
+  scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(31,1,.1,50);
+  RAMP=toonRamp();OUTMAT=new THREE.MeshBasicMaterial({color:OUTLINE,side:THREE.BackSide});
+  scene.add(new THREE.HemisphereLight(0xffffff,0xB8B2A7,.95));
+  const key=new THREE.DirectionalLight(0xffffff,1.0);key.position.set(3,5,4);scene.add(key);
+  const fill=new THREE.DirectionalLight(0xffffff,.38);fill.position.set(-4,2,-3);scene.add(fill);
+  root=new THREE.Group();scene.add(root);boxGrp=new THREE.Group();itemsGrp=new THREE.Group();bouquetGrp=new THREE.Group();root.add(boxGrp,itemsGrp,bouquetGrp);
+  const sh=new THREE.Mesh(new THREE.CircleGeometry(1.8,40),new THREE.MeshBasicMaterial({color:0x3A3835,transparent:true,opacity:.08}));
+  sh.rotation.x=-Math.PI/2;sh.position.y=-.01;root.add(sh);
+  function resize(){const w=holder.clientWidth,h=holder.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();camera.position.set(0,2.65,4.85);camera.lookAt(0,.82,0)}
+  addEventListener("resize",resize);resize();
+  holder.addEventListener("pointerdown",e=>{drag=e.clientX;idle=0});
+  addEventListener("pointermove",e=>{if(drag!==null){spin+=(e.clientX-drag)*.007;drag=e.clientX}});
+  addEventListener("pointerup",()=>drag=null);
+  clock=new THREE.Clock();
+  (function loop(){requestAnimationFrame(loop);const dt=clock.getDelta();if(drag===null){idle+=dt;if(idle>2.5)spin+=dt*.25}
     root.rotation.y=spin;
-    itemsGrp.children.forEach(m=>{
-      if(m.userData.t<1){m.userData.t=Math.min(1,m.userData.t+dt*3.2);
-        const t=m.userData.t, e=1-Math.pow(1-t,3);
-        m.scale.setScalar(.4+.6*e+Math.sin(e*Math.PI)*.12);}
-    });
+    itemsGrp.children.forEach(m=>{if(m.userData.t<1){m.userData.t=Math.min(1,m.userData.t+dt*3.8);const t=m.userData.t,e=1-Math.pow(1-t,3);m.scale.setScalar(.35+.65*e+Math.sin(e*Math.PI)*.10);}});
     renderer.render(scene,camera);
   })();
   ready=true;
 }
 
 /* ---------- بافت متن کارت ---------- */
-function makeCardTexture(){
-  const c=document.createElement("canvas"); c.width=440; c.height=616;
-  cardTex=new THREE.CanvasTexture(c); cardTex.anisotropy=2;
-  cardTex.userData={canvas:c}; return cardTex;
-}
-function paintCard(){
-  if(!cardTex)return;
-  const c=cardTex.userData.canvas, x=c.getContext("2d");
-  x.clearRect(0,0,c.width,c.height);
-  x.fillStyle="#FFFDF8"; x.strokeStyle="#3A3835"; x.lineWidth=6;
-  roundRect(x,18,18,c.width-36,c.height-36,22); x.fill(); x.stroke();
-  const txt=cardText(), size=txt.length<=16?46:txt.length<=30?38:32;
-  x.fillStyle="#3A3835"; x.direction="rtl"; x.textAlign="center";
-  x.font="800 "+size+"px Vazirmatn, sans-serif";
-  const lines=wrapLines(txt,txt.length<=16?18:22);
-  lines.forEach((ln,i)=>x.fillText(ln,c.width/2,110+i*size*1.3));
-  cardTex.needsUpdate=true;
-}
-function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);
-  x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);
-  x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
-function cardText(){const t=state.custom.trim();if(t)return t;
-  const m=MESSAGES[state.msgIndex];return state.msgLang==="fa"?m.fa:m.en;}
-function wrapLines(t,max){const w=t.split(/\s+/),o=[];let c="";
-  w.forEach(y=>{if((c+" "+y).trim().length<=max)c=(c+" "+y).trim();else{if(c)o.push(c);c=y;}});
-  if(c)o.push(c);return o.slice(0,3);}
+function makeCardTexture(){const c=document.createElement("canvas");c.width=440;c.height=616;cardTex=new THREE.CanvasTexture(c);cardTex.anisotropy=2;cardTex.userData={canvas:c};return cardTex}
+function paintCard(){if(!cardTex)return;const c=cardTex.userData.canvas,x=c.getContext("2d");x.clearRect(0,0,c.width,c.height);x.fillStyle="#FFFDF8";x.strokeStyle="#3A3835";x.lineWidth=6;roundRect(x,18,18,c.width-36,c.height-36,22);x.fill();x.stroke();const txt=cardText(),size=txt.length<=16?46:txt.length<=30?38:32;x.fillStyle="#3A3835";x.direction="rtl";x.textAlign="center";x.font="800 "+size+"px Vazirmatn, sans-serif";wrapLines(txt,txt.length<=16?18:22).forEach((ln,i)=>x.fillText(ln,c.width/2,110+i*size*1.3));cardTex.needsUpdate=true}
+function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+function cardText(){const t=state.custom.trim();if(t)return t;const m=MESSAGES[state.msgIndex];return state.msgLang==="fa"?m.fa:m.en}
+function wrapLines(t,max){const w=t.split(/\s+/),o=[];let c="";w.forEach(y=>{if((c+" "+y).trim().length<=max)c=(c+" "+y).trim();else{if(c)o.push(c);c=y}});if(c)o.push(c);return o.slice(0,3)}
 
 /* ===================== رابط ===================== */
 const fmt=n=>n.toLocaleString("en-US");
@@ -419,65 +426,26 @@ function swatches(el,arr,sel,on){el.innerHTML="";
   arr.forEach(o=>{const b=document.createElement("button");b.className="swatch";b.style.background=o.hex;
     b.title=o.name;b.setAttribute("aria-label",o.name);b.setAttribute("aria-pressed",String(sel()===o.id));
     b.onclick=()=>{on(o.id);render();};el.appendChild(b);});}
-function renderAddons(){const el=document.getElementById("addons");el.innerHTML="";
+function renderAddons(){
+  const el=document.getElementById("addons");el.innerHTML="";
   const full=slotsUsed()>=CAP[state.pack];
-  ADDONS.forEach(o=>{const cur=state.addons.find(a=>a.id===o.id);
-    const b=document.createElement("button");b.className="pick";
-    b.textContent=cur?o.name+" ×"+cur.qty:o.name;
+  ADDONS.forEach(o=>{
+    const cur=state.addons.find(a=>a.id===o.id);
+    const b=document.createElement("button");b.className="product-card";
     b.setAttribute("aria-pressed",String(!!cur));b.disabled=full&&!cur;
-    b.onclick=()=>{if(slotsUsed()>=CAP[state.pack])return;
-      if(cur)cur.qty++;else state.addons.push({...o,qty:1});render();};
-    el.appendChild(b);});}
-function renderList(){const el=document.getElementById("list");el.innerHTML="";
-  const f=get(FLOWERS,state.flower);
-  const li0=document.createElement("li");
-  const d0=document.createElement("span");d0.className="dot";d0.style.background=hex(FLOWER_COLORS,state.flowerColor);
-  const n0=document.createElement("span");n0.className="nm";n0.textContent=f.name;
-  const p0=document.createElement("span");p0.className="pr";p0.textContent=fmt(f.price)+" تومان";
-  li0.append(d0,n0,p0);el.appendChild(li0);
-  state.addons.forEach(r=>{const li=document.createElement("li");
-    const d=document.createElement("span");d.className="dot";d.style.background=r.hex;
-    const n=document.createElement("span");n.className="nm";n.textContent=r.name;
-    const p=document.createElement("span");p.className="pr";p.textContent=fmt(r.price*r.qty)+" تومان";
-    const q=document.createElement("span");q.className="qty";
-    const m=document.createElement("button");m.className="mini";m.textContent="−";
-    m.onclick=()=>{r.qty--;if(r.qty<1)state.addons=state.addons.filter(a=>a!==r);render();};
-    const c=document.createElement("span");c.className="cnt";c.textContent=r.qty;
-    const pl=document.createElement("button");pl.className="mini";pl.textContent="+";
-    pl.disabled=slotsUsed()>=CAP[state.pack];
-    pl.onclick=()=>{if(slotsUsed()<CAP[state.pack]){r.qty++;render();}};
-    q.append(m,c,pl);li.append(d,n,p,q);el.appendChild(li);});
-  const free=CAP[state.pack]-slotsUsed();
-  if(free>0){const li=document.createElement("li");li.className="empty";
-    li.textContent="جا برای "+free+" آیتم دیگر هست";el.appendChild(li);}}
-
-function render(){
-  const cap=CAP[state.pack];
-  while(slotsUsed()>cap){const last=state.addons[state.addons.length-1];
-    last.qty--;if(last.qty<1)state.addons.pop();}
-  chips(document.getElementById("packs"),PACKS,()=>state.pack,v=>state.pack=v);
-  swatches(document.getElementById("packColors"),PACK_COLORS,()=>state.packColor,v=>state.packColor=v);
-  document.getElementById("msgSection").style.display=state.pack==="card"?"":"none";
-  chips(document.getElementById("msgLang"),[{id:"fa",name:"فارسی"},{id:"en",name:"English"}],
-        ()=>state.msgLang,v=>state.msgLang=v);
-  const mel=document.getElementById("msgs");mel.innerHTML="";
-  MESSAGES.forEach((m,i)=>{const b=document.createElement("button");b.className="pick";
-    b.textContent=state.msgLang==="fa"?m.fa:m.en;
-    b.setAttribute("aria-pressed",String(!state.custom.trim()&&state.msgIndex===i));
-    b.onclick=()=>{state.msgIndex=i;state.custom="";document.getElementById("custom").value="";render();};
-    mel.appendChild(b);});
-  chips(document.getElementById("flowers"),FLOWERS,()=>state.flower,v=>state.flower=v);
-  swatches(document.getElementById("flowerColors"),FLOWER_COLORS,()=>state.flowerColor,v=>state.flowerColor=v);
-  swatches(document.getElementById("wrapOuter"),WRAP_COLORS,()=>state.wrapOuter,v=>state.wrapOuter=v);
-  swatches(document.getElementById("ribbons"),RIBBONS,()=>state.ribbon,v=>state.ribbon=v);
-  renderAddons();renderList();
-  document.getElementById("price").textContent=fmt(total());
-  document.getElementById("tag").textContent="سایز کوچک — ظرفیت "+cap;
-  paintCard(); rebuildScene();
+    b.innerHTML=`<span class="product-thumb">${productEmoji[o.id]||"🎁"}</span>
+      <span class="product-name">${o.name}</span>
+      <span class="product-price">${fmt(o.price)} تومان</span>${cur?`<span class="product-qty">${cur.qty}</span>`:""}`;
+    b.onclick=()=>{if(slotsUsed()>=CAP[state.pack])return;if(cur)cur.qty++;else state.addons.push({...o,qty:1});render()};
+    el.appendChild(b);
+  });
 }
 
 document.getElementById("custom").addEventListener("input",e=>{
-  state.custom=e.target.value;render();e.target.focus();});
+  state.custom=e.target.value;
+  paintCard();
+  if(state.pack==="card") rebuildScene();
+});
 
 makeCardTexture();
 init3D();
