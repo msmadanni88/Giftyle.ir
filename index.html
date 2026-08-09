@@ -86,7 +86,7 @@ padding:11px 20px;font-family:inherit;font-size:14px;font-weight:800;cursor:poin
 </head>
 <body>
 
-<header><h1>کادوی خودت را بچین</h1><p id="sub">با انگشت بچرخان، دو انگشتی زوم کن</p></header>
+<header><h1>کادوی خودت را بچین</h1><p id="sub">یک انگشت می‌چرخاند، دو انگشت زوم و جابه‌جا می‌کند</p></header>
 
 <div class="stage"><div class="stage-in" id="stage">
   <canvas id="gl"></canvas>
@@ -111,6 +111,11 @@ const PRICE_URL="prices.csv";
 const PRICES={box:250000,cone:180000,card:120000,
   gyp:45000,daisy:55000,lav:60000,sun:70000,
   wrap_sheet:12000,wrap_clear:0,wrap_matte:2000,wrap_pattern:5000,
+  sad:35000,aroos:40000,rosepink:85000,roseblue:120000,tulip:75000,saboni:60000,
+  peony:150000,calla:110000,lilium:95000,orchid:180000,narges:45000,nastaran:55000,aftab:70000,
+  cycas:30000,nakhl:28000,sorkhs:25000,aspara:22000,pilemo:26000,anterium:45000,aroosleaf:24000,
+  abaei:32000,palm:30000,nanaei:20000,zeytooni:24000,linda:34000,abri:28000,anjiri:30000,
+  shamshiri:26000,asparagus:22000,gerdi:27000,
   snk:75000,kit:55000,oreo:60000,mm:65000,tob:95000,kin:70000,fer:85000,
   soda:40000,ram:90000,charm:60000,note:15000};
 const P=id=>PRICES[id]||0;
@@ -122,6 +127,42 @@ const PACK_COLORS=[{id:"rose",name:"صورتی",hex:"#F09FB2"},{id:"cream",name:
 {id:"teal",name:"سبزآبی",hex:"#4FA7A0"},{id:"coal",name:"ذغالی",hex:"#54505A"}];
 const FLOWERS=[{id:"gyp",name:"ژیپسوفیلا"},{id:"daisy",name:"بابونه"},
 {id:"lav",name:"لاوندر"},{id:"sun",name:"آفتابگردان"}];
+/* گل طبیعی — هر کدام رنگ خودش را دارد، پس انتخاب رنگ ندارد */
+const NAT=[
+{id:"sad",name:"صد تومانی",hex:"#F7F1E2",shape:"daisy"},
+{id:"aroos",name:"عروس",hex:"#FBF8F2",shape:"cluster"},
+{id:"rosepink",name:"رز هلندی صورتی",hex:"#E4789B",shape:"rose"},
+{id:"roseblue",name:"رز آبی",hex:"#6E8FD6",shape:"rose"},
+{id:"tulip",name:"لاله",hex:"#D8433F",shape:"cup"},
+{id:"saboni",name:"صابونی",hex:"#EFD5C4",shape:"daisy"},
+{id:"peony",name:"پیونی",hex:"#E8879D",shape:"puff"},
+{id:"calla",name:"شیپوری",hex:"#F7F3E9",shape:"trumpet"},
+{id:"lilium",name:"لیلیوم",hex:"#EFA24B",shape:"star"},
+{id:"orchid",name:"ارکیده",hex:"#B37BC4",shape:"flat"},
+{id:"narges",name:"نرگس",hex:"#F4E07A",shape:"narcissus"},
+{id:"nastaran",name:"نسترن",hex:"#F1B7C5",shape:"daisy"},
+{id:"aftab",name:"آفتاب‌گردان",hex:"#E5B73E",shape:"sun"}];
+
+/* برگ تزئینی */
+const LEAF=[
+{id:"cycas",name:"سیکاس",hex:"#3F6B3A",shape:"frond"},
+{id:"nakhl",name:"نخل",hex:"#4F8046",shape:"frond"},
+{id:"sorkhs",name:"سرخس",hex:"#5C9350",shape:"frond"},
+{id:"aspara",name:"اسپارا",hex:"#7FA85E",shape:"needle"},
+{id:"pilemo",name:"پیله‌مو",hex:"#6B8F4A",shape:"blade"},
+{id:"anterium",name:"آنتریوم",hex:"#2F6B45",shape:"round"},
+{id:"aroosleaf",name:"عروس",hex:"#6FA35C",shape:"needle"},
+{id:"abaei",name:"عبایی",hex:"#45704A",shape:"round"},
+{id:"palm",name:"پالم",hex:"#52864B",shape:"frond"},
+{id:"nanaei",name:"نعنایی",hex:"#86B27A",shape:"round"},
+{id:"zeytooni",name:"زیتونی",hex:"#7C8B4F",shape:"blade"},
+{id:"linda",name:"لیندا",hex:"#3E7A55",shape:"blade"},
+{id:"abri",name:"ابری",hex:"#6E9C6A",shape:"round"},
+{id:"anjiri",name:"انجیری",hex:"#47764B",shape:"round"},
+{id:"shamshiri",name:"شمشیری",hex:"#558A4E",shape:"blade"},
+{id:"asparagus",name:"آسپاراگوس",hex:"#8CB878",shape:"needle"},
+{id:"gerdi",name:"گردی",hex:"#5F9159",shape:"round"}];
+
 const FLOWER_COLORS=[{id:"white",name:"سفید",hex:"#FAF6EE"},{id:"blush",name:"صورتی",hex:"#E9AEB8"},
 {id:"butter",name:"زرد",hex:"#EBC96B"},{id:"violet",name:"بنفش",hex:"#9A86C4"}];
 const WRAP_FINISH=[{id:"clear",name:"شفاف"},{id:"matte",name:"مات"},{id:"pattern",name:"طرح‌دار"}];
@@ -152,19 +193,27 @@ const MSGS=[{en:"Happy Birthday",fa:"تولدت مبارک"},{en:"Happy Annivers
 const FLOWER_MIN=2,FLOWER_MAX=10,WRAP_MIN=4,WRAP_MAX=12;
 const CAP={card:4,cone:6,box:10};
 
-const S={pack:"box",packColor:"rose",flowers:[{id:"daisy",qty:2}],flowerColor:"white",
+const S={pack:"box",packColor:"rose",flowers:[{id:"daisy",qty:2}],nat:[],leaves:[],flowerColor:"white",
 wrapFinish:"matte",wrapColor:"mint",wrapSheets:4,ribbon:"gold",
 msgLang:"fa",msgIndex:0,custom:"",addons:[],open:{pack:true,flower:true}};
 
 const find=(a,id)=>a.find(x=>x.id===id)||a[0];
 const hx=(a,id)=>find(a,id).hex;
-const fQty=()=>S.flowers.reduce((t,f)=>t+f.qty,0);
+const fQty=()=>S.flowers.reduce((t,f)=>t+f.qty,0)+S.nat.reduce((t,f)=>t+f.qty,0);
+const lQty=()=>S.leaves.reduce((t,f)=>t+f.qty,0);
+const NAT_MAX=50,LEAF_MAX=15;
+const aFQty=()=>S.flowers.reduce((t,f)=>t+f.qty,0);
+const nFQty=()=>S.nat.reduce((t,f)=>t+f.qty,0);
+/* مصنوعی و طبیعی با هم در یک دسته نمی‌نشینند */
+const mode=()=>aFQty()>0?"art":(nFQty()>0?"nat":null);
 const aQty=()=>S.addons.reduce((t,a)=>t+a.qty,0);
 const fmt=n=>Math.round(n).toLocaleString("en-US");
 
 function total(){
   let t=P(S.pack);
   S.flowers.forEach(f=>t+=P(f.id)*f.qty);
+  S.nat.forEach(f=>t+=P(f.id)*f.qty);
+  S.leaves.forEach(f=>t+=P(f.id)*f.qty);
   t+=S.wrapSheets*(P("wrap_sheet")+P("wrap_"+S.wrapFinish));
   S.addons.forEach(a=>t+=P(a.id)*a.qty);
   return t;
@@ -196,27 +245,54 @@ async function pullPrices(){
    دقیقاً همان کدی است که انتخاب می‌کنی. عمق را با تیره کردن دستی وجه‌ها می‌سازیم.
    مدل: اگر فایل GLB در پوشه models باشد، جای شکل کدنویسی‌شده می‌نشیند.
 */
-const MODELS={box:"box.glb",cone:"cone.glb",card:"card.glb",bouquet:"bouquet.glb"};
-let ren,scene,cam,root,packG,itemG,bqG,fxG,bikeG,cardTex,EDGE;
-let az=.6,pol=1.05,rad=5.8,drag=null,pinch=0,idle=0,t0=0,autoSpin=true;
+const MODELS={box:"pack_box.glb",cone:"pack_cone.glb",card:"pack_card.glb"};
+const WRAP_MODEL="bouquet.glb";
+let ren,scene,cam,root,packG,itemG,bqG,fxG,bikeG,cardTex,EDGE,OUT;
+let az=.6,pol=1.05,rad=5.8,drag=null,pinch=0,mid=null,idle=0,t0=0,autoSpin=true;
 const TARGET=new THREE.Vector3(0,.6,0);
+const _d=new THREE.Vector3(),_r=new THREE.Vector3(),_u=new THREE.Vector3(0,1,0);
+function panBy(dx,dy){
+  cam.getWorldDirection(_d);
+  _r.crossVectors(_d,_u).normalize();
+  const k=rad*.0018;
+  TARGET.addScaledVector(_r,-dx*k);
+  TARGET.y=Math.max(-.6,Math.min(3.2,TARGET.y+dy*k));
+}
 const fx=[];let delivery=null,HOT=null;
 
 const C=c=>new THREE.Color(c);
 function shade(c,f){const x=C(c);return x.multiplyScalar(f);}
 function tint(c,f){const x=C(c);return "#"+(f>0?x.lerp(C(0xffffff),f):x.multiplyScalar(1+f)).getHexString();}
 function line(geo,m){m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo,32),EDGE));return m;}
+/* خط دور دست‌کشیده: پوسته وارونه که در راستای نرمال بیرون می‌رود، با ضخامت نامنظم */
+function hull(geo,m){if(OUT)m.add(new THREE.Mesh(geo,OUT));return m;}
+function makeOutline(){
+  return new THREE.ShaderMaterial({side:THREE.BackSide,
+    uniforms:{w:{value:.016},t:{value:0}},
+    vertexShader:
+      "uniform float w;uniform float t;"+
+      "void main(){"+
+      "vec3 n=normalize(normalMatrix*normal);"+
+      "vec4 mv=modelViewMatrix*vec4(position,1.0);"+
+      "float a=sin(position.x*31.0+position.y*23.0+position.z*17.0+t);"+
+      "float b=sin(position.y*13.0-position.z*29.0+t*0.7);"+
+      "float k=0.55+0.45*a*b;"+
+      "mv.xyz+=n*w*k*(1.0-mv.z*0.3);"+
+      "gl_Position=projectionMatrix*mv;}",
+    fragmentShader:"void main(){gl_FragColor=vec4(0.07,0.06,0.06,1.0);}"});
+}
 
 /* وجه‌های مکعب با روشنایی متفاوت — بدون نور، پس رنگ دست‌نخورده می‌ماند */
 const F=[.9,.76,1,.66,.97,.8];
 function box(w,h,d,c,noEdge){
   const g=new THREE.BoxGeometry(w,h,d);
   const m=new THREE.Mesh(g,F.map(f=>new THREE.MeshBasicMaterial({color:shade(c,f)})));
-  return noEdge?m:line(g,m);
+  hull(g,m);return noEdge?m:line(g,m);
 }
 function solid(geo,c,o){o=o||{};
   const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:C(c),
     side:o.dbl?THREE.DoubleSide:THREE.FrontSide,transparent:!!o.op,opacity:o.op||1}));
+  if(!o.op)hull(geo,m);
   return o.edges===false?m:line(geo,m);
 }
 function at(m,x,y,z){m.position.set(x,y,z);return m;}
@@ -225,15 +301,30 @@ function kill(g){g.traverse(n=>{if(n.geometry)n.geometry.dispose();});
 
 /* ---- بارگذاری مدل واقعی ---- */
 const cache={};
-function gltf(name,cb){
-  if(cache[name]){cb(cache[name].clone(true));return;}
-  if(!THREE.GLTFLoader||cache[name]===false)return;
+function prep(o,opt){
+  const bb=new THREE.Box3().setFromObject(o),sz=new THREE.Vector3();bb.getSize(sz);
+  const k=(opt.height||1)/Math.max(sz.y,1e-4);
+  o.scale.setScalar(k);
+  o.position.set(-(bb.min.x+bb.max.x)/2*k,-bb.min.y*k,-(bb.min.z+bb.max.z)/2*k);
+  if(opt.color){
+    /* متریال مدل نوری است و در صحنه بی‌نور سیاه می‌شود — با متریال بدون‌نور عوض می‌شود */
+    const ms=[];o.traverse(n=>{if(n.isMesh)ms.push(n);});
+    const step=[0,-.13,.11,-.22,.19,-.06,.06,-.3];
+    ms.forEach((m,i)=>{
+      m.material=new THREE.MeshBasicMaterial({
+        color:C(tint(opt.color,step[i%step.length])),side:THREE.DoubleSide});
+      hull(m.geometry,m);
+    });
+  }
+  const w=new THREE.Group();w.add(o);return w;
+}
+function gltf(name,cb,opt){
+  opt=opt||{};
+  if(cache[name]===false)return;
+  if(cache[name]){cb(prep(cache[name].clone(true),opt));return;}
+  if(!THREE.GLTFLoader)return;
   new THREE.GLTFLoader().load("models/"+name,r=>{
-    const o=r.scene,bb=new THREE.Box3().setFromObject(o),sz=new THREE.Vector3();bb.getSize(sz);
-    const k=1/Math.max(sz.y,.0001);
-    o.scale.setScalar(k);
-    o.position.set(-(bb.min.x+bb.max.x)/2*k,-bb.min.y*k,-(bb.min.z+bb.max.z)/2*k);
-    const w=new THREE.Group();w.add(o);cache[name]=w;cb(w.clone(true));
+    cache[name]=r.scene;cb(prep(r.scene.clone(true),opt));
   },undefined,()=>{cache[name]=false;});
 }
 
@@ -256,28 +347,121 @@ function head(type,c){
   ctr.position.y=.03;ctr.scale.y=.55;g.add(ctr);
   return g;
 }
+function natHead(shape,c){
+  const g=new THREE.Group(),E={edges:false};
+  if(shape==="rose"){
+    for(let i=0;i<4;i++){const s2=solid(new THREE.SphereGeometry(.135-i*.024,10,8),
+      i%2?tint(c,.14):c,E);s2.position.y=i*.028;s2.scale.y=.82;g.add(s2);}
+    return g;}
+  if(shape==="puff"){
+    for(let i=0;i<5;i++){const a=i*1.26;
+      const s2=solid(new THREE.SphereGeometry(.1,9,7),i%2?tint(c,.16):c,E);
+      s2.position.set(Math.cos(a)*.06,.03+(i%2)*.03,Math.sin(a)*.06);s2.scale.y=.8;g.add(s2);}
+    g.add(at(solid(new THREE.SphereGeometry(.09,9,7),tint(c,.22),E),0,.09,0));
+    return g;}
+  if(shape==="cup"){
+    const s2=solid(new THREE.SphereGeometry(.115,10,8),c,E);
+    s2.scale.set(.86,1.3,.86);s2.position.y=.12;g.add(s2);
+    return g;}
+  if(shape==="trumpet"){
+    const s2=solid(new THREE.ConeGeometry(.14,.28,10,1,true),c,{dbl:true,edges:false});
+    s2.position.y=.14;g.add(s2);
+    g.add(at(solid(new THREE.CylinderGeometry(.014,.014,.18,5),"#E8D48A",E),0,.17,0));
+    return g;}
+  if(shape==="star"){
+    for(let i=0;i<6;i++){const a=i/6*Math.PI*2;
+      const p2=solid(new THREE.SphereGeometry(1,8,6),c,E);
+      p2.scale.set(.05,.02,.16);p2.position.set(Math.cos(a)*.14,.03,Math.sin(a)*.14);
+      p2.rotation.y=-a;p2.rotation.z=-.38;g.add(p2);}
+    g.add(at(solid(new THREE.SphereGeometry(.05,8,6),tint(c,-.3),E),0,.05,0));
+    return g;}
+  if(shape==="flat"){
+    for(let i=0;i<5;i++){const a=i/5*Math.PI*2;
+      const p2=solid(new THREE.SphereGeometry(1,8,6),c,E);
+      p2.scale.set(.085,.02,.13);p2.position.set(Math.cos(a)*.1,0,Math.sin(a)*.1);
+      p2.rotation.y=-a;g.add(p2);}
+    g.add(at(solid(new THREE.SphereGeometry(.045,8,6),tint(c,-.35),E),0,.025,0));
+    return g;}
+  if(shape==="narcissus"){
+    for(let i=0;i<6;i++){const a=i/6*Math.PI*2;
+      const p2=solid(new THREE.SphereGeometry(1,8,6),"#FBF6E4",E);
+      p2.scale.set(.055,.02,.12);p2.position.set(Math.cos(a)*.11,0,Math.sin(a)*.11);
+      p2.rotation.y=-a;g.add(p2);}
+    const cup=solid(new THREE.CylinderGeometry(.06,.045,.07,10,1,true),c,{dbl:true,edges:false});
+    cup.position.y=.045;g.add(cup);
+    return g;}
+  if(shape==="cluster")return head("gyp",c);
+  if(shape==="sun")return head("sun",c);
+  return head("daisy",c);
+}
+
+function leafArt(shape,c){
+  const g=new THREE.Group(),E={edges:false};
+  if(shape==="frond"){
+    g.add(at(solid(new THREE.CylinderGeometry(.012,.012,.5,5),tint(c,-.2),E),0,.25,0));
+    for(let i=0;i<6;i++){const y=.12+i*.07;
+      [-1,1].forEach(sd=>{const b=solid(new THREE.SphereGeometry(1,7,5),c,E);
+        b.scale.set(.11,.014,.032);b.position.set(sd*.1,y,0);b.rotation.z=sd*.5;g.add(b);});}
+    return g;}
+  if(shape==="needle"){
+    for(let i=0;i<14;i++){const a=i*1.1,r=.05+(i%3)*.03;
+      const n=solid(new THREE.SphereGeometry(1,6,4),c,E);
+      n.scale.set(.012,.09,.012);
+      n.position.set(Math.cos(a)*r,.18+(i%5)*.05,Math.sin(a)*r);
+      n.rotation.z=Math.cos(a)*.5;n.rotation.x=Math.sin(a)*.5;g.add(n);}
+    return g;}
+  if(shape==="round"){
+    const b=solid(new THREE.SphereGeometry(1,10,8),c,E);
+    b.scale.set(.17,.015,.14);b.position.y=.34;b.rotation.z=.3;g.add(b);
+    g.add(at(solid(new THREE.CylinderGeometry(.012,.012,.36,5),tint(c,-.2),E),0,.17,0));
+    return g;}
+  const b=solid(new THREE.SphereGeometry(1,8,6),c,E);
+  b.scale.set(.035,.28,.014);b.position.y=.3;g.add(b);
+  g.add(at(solid(new THREE.CylinderGeometry(.011,.011,.16,5),tint(c,-.2),E),0,.08,0));
+  return g;
+}
+
 function bouquet(){
   const g=new THREE.Group();
   const wc=hx(WRAP_COLORS,S.wrapColor),fc=hx(FLOWER_COLORS,S.flowerColor),rc=hx(RIBBONS,S.ribbon);
   const layers=Math.min(S.wrapSheets,6);
   const op=S.wrapFinish==="clear"?{dbl:true,op:.55,edges:false}:{dbl:true,edges:false};
+  /* کاغذهای کدنویسی‌شده فقط تا وقتی مدل نیامده نمایش داده می‌شوند */
+  const wrapG=new THREE.Group();g.add(wrapG);
   for(let i=0;i<layers;i++){
     const k=1+i*.05;
-    const c=solid(new THREE.CylinderGeometry(.36*k,.11,.72,8,1,true),
+    const c=solid(new THREE.CylinderGeometry(.3*k,.09,.6,8,1,true),
       (S.wrapFinish==="pattern"&&i%2)?tint(wc,-.22):wc,op);
-    c.position.y=.36;c.rotation.y=i*.42;g.add(c);
+    c.position.y=.3;c.rotation.y=i*.42;wrapG.add(c);
   }
+  gltf(WRAP_MODEL,m=>{kill(wrapG);wrapG.add(m);},{height:.62,color:wc});
   const b=solid(new THREE.TorusGeometry(.14,.038,6,12),rc,{edges:false});
-  b.position.y=.16;b.rotation.x=Math.PI/2;g.add(b);
-  const list=[];S.flowers.forEach(f=>{for(let i=0;i<f.qty;i++)list.push(f.id);});
+  b.position.y=.13;b.rotation.x=Math.PI/2;g.add(b);
+  /* برگ‌ها عقب‌تر و بازتر می‌ایستند تا پس‌زمینه گل‌ها شوند */
+  const lv=[];S.leaves.forEach(f=>{for(let i=0;i<f.qty;i++)lv.push(f);});
+  const ln=Math.max(lv.length,1);
+  lv.forEach((L,i)=>{
+    const a=i/ln*Math.PI*2+.4, r=.2;
+    const e=leafArt(L.shape,L.hex);
+    e.position.set(Math.cos(a)*r,.46,Math.sin(a)*r);
+    e.rotation.z=-Math.cos(a)*.5;e.rotation.x=Math.sin(a)*.5;
+    e.scale.setScalar(1.5);g.add(e);
+  });
+
+  /* گل‌ها: مصنوعی و طبیعی با هم در یک دسته */
+  const list=[];
+  S.flowers.forEach(f=>{for(let i=0;i<f.qty;i++)list.push({k:"art",id:f.id});});
+  S.nat.forEach(f=>{const d=NAT.find(x=>x.id===f.id);
+    for(let i=0;i<f.qty;i++)list.push({k:"nat",shape:d.shape,hex:d.hex});});
   const n=Math.max(list.length,1);
-  list.forEach((type,i)=>{
-    const a=i/n*Math.PI*2,lean=.11+(i%3)*.05,h=.44+(i%4)*.07;
-    const st=solid(new THREE.CylinderGeometry(.015,.015,h,5),"#4F7A3A",{edges:false});
-    st.position.set(Math.cos(a)*lean*.5,.54+h*.5,Math.sin(a)*lean*.5);
+  list.forEach((t,i)=>{
+    const a=i/n*Math.PI*2,lean=.14+(i%3)*.07,h=.5+(i%4)*.09;
+    const st=solid(new THREE.CylinderGeometry(.016,.016,h,5),"#4F7A3A",{edges:false});
+    st.position.set(Math.cos(a)*lean*.5,.5+h*.5,Math.sin(a)*lean*.5);
     st.rotation.z=-Math.cos(a)*.24;st.rotation.x=Math.sin(a)*.24;g.add(st);
-    const hd=head(type,fc);
-    hd.position.set(Math.cos(a)*lean*1.7,.54+h*.95,Math.sin(a)*lean*1.7);
+    const hd=t.k==="art"?head(t.id,fc):natHead(t.shape,t.hex);
+    hd.position.set(Math.cos(a)*lean*2.1,.5+h*1.02,Math.sin(a)*lean*2.1);
+    hd.scale.setScalar(1.5);
     g.add(hd);
   });
   return g;
@@ -364,7 +548,7 @@ function draw(){
   kill(packG);kill(itemG);kill(bqG);
   const p=pack();packG.add(p);
   const fl=p.userData.floor||0;
-  gltf(MODELS[S.pack],m=>{kill(packG);m.scale.setScalar(S.pack==="box"?1.4:2.2);packG.add(m);});
+  gltf(MODELS[S.pack],m=>{kill(packG);packG.add(m);},{height:S.pack==="box"?1:1.4});
 
   const bq=bouquet();
   if(S.pack==="box"){bq.position.set(0,fl,-.36);bq.scale.setScalar(1.1);}
@@ -432,7 +616,8 @@ function say(t){document.getElementById("headline").textContent=t;}
 function headline(){
   if(delivery)return;
   const n=aQty(),cap=CAP[S.pack];
-  if(fQty()<FLOWER_MIN)say("حداقل 2 شاخه گل لازم است");
+  if(!mode())say("اول گل انتخاب کن — مصنوعی یا طبیعی");
+  else if((mode()==="art"?aFQty():nFQty())<FLOWER_MIN)say("حداقل 2 شاخه گل لازم است");
   else if(n===0)say("جعبه‌ات خالی است، یک چیزی بگذار تویش");
   else if(n>=cap)say("دیگر جا ندارد");
   else if(n>=cap-1)say("تقریباً پر شد");
@@ -446,6 +631,7 @@ function init(){
   scene=new THREE.Scene();
   cam=new THREE.PerspectiveCamera(32,1,.1,80);
   EDGE=new THREE.LineBasicMaterial({color:0x33302D});
+  OUT=makeOutline();
   root=new THREE.Group();scene.add(root);
   packG=new THREE.Group();itemG=new THREE.Group();bqG=new THREE.Group();
   fxG=new THREE.Group();bikeG=new THREE.Group();
@@ -459,21 +645,30 @@ function init(){
   addEventListener("resize",size);size();
 
   const pt=e=>({x:e.clientX,y:e.clientY});
-  st.addEventListener("pointerdown",e=>{drag=pt(e);idle=0;});
-  addEventListener("pointermove",e=>{if(!drag)return;const q=pt(e);
-    az+=(q.x-drag.x)*.008;pol=Math.max(.25,Math.min(1.45,pol+(q.y-drag.y)*.006));drag=q;});
+  st.addEventListener("pointerdown",e=>{drag=pt(e);drag.pan=(e.button===2||e.shiftKey);idle=0;});
+  addEventListener("pointermove",e=>{if(!drag)return;const q=pt(e);q.pan=drag.pan;
+    if(drag.pan)panBy(q.x-drag.x,q.y-drag.y);
+    else{az+=(q.x-drag.x)*.008;pol=Math.max(.25,Math.min(1.45,pol+(q.y-drag.y)*.006));}
+    drag=q;});
   addEventListener("pointerup",()=>{drag=null;});
+  st.addEventListener("contextmenu",e=>e.preventDefault());
   st.addEventListener("wheel",e=>{e.preventDefault();
-    rad=Math.max(3.2,Math.min(12,rad+e.deltaY*.006));},{passive:false});
+    rad=Math.max(2.4,Math.min(14,rad+e.deltaY*.006));},{passive:false});
+  const two=e=>({d:Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
+                              e.touches[0].clientY-e.touches[1].clientY),
+                 x:(e.touches[0].clientX+e.touches[1].clientX)/2,
+                 y:(e.touches[0].clientY+e.touches[1].clientY)/2});
   st.addEventListener("touchstart",e=>{if(e.touches.length===2){
-    pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
-                     e.touches[0].clientY-e.touches[1].clientY);drag=null;}},{passive:true});
-  st.addEventListener("touchmove",e=>{if(e.touches.length===2&&pinch){
-    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
-                       e.touches[0].clientY-e.touches[1].clientY);
-    rad=Math.max(3.2,Math.min(12,rad*(pinch/d)));pinch=d;}},{passive:true});
-  st.addEventListener("touchend",()=>{pinch=0;});
-  document.getElementById("home").onclick=()=>{az=.6;pol=1.05;rad=5.8;idle=0;};
+    const t=two(e);pinch=t.d;mid={x:t.x,y:t.y};drag=null;idle=0;}},{passive:true});
+  st.addEventListener("touchmove",e=>{
+    if(e.touches.length===2&&pinch){
+      const t=two(e);
+      rad=Math.max(2.4,Math.min(14,rad*(pinch/t.d)));pinch=t.d;
+      if(mid)panBy(t.x-mid.x,t.y-mid.y);      /* دو انگشتی: هم زوم، هم جابه‌جایی */
+      mid={x:t.x,y:t.y};
+    }},{passive:true});
+  st.addEventListener("touchend",()=>{pinch=0;mid=null;});
+  document.getElementById("home").onclick=()=>{az=.6;pol=1.05;rad=5.8;TARGET.set(0,.6,0);idle=0;};
   const sp=document.getElementById("spin");
   sp.onclick=()=>{autoSpin=!autoSpin;sp.textContent=autoSpin?"⏸":"▶";
     sp.title=autoSpin?"توقف چرخش":"ادامه چرخش";};
@@ -482,6 +677,7 @@ function init(){
   (function loop(){
     requestAnimationFrame(loop);
     const dt=Math.min(clock.getDelta(),.05);t0+=dt;
+    if(OUT)OUT.uniforms.t.value=t0*.5;
     if(!drag){idle+=dt;if(autoSpin&&idle>2.5&&!delivery)az+=dt*.2;}
     cam.position.set(TARGET.x+rad*Math.sin(pol)*Math.sin(az),
                      TARGET.y+rad*Math.cos(pol),
@@ -559,8 +755,11 @@ function card(key,title,cap,build){
 function paint(){
   /* محدودیت‌ها */
   while(aQty()>CAP[S.pack]){const l=S.addons[S.addons.length-1];l.qty--;if(l.qty<1)S.addons.pop();}
-  if(fQty()<FLOWER_MIN&&S.flowers.length===0)S.flowers=[{id:"daisy",qty:FLOWER_MIN}];
+  if(mode()==="art")S.leaves=[];
+  while(aFQty()>FLOWER_MAX){const l=S.flowers[S.flowers.length-1];l.qty--;if(l.qty<1)S.flowers.pop();}
+  while(nFQty()>NAT_MAX){const l=S.nat[S.nat.length-1];l.qty--;if(l.qty<1)S.nat.pop();}
   S.wrapSheets=Math.max(WRAP_MIN,Math.min(WRAP_MAX,S.wrapSheets));
+  while(lQty()>LEAF_MAX){const l=S.leaves[S.leaves.length-1];l.qty--;if(l.qty<1)S.leaves.pop();}
 
   const w=document.getElementById("cards");w.innerHTML="";
 
@@ -570,21 +769,61 @@ function paint(){
     b.appendChild(swRow(PACK_COLORS,()=>S.packColor,v=>S.packColor=v,"pc"));
   }));
 
-  w.appendChild(card("flower","گل‌ها",fQty()+" شاخه",b=>{
+  w.appendChild(card("flower","گل مصنوعی",(mode()==="nat"?"قفل":aFQty()+" شاخه"),b=>{
     const g=el("div","grid");
     FLOWERS.forEach(f=>{
       const cur=S.flowers.find(x=>x.id===f.id),q=cur?cur.qty:0;
       g.appendChild(stepper(f.name+" — "+fmt(P(f.id))+" تومان",q,
         ()=>{if(!cur)return;cur.qty--;if(cur.qty<1)S.flowers=S.flowers.filter(x=>x!==cur);},
         ()=>{if(cur)cur.qty++;else S.flowers.push({id:f.id,qty:1});},
-        q>0&&fQty()>FLOWER_MIN, fQty()<FLOWER_MAX));
+        q>0, mode()!=="nat"&&aFQty()<FLOWER_MAX));
     });
     b.appendChild(g);
-    const n=el("div","note"+(fQty()<FLOWER_MIN?" warn":""),
-      "مجموع شاخه‌ها بین 2 و 10 — الان "+fQty());
-    b.appendChild(n);
+    b.appendChild(el("div","note"+(mode()==="art"&&aFQty()<FLOWER_MIN?" warn":""),
+      mode()==="nat"?"برای بازشدن، تعداد گل طبیعی را صفر کن"
+                    :"بین 2 و 10 شاخه — الان "+aFQty()));
     b.appendChild(el("div","note","رنگ گل"));
     b.appendChild(swRow(FLOWER_COLORS,()=>S.flowerColor,v=>S.flowerColor=v,"fc"));
+  }));
+
+  w.appendChild(card("nat","گل طبیعی",
+    (mode()==="art"?"قفل":nFQty()+" شاخه"),b=>{
+    const g=el("div","grid");
+    NAT.forEach(f=>{
+      const cur=S.nat.find(x=>x.id===f.id),q=cur?cur.qty:0;
+      const st=stepper(f.name+" — "+fmt(P(f.id))+" تومان",q,
+        ()=>{if(!cur)return;cur.qty--;if(cur.qty<1)S.nat=S.nat.filter(x=>x!==cur);},
+        ()=>{if(cur)cur.qty++;else S.nat.push({id:f.id,qty:1});},
+        q>0, mode()!=="art"&&nFQty()<NAT_MAX);
+      const dot=el("span","dot");dot.style.background=f.hex;
+      dot.style.width="14px";dot.style.height="14px";dot.style.borderRadius="50%";
+      dot.style.border="2px solid var(--ink)";dot.style.flex="none";
+      st.insertBefore(dot,st.firstChild);
+      g.appendChild(st);});
+    b.appendChild(g);
+    b.appendChild(el("div","note"+(mode()==="nat"&&nFQty()<FLOWER_MIN?" warn":""),
+      mode()==="art"?"برای بازشدن، تعداد گل مصنوعی را صفر کن"
+                    :"بین 2 و "+NAT_MAX+" شاخه — الان "+nFQty()));
+    b.appendChild(el("div","note","هر گل رنگ طبیعی خودش را دارد"));
+  }));
+
+  w.appendChild(card("leaf","برگ تزئینی",(mode()==="nat"?lQty()+" شاخه":"قفل"),b=>{
+    const g=el("div","grid");
+    LEAF.forEach(f=>{
+      const cur=S.leaves.find(x=>x.id===f.id),q=cur?cur.qty:0;
+      const st=stepper(f.name+" — "+fmt(P(f.id))+" تومان",q,
+        ()=>{if(!cur)return;cur.qty--;if(cur.qty<1)S.leaves=S.leaves.filter(x=>x!==cur);},
+        ()=>{if(cur)cur.qty++;else S.leaves.push({...f,qty:1});},
+        q>0, mode()==="nat"&&lQty()<LEAF_MAX);
+      const dot=el("span","dot");dot.style.background=f.hex;
+      dot.style.width="14px";dot.style.height="14px";dot.style.borderRadius="50%";
+      dot.style.border="2px solid var(--ink)";dot.style.flex="none";
+      st.insertBefore(dot,st.firstChild);
+      g.appendChild(st);});
+    b.appendChild(g);
+    b.appendChild(el("div","note",
+      mode()==="nat"?("حداکثر "+LEAF_MAX+" شاخه برگ — الان "+lQty())
+                    :"برگ فقط همراه گل طبیعی اضافه می‌شود"));
   }));
 
   w.appendChild(card("wrap","کاغذ کادو",S.wrapSheets+" برگ",b=>{
@@ -637,7 +876,7 @@ function paint(){
   }));
 
   document.getElementById("price").textContent=fmt(total());
-  document.getElementById("buy").disabled=fQty()<FLOWER_MIN;
+  document.getElementById("buy").disabled=!mode()||(mode()==="art"?aFQty():nFQty())<FLOWER_MIN;
   headline();
   paintCard();draw();HOT=null;
 }
@@ -646,7 +885,7 @@ function popItem(){
   burst((Math.random()-.5)*1.2,y,(Math.random()-.5)*.6,"#D2F32C",16);
 }
 
-document.getElementById("buy").onclick=()=>{if(fQty()>=FLOWER_MIN)startDelivery();};
+document.getElementById("buy").onclick=()=>{if(mode()&&(mode()==="art"?aFQty():nFQty())>=FLOWER_MIN)startDelivery();};
 
 makeCardTex();init();paint();pullPrices();
 setInterval(pullPrices,60000);
